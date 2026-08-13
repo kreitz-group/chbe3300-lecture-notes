@@ -1,0 +1,9 @@
+# Used by the GitHub Actions build. For local work, prefer environment.yml.
+jupyter-book>=2.0
+numpy
+scipy
+matplotlib
+pandas
+pint
+cantera
+ipykernel

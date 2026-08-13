@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Jupyter Book / MyST
+_build/
+.jupyter_cache/
+node_modules/

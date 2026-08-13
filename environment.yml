@@ -1,0 +1,16 @@
+name: chbe3300
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - pint
+  - cantera
+  - ipykernel
+  - jupyterlab
+  - pip
+  - pip:
+      - jupyter-book>=2.0

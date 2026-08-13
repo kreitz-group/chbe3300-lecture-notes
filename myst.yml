@@ -1,0 +1,95 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+
+project:
+  id: 3984da47-73e2-41ab-ac3d-8284ebf5c4f1
+  title: Chemical Kinetics and Catalysis
+  subtitle: Lecture notes for CHBE 3300
+  description: >-
+    Interactive lecture notes for CHBE 3300, Chemical Kinetics and Catalysis,
+    at the Georgia Institute of Technology.
+  keywords:
+    - chemical kinetics
+    - catalysis
+    - reaction engineering
+    - chemical engineering
+  authors:
+    - name: Bjarne Kreitz
+      email: bkreitz3@gatech.edu
+      # orcid: 0000-0000-0000-0000   # add your ORCID here
+      affiliations:
+        - id: gatech
+          institution: Georgia Institute of Technology
+          department: School of Chemical and Biomolecular Engineering
+          ror: https://ror.org/01zkghx44
+  github: https://github.com/kreitz-group/chbe3300-lecture-notes
+  license:
+    content: CC-BY-4.0
+    code: MIT
+  open_access: true
+  bibliography:
+    - references.bib
+
+  # Number chapters and their headings, and the figures/equations/tables within.
+  numbering:
+    heading_1: true
+    heading_2: true
+    figure: true
+    equation: true
+    table: true
+
+  # Mirrors the macros defined in the LaTeX source (main.tex), so equations can
+  # be moved across with minimal editing. \ce{...} comes from the mhchem
+  # extension, which is enabled by default.
+  math:
+    '\un': '_{\textrm{#1}}'
+    '\up': '^{\textrm{#1}}'
+    '\eq': '\mathrel{\rightleftharpoons}'
+    '\eqa': '\mathrel{\overset{#1}{\underset{#2}{\rightleftharpoons}}}'
+    '\vect': '\boldsymbol{\mathbf{\underline{#1}}}'
+    '\mtrx': '\boldsymbol{\mathbf{\underline{\underline{#1}}}}'
+    '\T': '\intercal'
+
+  toc:
+    - file: index.md
+
+    - title: Reaction stoichiometry and thermodynamics
+      children:
+        - file: content/01-introduction.md
+        - file: content/02-stoichiometry.md
+        - file: content/03-thermodynamics.md
+
+    - title: Reactor balances and rate laws
+      children:
+        - file: content/04-mass-balances.md
+        - file: content/05-reaction-kinetics.md
+        - file: content/06-multiple-reactions.md
+        - file: content/07-experimental-kinetics.md
+
+    - title: Molecular basis of reaction rates
+      children:
+        - file: content/08-microscopic.md
+        - file: content/09-mechanisms.md
+
+    - title: Catalysis
+      children:
+        - file: content/10-heterogeneous-catalysis.md
+        - file: content/11-biocatalysis.md
+
+    - title: Computational examples
+      children:
+        - file: notebooks/batch-reactor-first-order.ipynb
+
+    - title: Back matter
+      children:
+        - file: content/references.md
+
+site:
+  template: book-theme
+  options:
+    hide_outline: false
+    hide_toc: false
+  nav: []
+  actions:
+    - title: LaTeX notes (PDF)
+      url: https://github.com/kreitz-group/chbe3300-lecture-notes
