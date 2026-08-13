@@ -1,0 +1,7 @@
+#!/bin/sh
+# Portable shim for the jupyter-book-marimo MyST plugin.
+#
+# myst.yml must point at a path, and the real console script lives wherever the
+# active environment put it (conda prefix locally, the runner's site-packages in
+# CI). Invoking the module keeps myst.yml machine-independent.
+exec "${PYTHON:-python3}" -m jupyter_book_marimo "$@"

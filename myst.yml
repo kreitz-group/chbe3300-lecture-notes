@@ -30,6 +30,14 @@ project:
   bibliography:
     - references.bib
 
+  # Renders ```{marimo} cells as hydrated marimo islands, so the reactive
+  # examples run in the reader's browser via Pyodide. Requires
+  # `pip install jupyter-book-marimo`; scripts/marimo-plugin is a shim that
+  # locates the console script in whatever environment is active.
+  plugins:
+    - type: executable
+      path: scripts/marimo-plugin
+
   # Number chapters and their headings, and the figures/equations/tables within.
   numbering:
     heading_1: true
@@ -75,10 +83,6 @@ project:
       children:
         - file: content/10-heterogeneous-catalysis.md
         - file: content/11-biocatalysis.md
-
-    - title: Computational examples
-      children:
-        - file: notebooks/batch-reactor-first-order.ipynb
 
     - title: Back matter
       children:

@@ -18,36 +18,20 @@ engineer does.
 Each chapter opens with a set of **learning objectives**. Use them as a checklist: if you can do
 everything on the list without looking anything up, you are ready for the exam on that chapter.
 
-Many chapters include executable examples. Every page that contains code can be launched
-directly in your browser or downloaded as a Jupyter notebook using the {kbd}`↓` and
-{kbd}`🚀` buttons at the top right of the page — nothing needs to be installed to read along.
-If you would rather run things locally, see [](#running-locally).
+Many chapters carry **interactive figures**. Drag a slider and the curves recompute immediately —
+these run entirely in your browser, so there is nothing to install and nothing to download in order
+to use them. Treat them as instruments for building intuition: push a parameter to its extremes and
+see what the model does.
 
 ## Software
 
-The computational examples use the standard scientific Python stack:
+**This course is taught in MATLAB.** Worked examples are given as MATLAB code, and that is the
+language you will use for homework and on exams. Georgia Tech provides MATLAB to all students
+through the [campus license](https://software.oit.gatech.edu/).
 
-- [NumPy](https://numpy.org/) for array math
-- [SciPy](https://scipy.org/) for numerical integration, optimization, and regression
-- [Matplotlib](https://matplotlib.org/) for plotting
-- [Pint](https://pint.readthedocs.io/) for unit-aware calculations
-- [Cantera](https://cantera.org/) for thermodynamic and kinetic data
-
-(running-locally)=
-### Running locally
-
-```bash
-git clone https://github.com/kreitz-group/chbe3300-lecture-notes.git
-cd chbe3300-lecture-notes
-conda env create -f environment.yml
-conda activate chbe3300
-```
-
-To build and preview the book itself:
-
-```bash
-jupyter book start
-```
+The interactive figures happen to be powered by Python running in your browser, but you never need
+to read, write, or install any of it — the code that matters for the course sits next to each
+figure, in MATLAB.
 
 ## Acknowledgments
 

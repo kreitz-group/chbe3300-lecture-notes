@@ -1,9 +1,14 @@
 # Used by the GitHub Actions build. For local work, prefer environment.yml.
 jupyter-book>=2.0
+
+# Renders ```{marimo} cells as islands. The plugin executes the cells at build
+# time to produce the pre-hydration snapshot, so the build environment needs
+# every package those cells import (numpy and matplotlib below).
+jupyter-book-marimo
+marimo
+
+# Imported by the {marimo} cells. Keep this list to what the cells actually
+# use — every addition slows the CI build, and Cantera in particular cannot run
+# in the reader's browser (Pyodide) anyway.
 numpy
-scipy
 matplotlib
-pandas
-pint
-cantera
-ipykernel
