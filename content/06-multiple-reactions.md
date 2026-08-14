@@ -7,7 +7,8 @@ label: ch-multiple-reactions
 <!-- LaTeX source: multiple_reactions.tex -->
 <!-- Porting notes: mhchem is math-only here, so \ce{} in prose needs $...$; and \un{} expands to
      _{\textrm{...}}, so species subscripts must be written _{\ce{Br2}}, never \un{\ce{Br2}}.
-     Radical dots use the mhchem form \ce{Br^{.}} rather than the LaTeX \ce{Br$\bullet$}.
+     Radical dots use radicals use \ce{Br\bullet}, which puts the dot on the math axis;
+     \ce{Br^{.}} sets it as a superscript and \ce{Br{.}} drops it to the baseline.
      Nested directives need a longer outer fence (:::: around :::). -->
 
 :::{admonition} Learning objectives
@@ -844,18 +845,18 @@ happen as written. Instead it proceeds via a radical chain mechanism that starts
 dissociation of bromine into bromine radicals:
 
 $$
-\text{Initiation/termination:}\quad \ce{Br2} \eqa{k\un{+1}}{k\un{-1}} \ce{2 Br^{.}} ,
-\qquad r_1 = k\un{+1}c_{\ce{Br2}} - k\un{-1}c_{\ce{Br^{.}}}^2
+\text{Initiation/termination:}\quad \ce{Br2} \eqa{k\un{+1}}{k\un{-1}} \ce{2 Br\bullet} ,
+\qquad r_1 = k\un{+1}c_{\ce{Br2}} - k\un{-1}c_{\ce{Br\bullet}}^2
 $$ (eq-hbr-step1)
 
 $$
-\text{Propagation:}\quad \ce{Br^{.} + H2} \eqa{k\un{+2}}{k\un{-2}} \ce{HBr + H^{.}} ,
-\qquad r_2 = k\un{+2}c_{\ce{Br^{.}}}c_{\ce{H2}} - k\un{-2}c_{\ce{HBr}}c_{\ce{H^{.}}}
+\text{Propagation:}\quad \ce{Br\bullet + H2} \eqa{k\un{+2}}{k\un{-2}} \ce{HBr + H\bullet} ,
+\qquad r_2 = k\un{+2}c_{\ce{Br\bullet}}c_{\ce{H2}} - k\un{-2}c_{\ce{HBr}}c_{\ce{H\bullet}}
 $$ (eq-hbr-step2)
 
 $$
-\text{Propagation:}\quad \ce{H^{.} + Br2 ->[$k_3$] HBr + Br^{.}} ,
-\qquad r_3 = k_3\, c_{\ce{H^{.}}}c_{\ce{Br2}}
+\text{Propagation:}\quad \ce{H\bullet + Br2 ->[$k_3$] HBr + Br\bullet} ,
+\qquad r_3 = k_3\, c_{\ce{H\bullet}}c_{\ce{Br2}}
 $$ (eq-hbr-step3)
 
 These are elementary reactions; together they form a reaction mechanism, and summing the steps
@@ -866,53 +867,53 @@ $\ce{HBr}$ is produced in steps [](#eq-hbr-step2) and [](#eq-hbr-step3), so
 
 $$
 r_{\ce{HBr}} = \frac{\mathrm{d}c_{\ce{HBr}}}{\mathrm{d}t}
-= \underbrace{k\un{+2}c_{\ce{Br^{.}}}c_{\ce{H2}}
-- k\un{-2}c_{\ce{HBr}}c_{\ce{H^{.}}}}_{r_2}
-+ \underbrace{k_3\, c_{\ce{H^{.}}}c_{\ce{Br2}}}_{r_3} .
+= \underbrace{k\un{+2}c_{\ce{Br\bullet}}c_{\ce{H2}}
+- k\un{-2}c_{\ce{HBr}}c_{\ce{H\bullet}}}_{r_2}
++ \underbrace{k_3\, c_{\ce{H\bullet}}c_{\ce{Br2}}}_{r_3} .
 $$ (eq-rhbr-full)
 
-The radical species $\ce{Br^{.}}$ and $\ce{H^{.}}$ are short-lived intermediates, so we apply the
+The radical species $\ce{Br\bullet}$ and $\ce{H\bullet}$ are short-lived intermediates, so we apply the
 PSSA,
 
 $$
-\frac{\mathrm{d}c_{\ce{Br^{.}}}}{\mathrm{d}t}
-= \frac{\mathrm{d}c_{\ce{H^{.}}}}{\mathrm{d}t} = 0 .
+\frac{\mathrm{d}c_{\ce{Br\bullet}}}{\mathrm{d}t}
+= \frac{\mathrm{d}c_{\ce{H\bullet}}}{\mathrm{d}t} = 0 .
 $$
 
 Writing the mass balance for each radical species,
 
 $$
 \begin{aligned}
-\frac{\mathrm{d}c_{\ce{Br^{.}}}}{\mathrm{d}t} &= 0
-= \underbrace{2k\un{+1}c_{\ce{Br2}} - 2k\un{-1}c_{\ce{Br^{.}}}^2}_{2r_1}
-- \underbrace{\left(k\un{+2}c_{\ce{Br^{.}}}c_{\ce{H2}}
-  - k\un{-2}c_{\ce{HBr}}c_{\ce{H^{.}}}\right)}_{r_2}
-+ \underbrace{k_3\, c_{\ce{H^{.}}}c_{\ce{Br2}}}_{r_3} \\
-\frac{\mathrm{d}c_{\ce{H^{.}}}}{\mathrm{d}t} &= 0
-= \underbrace{k\un{+2}c_{\ce{Br^{.}}}c_{\ce{H2}}
-  - k\un{-2}c_{\ce{HBr}}c_{\ce{H^{.}}}}_{r_2}
-- \underbrace{k_3\, c_{\ce{H^{.}}}c_{\ce{Br2}}}_{r_3} .
+\frac{\mathrm{d}c_{\ce{Br\bullet}}}{\mathrm{d}t} &= 0
+= \underbrace{2k\un{+1}c_{\ce{Br2}} - 2k\un{-1}c_{\ce{Br\bullet}}^2}_{2r_1}
+- \underbrace{\left(k\un{+2}c_{\ce{Br\bullet}}c_{\ce{H2}}
+  - k\un{-2}c_{\ce{HBr}}c_{\ce{H\bullet}}\right)}_{r_2}
++ \underbrace{k_3\, c_{\ce{H\bullet}}c_{\ce{Br2}}}_{r_3} \\
+\frac{\mathrm{d}c_{\ce{H\bullet}}}{\mathrm{d}t} &= 0
+= \underbrace{k\un{+2}c_{\ce{Br\bullet}}c_{\ce{H2}}
+  - k\un{-2}c_{\ce{HBr}}c_{\ce{H\bullet}}}_{r_2}
+- \underbrace{k_3\, c_{\ce{H\bullet}}c_{\ce{Br2}}}_{r_3} .
 \end{aligned}
 $$
 
-One way to solve for $c_{\ce{Br^{.}}}$ is simply to add the two equations and work through the
+One way to solve for $c_{\ce{Br\bullet}}$ is simply to add the two equations and work through the
 algebra. A cleaner argument follows from the structure of the mechanism: under the PSSA the
-propagation steps [](#eq-hbr-step2) and [](#eq-hbr-step3) produce and consume $\ce{Br^{.}}$ in
-equal measure, so they cannot be the steps that set $c_{\ce{Br^{.}}}$. Only the
+propagation steps [](#eq-hbr-step2) and [](#eq-hbr-step3) produce and consume $\ce{Br\bullet}$ in
+equal measure, so they cannot be the steps that set $c_{\ce{Br\bullet}}$. Only the
 initiation/termination step [](#eq-hbr-step1) alters the radical population, and at steady state
-the termination rate must equal the initiation rate. Applying this to $\ce{Br^{.}}$,
+the termination rate must equal the initiation rate. Applying this to $\ce{Br\bullet}$,
 
 $$
 \begin{aligned}
-2k\un{+1}c_{\ce{Br2}} &= 2k\un{-1}c_{\ce{Br^{.}}}^2 \\
-c_{\ce{Br^{.}}} &= \sqrt{\frac{k\un{+1}c_{\ce{Br2}}}{k\un{-1}}} .
+2k\un{+1}c_{\ce{Br2}} &= 2k\un{-1}c_{\ce{Br\bullet}}^2 \\
+c_{\ce{Br\bullet}} &= \sqrt{\frac{k\un{+1}c_{\ce{Br2}}}{k\un{-1}}} .
 \end{aligned}
 $$ (eq-hbr-brrad)
 
-Plugging this into the steady-state equation for $\ce{H^{.}}$ gives
+Plugging this into the steady-state equation for $\ce{H\bullet}$ gives
 
 $$
-c_{\ce{H^{.}}} = \frac{k\un{+2}\sqrt{k\un{+1}c_{\ce{Br2}}/k\un{-1}}\, c_{\ce{H2}}}
+c_{\ce{H\bullet}} = \frac{k\un{+2}\sqrt{k\un{+1}c_{\ce{Br2}}/k\un{-1}}\, c_{\ce{H2}}}
 {k\un{-2}c_{\ce{HBr}} + k_3\, c_{\ce{Br2}}} .
 $$ (eq-hbr-hrad)
 
@@ -976,14 +977,14 @@ For the HBr system specifically, a useful rule-of-thumb estimate explains why we
 mechanism to $\ce{Br2}$ dissociation rather than including $\ce{H2}$ or $\ce{HBr}$ dissociation,
 
 $$
-\ce{H2 -> 2 H^{.}} \qquad \ce{HBr -> H^{.} + Br^{.}} .
+\ce{H2 -> 2 H\bullet} \qquad \ce{HBr -> H\bullet + Br\bullet} .
 $$
 
 The bond-dissociation enthalpies — the reaction enthalpies of these elementary steps — are
 
-- $\ce{H2 -> 2 H^{.}}$: $\Delta\un{r}H = 436\ \mathrm{kJ\,mol^{-1}}$
-- $\ce{HBr -> H^{.} + Br^{.}}$: $\Delta\un{r}H = 399\ \mathrm{kJ\,mol^{-1}}$
-- $\ce{Br2 -> 2 Br^{.}}$: $\Delta\un{r}H = 194\ \mathrm{kJ\,mol^{-1}}$
+- $\ce{H2 -> 2 H\bullet}$: $\Delta\un{r}H = 436\ \mathrm{kJ\,mol^{-1}}$
+- $\ce{HBr -> H\bullet + Br\bullet}$: $\Delta\un{r}H = 399\ \mathrm{kJ\,mol^{-1}}$
+- $\ce{Br2 -> 2 Br\bullet}$: $\Delta\un{r}H = 194\ \mathrm{kJ\,mol^{-1}}$
 
 :::{figure} ../figures/EaBDE.png
 :label: fig-bde
@@ -1075,14 +1076,14 @@ Experiments show that the rate is second order in $\ce{NO2}$ and independent of 
 mechanism is
 
 $$
-\ce{2 NO2 ->[$k_1$] NO + NO3^{.}} \qquad \text{very slow}
+\ce{2 NO2 ->[$k_1$] NO + NO3\bullet} \qquad \text{very slow}
 $$ (eq-no2-step1)
 
 $$
-\ce{NO3^{.} + CO} \eqa{k\un{2+}}{k\un{2-}} \ce{NO2 + CO2} \qquad \text{fast}
+\ce{NO3\bullet + CO} \eqa{k\un{2+}}{k\un{2-}} \ce{NO2 + CO2} \qquad \text{fast}
 $$ (eq-no2-step2)
 
-where $\ce{NO3^{.}}$ is the nitrate radical. If the first step is rate-determining, the overall rate
+where $\ce{NO3\bullet}$ is the nitrate radical. If the first step is rate-determining, the overall rate
 is approximated directly from [](#eq-no2-step1),
 
 $$
