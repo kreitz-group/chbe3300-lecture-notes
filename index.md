@@ -5,11 +5,11 @@ subtitle: CHBE 3300 · Georgia Institute of Technology
 
 These are the lecture notes for CHBE 3300 Chemical Kinetics and Catalysis, taught in the School of Chemical and Biomolecular Engineering at the Georgia Institute of Technology.
 
-A defining skill of chemical engineers is the ability to control chemical reactions and design reactors that transform raw materials into valuable products. Thermodynamics tells us whether a reaction can occur; kinetics tells us how fast it occurs. This course focuses on that second question: how to measure reaction rates, formulate and determine rate laws, understand their molecular origins, and predict how catalysts alter reaction pathways and rates.
+Nearly every material around you — fuels, plastics, pharmaceuticals, steel, fertilizer, semiconductors — comes out of an engineered chemical reaction, and the ability to control those reactions and design the reactors that carry them out is what sets chemical engineers apart from other engineers. 
 
-We begin with reaction stoichiometry and a review of thermochemistry before developing the fundamentals of reaction kinetics and methods for extracting rate laws from experiments. We then move from macroscopic rate expressions to the molecular scale, where we derive rate constants for elementary reactions and construct reaction mechanisms. The second half of the course focuses on catalytic kinetics, including thermal, biological, photo-, and electrocatalysis.
-
-Catalysis is central to modern chemical engineering because most industrial chemical processes rely on catalysts. From fuels, plastics, and pharmaceuticals to fertilizers and advanced materials, the products around us are created through engineered chemical reactions. Understanding and controlling the kinetics of these reactions is therefore one of the core tools of the chemical engineer.
+If you took CHBE 2140 Chemical Engineering Thermodynamics last semester, you learned
+whether a reaction *can* occur. Thermodynamics says nothing about *how fast* it occurs.
+This course answers that question. We begin with reaction stoichiometry and a review of the thermochemistry you will need, then turn to rate laws: how to write them, how to derive them, and how to extract them from experimental data. From there we move from macroscopic kinetics down to the atomistic scale, where the rate constants of elementary reactions come from, and build toward the construction of complete reaction mechanisms. The second half of the course is devoted to catalyzed reactions — thermal, bio-, photo-, and electrocatalysis — since the majority of industrial-scale chemical processes involve a catalyst.
 
 ## How to use these notes
 
