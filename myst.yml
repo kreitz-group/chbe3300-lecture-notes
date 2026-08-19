@@ -61,11 +61,9 @@ project:
   toc:
     - file: index.md
 
-    - title: Reaction stoichiometry and thermodynamics
-      children:
-        - file: content/01-introduction.md
-        - file: content/02-stoichiometry.md
-        - file: content/03-thermodynamics.md
+    - file: content/01-introduction.md
+    - file: content/02-stoichiometry.md
+    - file: content/03-thermodynamics.md
 
     - title: Reactor balances and rate laws
       children:
