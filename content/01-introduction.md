@@ -4,22 +4,17 @@ short_title: Introduction
 label: ch-introduction
 ---
 
-<!-- LaTeX source: Introduction.tex -->
-<!-- NOTE: Introduction.tex carries no body text -- the whole file is commented-out lecture
-     script. The prose below is drafted from those comments and needs your review. -->
-
 :::{admonition} Learning objectives
 :class: tip
 After completing this chapter, you should be able to:
 
-- Explain why thermodynamics alone is insufficient to design a chemical reactor.
+- Explain why thermodynamic favorability does not guarantee that a reaction proceeds at a useful
+  rate, and why reactor design therefore needs kinetics.
 - Describe the role of kinetics and catalysis in the chemical process industry.
-- Navigate the mechanics of the course: schedule, assessment, and resources.
+- Outline the four parts of the course and how each builds on the one before.
 :::
 
 ## Why kinetics?
-
-<!-- source: Introduction.tex -->
 
 Ask what separates a chemical engineer from a mechanical engineer and the answer, stripped down,
 is what each of them designs. The mechanical engineer thinks in engines, bearings, and gears. The
@@ -49,9 +44,9 @@ $$
 \ce{N2 + 3 H2 <=> 2 NH3}
 $$
 
-Thermodynamics says this reaction is favorable. It nonetheless does not simply happen at any useful
-rate — the reaction needs a **catalyst** to proceed quickly enough to matter. Part of this course is
-devoted to what a catalyst is and how it works.
+Thermodynamics says this reaction is favorable. Yet it does not happen at any useful rate on its
+own — it needs a **catalyst**. Part of this course is devoted to what a catalyst is and how it
+works.
 
 The equation above also hides a great deal. Written this way it suggests that a nitrogen molecule
 and three hydrogen molecules collide and rearrange in one step. They do not: a large number of
@@ -69,8 +64,6 @@ areas.
 
 ## Course mechanics
 
-<!-- source: Introduction.tex -->
-
 Course logistics — schedule, assessment, office hours, and the syllabus itself — live on
 **Canvas**, which is the authoritative source and is updated during the semester. These notes cover
 the technical content only.
@@ -85,8 +78,6 @@ Two points about the notes themselves are worth stating here:
   chapter.
 
 ## What this course covers
-
-<!-- source: Introduction.tex -->
 
 The material is organized in four parts, each building on the one before.
 
