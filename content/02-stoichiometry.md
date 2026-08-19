@@ -4,11 +4,6 @@ short_title: Stoichiometry
 label: ch-stoichiometry
 ---
 
-<!-- LaTeX source: Stoichiometry.tex -->
-<!-- NOTE on porting: mhchem here is math-only, so \ce{} in prose must be wrapped in $...$.
-     And \un{} expands to _{\textrm{...}}, which puts \ce{} into text mode and breaks KaTeX --
-     write species subscripts as _{\ce{N2}}, never \un{\ce{N2}}. -->
-
 :::{admonition} Learning objectives
 :class: tip
 After completing this chapter, you should be able to:
@@ -27,8 +22,6 @@ After completing this chapter, you should be able to:
 :::
 
 ## Reactions and stoichiometric coefficients
-
-<!-- source: Stoichiometry.tex L16 -->
 
 Stoichiometry defines a set of rules that a reaction mixture follows over the course of reaction.
 A *reaction mixture* is the summary of all species present in a reaction system — a chemical
@@ -122,12 +115,11 @@ $$
 \end{aligned}
 $$
 
-These matrix notations are the ones you will actually use when solving kinetic problems with
-numerical tools.
+This vector notation is what you will actually use when solving kinetic problems with numerical
+tools. It extends to a full stoichiometric *matrix* once several reactions run at once, which we
+come to at the end of this chapter.
 
 ## Quantities used to describe a reaction mixture
-
-<!-- source: Stoichiometry.tex L86 -->
 
 Before we can quantify reaction progress, we need a vocabulary for describing the mixture itself.
 Quantities used to characterize a reaction mixture fall into two classes: **extensive** ones, which
@@ -175,8 +167,6 @@ where $V$ is the reaction volume and $p$ the total pressure. By construction $\s
 $\sum_i p_i = p$, the latter being Dalton's law.
 
 ## Extent of reaction
-
-<!-- source: Stoichiometry.tex L118 -->
 
 In kinetics we are interested in the *change* of a system brought about by chemical reaction. Stay
 with the ammonia synthesis example, $\ce{N2 + 3 H2 <=> 2 NH3}$.
@@ -246,10 +236,37 @@ with a separate extent of reaction for each independent reaction.
 Another useful quantity is the **conversion**, an intensive measure of reaction progress:
 
 $$
-X = \frac{n\un{i,0} - n_i}{n\un{i,0}} = 1 - \frac{n_i}{n\un{i,0}} ,
+X_i = \frac{n\un{i,0} - n_i}{n\un{i,0}} = 1 - \frac{n_i}{n\un{i,0}} ,
 $$
 
-which lies between 0 and 1.
+which lies between 0 and 1. Note that conversion is defined *per species*: in a mixture that is not
+stoichiometric, the reactants are converted to different degrees.
+
+::::{admonition} Example 2.1 — Conversion is not one number
+:class: note
+Take the same closed system as the exercise above: 1 mol of $\ce{N2}$ and 2 mol of $\ce{H2}$,
+reacted to an extent of $\xi = 0.5\ \mathrm{mol}$. What is the conversion?
+
+:::{dropdown} Solution
+The question as posed has no single answer — you have to say *of what*. Use
+[](#eq-extent-integrated) to get each amount, then apply the definition of $X_i$ to each:
+
+$$
+\begin{aligned}
+n_{\ce{N2}} &= 1 - (1)(0.5) = 0.5\ \mathrm{mol}
+  &&\Rightarrow\quad X_{\ce{N2}} = 1 - \frac{0.5}{1} = 0.50 , \\
+n_{\ce{H2}} &= 2 - (3)(0.5) = 0.5\ \mathrm{mol}
+  &&\Rightarrow\quad X_{\ce{H2}} = 1 - \frac{0.5}{2} = 0.75 .
+\end{aligned}
+$$
+
+Half the nitrogen has reacted, but three quarters of the hydrogen has. Both describe the same
+$\xi$; they differ because the feed was not supplied in the 1:3 ratio the stoichiometry demands.
+
+This is why "the conversion" is meaningless without naming a species, and it is also a hint about
+what comes next: $\ce{H2}$ is the reactant running out faster, and it will hit $X = 1$ first.
+:::
+::::
 
 When reactants are not present in stoichiometric proportions, one of them runs out first — the
 **limiting reactant**. The limiting reactant sets the bounds on the extent of reaction: the maximum
@@ -280,8 +297,6 @@ unreacted.
 
 ## Equilibrium composition
 
-<!-- source: Stoichiometry.tex L209 -->
-
 The extent of reaction lets us derive the composition of a mixture from a starting composition and
 a given extent. Most frequently the method is used the other way around: to find the composition at
 equilibrium for a given equilibrium constant. Equilibrium and thermodynamics are treated in detail
@@ -289,12 +304,10 @@ in [](#ch-thermodynamics).
 
 ### Single-reaction example: ammonia synthesis
 
-<!-- source: Stoichiometry.tex L216 -->
-
 Return to ammonia synthesis,
 
 $$
-\ce{3 H2 + N2 <=> 2 NH3} ,
+\ce{N2 + 3 H2 <=> 2 NH3} ,
 $$
 
 under the conditions $T = 450\ \mathrm{K}$, $p = 4.25\ \mathrm{bar}$, and
@@ -352,11 +365,54 @@ $$
 0 = 2 - 3\xi \quad \Rightarrow \quad \xi\un{max} = \tfrac{2}{3}\ \mathrm{mol} .
 $$
 
-Solving numerically on $[0, \xi\un{max}]$ gives $\xi = 0.453\ \mathrm{mol}$.
+::::{admonition} Example 2.2 — Solving the equilibrium quartic
+:class: note
+Find the equilibrium extent $\xi$ for the system above, and check that the bound
+$[0, \xi\un{max}]$ actually earns its keep.
+
+:::{dropdown} Solution
+Move everything to one side and treat it as a root-finding problem in $\xi$:
+
+$$
+f(\xi) = K\un{p}\,p^2\,(1-\xi)(2-3\xi)^3 - (3-2\xi)^2(2\xi)^2 = 0 .
+$$
+
+A quartic has up to four roots, and only one of them is the physically meaningful equilibrium
+composition. That is what the bracket is for. At the two ends,
+
+$$
+f(0) = K\un{p}\,p^2 \cdot 1 \cdot 2^3 > 0 ,
+\qquad
+f(\xi\un{max}) = 0 - \left(\tfrac{5}{3}\right)^{\!2}\left(\tfrac{4}{3}\right)^{\!2} < 0 ,
+$$
+
+so $f$ changes sign across the interval and a bracketed solver is guaranteed to converge to a root
+inside it. In MATLAB, `fzero` takes that bracket directly:
+
+```matlab
+Kp = 1.397;                 % bar^-2, at 450 K
+p  = 4.25;                  % bar
+
+f = @(xi) Kp*p^2*(1-xi).*(2-3*xi).^3 - (3-2*xi).^2.*(2*xi).^2;
+
+xi_max = 2/3;               % H2 is the limiting reactant
+xi = fzero(f, [0, xi_max])  % xi = 0.4535 mol
+```
+
+The equilibrium extent is $\xi = 0.4535\ \mathrm{mol}$, or about 68 % of the way to complete
+conversion of the limiting reactant.
+
+Two things are worth noticing. Handing `fzero` a bracket rather than a single starting guess is
+what keeps the solver from wandering off to a root with no physical meaning — outside
+$[0, \xi\un{max}]$ the "solution" would have negative moles of some species. And the answer is
+mildly sensitive to rounding: collapsing $K\un{p}p^2$ to 25, as we did when clearing denominators
+above, shifts the root to 0.4530.
+:::
+::::
+
+Solving numerically on $[0, \xi\un{max}]$ gives $\xi = 0.4535\ \mathrm{mol}$.
 
 ### Multi-reaction example: methanol synthesis
-
-<!-- source: Stoichiometry.tex L276 -->
 
 For $M$ reactions we write one stoichiometric equation per reaction $j$,
 
@@ -421,8 +477,6 @@ on a numerical solution — in MATLAB, for example — to determine the equilibr
 known pair $K\un{p,1}$, $K\un{p,2}$.
 
 ## Summary
-
-<!-- source: Stoichiometry.tex L328 -->
 
 - A chemical reaction is encoded compactly as $0 = \sum_i \nu_i A_i$, with $\nu_i < 0$ for
   reactants and $\nu_i > 0$ for products. The unsigned counterparts are the stoichiometric numbers.
