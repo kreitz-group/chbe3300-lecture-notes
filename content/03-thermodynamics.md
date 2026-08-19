@@ -4,11 +4,6 @@ short_title: Thermodynamics
 label: ch-thermodynamics
 ---
 
-<!-- LaTeX source: Thermodynamics.tex -->
-<!-- Porting notes: mhchem is math-only here, so \ce{} in prose needs $...$; and \un{} expands to
-     _{\textrm{...}}, so species subscripts must be written _{\ce{N2}}, never \un{\ce{N2}}.
-     Nested directives need a longer outer fence (:::: around :::). -->
-
 :::{admonition} Learning objectives
 :class: tip
 After completing this chapter, you should be able to:
@@ -39,12 +34,12 @@ $$
 
 where $\ce{Fe2O3}$ is hematite. At the end of the 19th century a large number of these blast
 furnaces were constructed, and engineers had by then developed the measurement tools to record
-concentrations at various points along the length of the reactor. They measured a great deal of CO
-at the exhaust and concluded that the reactor needed to be improved so that more iron could be
-converted.
+concentrations at various points along the length of the reactor. They measured a great deal of
+unreacted CO at the exhaust and concluded that the reactor needed to be improved so that more of
+the ore could be converted.
 
 The engineers' approach was to make the reactor longer, improving the contacting time between gas
-and iron. They built furnaces taller and taller, some reaching more than 30 m. To their
+and ore. They built furnaces taller and taller, some reaching more than 30 m. To their
 disappointment, conversion did not improve.
 
 Le Châtelier was the first to recognize that this reaction is limited by thermodynamic equilibrium,
@@ -67,8 +62,6 @@ close to its thermodynamic limit, no improvement in catalyst or reactor design w
 raise conversion. Equilibrium is the ultimate ceiling on reactor performance.
 
 ## Equilibrium constant
-
-<!-- source: Thermodynamics.tex L41 -->
 
 Let us continue with the ammonia synthesis,
 
@@ -247,6 +240,56 @@ $$
 K\un{c} = K\un{p} \left(RT\right)^{-\sum_i \nu_i} .
 $$
 
+::::{admonition} Example 3.1 — Three constants, one equilibrium
+:class: note
+:label: ex-three-constants
+In [](#ch-stoichiometry) we used $K\un{p} = 1.397\ \mathrm{bar^{-2}}$ for ammonia synthesis at
+450 K without saying where the units came from. Report the same equilibrium as the dimensionless
+$K$ and as $K\un{c}$.
+
+:::{dropdown} Solution
+Everything follows from the sum of the stoichiometric coefficients. For
+$\ce{N2 + 3 H2 <=> 2 NH3}$,
+
+$$
+\sum_i \nu_i = 2 - 1 - 3 = -2 ,
+$$
+
+which is exactly why $K\un{p}$ carries $\mathrm{bar^{-2}}$: the pressure exponents fail to cancel
+by two.
+
+**The dimensionless constant.** Rearranging $K = (1/p^0)^{\sum_i \nu_i} K\un{p}$,
+
+$$
+K = \left(p^0\right)^{2} K\un{p}
+  = (1\ \mathrm{bar})^2 \times 1.397\ \mathrm{bar^{-2}}
+  = 1.397 .
+$$
+
+The number is unchanged and the units are gone. This is a coincidence of choosing
+$p^0 = 1\ \mathrm{bar}$ — numerically invisible, but conceptually the step that makes $K$ a proper
+dimensionless argument for $\ln$ in $\Delta\un{r}G^0 = -RT\ln K$.
+
+**The concentration constant.** With $\sum_i \nu_i = -2$ the conversion factor is $(RT)^{+2}$:
+
+```matlab
+Kp = 1.397;          % bar^-2
+R  = 0.08314;        % bar L /(mol K)   <- units chosen to match Kp
+T  = 450;            % K
+
+K  = Kp * 1^2                  % dimensionless, p0 = 1 bar
+Kc = Kp * (R*T)^2              % Kc = 1955 L^2/mol^2
+```
+
+so $K\un{c} = 1.96 \times 10^{3}\ \mathrm{L^2\,mol^{-2}}$.
+
+The three numbers — 1.397, 1.397, and 1955 — describe one and the same physical equilibrium. Only
+$K$ is dimensionless, and only $K$ belongs in $\exp(-\Delta\un{r}G^0/RT)$. Note also that $K\un{c}$
+is the one that changes if you quote it in $\mathrm{m^6\,mol^{-2}}$ instead
+($1.96\times10^{-3}$), which is a common source of factor-of-$10^6$ errors.
+:::
+::::
+
 The Gibbs free energy of reaction is derived from the enthalpy of reaction and the entropy of
 reaction. Alternatively it can be obtained directly from the Gibbs free energies of formation of
 the individual species:
@@ -265,9 +308,68 @@ list enthalpies of formation at standard pressure and the reference temperature 
 entropies, and $\Delta\un{r} G^0$ is reconstructed from the equations above. Determining accurate
 enthalpies of formation is harder than it sounds.
 
-## Temperature dependence of the equilibrium constant
+::::{admonition} Example 3.2 — From a data table to an equilibrium constant
+:class: note
+:label: ex-drg-from-tables
+Compute $\Delta\un{r} H^0$, $\Delta\un{r} S^0$, $\Delta\un{r} G^0$, and $K$ at
+$T\un{R} = 298.15\ \mathrm{K}$ for $\ce{N2 + 3 H2 <=> 2 NH3}$, using only tabulated formation
+properties.
 
-<!-- source: Thermodynamics.tex L189 -->
+| species | $\Delta\un{f} H^0$ (kJ mol⁻¹) | $S^0$ (J mol⁻¹ K⁻¹) |
+|:---|---:|---:|
+| $\ce{N2}$  | 0      | 191.61 |
+| $\ce{H2}$  | 0      | 130.68 |
+| $\ce{NH3}$ | −45.90 | 192.77 |
+
+:::{dropdown} Solution
+Both reaction properties are stoichiometry-weighted sums, with $\nu_i$ *signed*. The elements are
+in their reference states, so their enthalpies of formation are zero by definition — but their
+entropies are emphatically not.
+
+$$
+\begin{aligned}
+\Delta\un{r} H^0 &= 2(-45.90) - (0) - 3(0) = -91.80\ \mathrm{kJ\,mol^{-1}} , \\
+\Delta\un{r} S^0 &= 2(192.77) - 191.61 - 3(130.68) = -198.11\ \mathrm{J\,mol^{-1}\,K^{-1}} .
+\end{aligned}
+$$
+
+Both are negative, and that is the whole story of ammonia synthesis in two numbers: the reaction
+releases heat, but it converts four moles of gas into two, so it is strongly entropy-disfavored.
+Which term wins depends on temperature.
+
+At the reference temperature the enthalpy term still dominates:
+
+$$
+\Delta\un{r} G^0 = \Delta\un{r} H^0 - T\Delta\un{r} S^0
+= -91\,800 - 298.15\,(-198.11) = -32.73\ \mathrm{kJ\,mol^{-1}} .
+$$
+
+```matlab
+R  = 8.314;    TR = 298.15;                 % J/(mol K), K
+
+nu   = [-1, -3,  2];                        % N2, H2, NH3
+dfH  = [ 0,  0, -45.90e3];                  % J/mol
+S0   = [191.61, 130.68, 192.77];            % J/(mol K)
+
+drH = nu*dfH.';                             % -91.80 kJ/mol
+drS = nu*S0.';                              % -198.11 J/(mol K)
+drG = drH - TR*drS                          % -32.73 kJ/mol
+K   = exp(-drG/(R*TR))                      % K = 5.43e5
+```
+
+giving $K(298.15\ \mathrm{K}) = 5.43 \times 10^{5}$.
+
+Two checks worth making a habit. Tabulations that *do* list $\Delta\un{f} G^0$ give
+$-16.4\ \mathrm{kJ\,mol^{-1}}$ for $\ce{NH3}$, so $\Delta\un{r} G^0 = 2(-16.4) =
+-32.8\ \mathrm{kJ\,mol^{-1}}$ — agreement to better than a percent. And note how brutally the
+exponential amplifies: an error of $5\ \mathrm{kJ\,mol^{-1}}$ in $\Delta\un{r} G^0$, well within
+the spread between data sources, moves $K$ by a factor of $\exp(5000/RT) \approx 7.5$. This is why
+the remark above — that determining accurate enthalpies of formation is harder than it sounds —
+matters in practice.
+:::
+::::
+
+## Temperature dependence of the equilibrium constant
 
 Since enthalpies of formation, entropies, and Gibbs free energies of formation are tabulated only
 at the reference temperature of 298.15 K, we need to be able to calculate the enthalpy of formation
@@ -276,7 +378,7 @@ constant pressure, $c\un{p}$. As with the properties above, the heat capacity ch
 reaction is the stoichiometry-weighted sum over species,
 
 $$
-\Delta\un{r} c\un{p}(T) = \sum_i^N \nu_i\, c\un{p,i} .
+\Delta\un{r} c\un{p}(T) = \sum_{i=1}^{N\un{species}} \nu_i\, c\un{p,i} .
 $$
 
 Combined with the standard enthalpy of reaction $\Delta\un{r} H^0(T\un{R})$, the enthalpy of
@@ -291,7 +393,7 @@ Heat capacities are themselves temperature dependent. We will not go into their 
 derivation, which would take us too deep into physical chemistry. As engineers we simply rely on
 data carefully tabulated by others, often supplied as polynomials in temperature.
 
-The integral of the latent heats is usually much smaller in magnitude than
+The heat-capacity integral is usually much smaller in magnitude than
 $\Delta\un{r} H^0(T\un{R})$ itself. Chemical engineers therefore introduce approximations to
 $\Delta\un{r} c\un{p}(T)$ that make temperature-dependent enthalpies of reaction — and hence
 equilibrium constants — easier to determine. The first commonly used approximation is
@@ -303,8 +405,8 @@ $$
 in which case the enthalpy of reaction does not change with temperature:
 $\Delta\un{r} H^0(T) = \Delta\un{r} H^0(T\un{R})$.
 
-A slightly more accurate but still tractable approximation assumes a constant, temperature-
-independent $\Delta\un{r} c\un{p}$,
+A slightly more accurate but still tractable approximation assumes a constant,
+temperature-independent $\Delta\un{r} c\un{p}$,
 
 $$
 \Delta\un{r} c\un{p}(T) = \text{const} \qquad \text{(second Ulich approximation)} ,
@@ -392,9 +494,63 @@ $-\Delta\un{r} H^0/R$.
 Van't Hoff diagram for an endothermic and an exothermic reaction.
 :::
 
-## Summary
+::::{admonition} Example 3.3 — Shifting $K$ to reactor temperature, and what it costs
+:class: note
+Ammonia synthesis runs nowhere near 298 K. Starting from $K(298.15\ \mathrm{K}) = 5.43\times10^5$
+found in [Example 3.2](#ex-drg-from-tables), use the van't Hoff equation to obtain $K$ at 450 K,
+and compare with the $K\un{p} = 1.397\ \mathrm{bar^{-2}}$ that [](#ch-stoichiometry) asked you to
+take on trust.
 
-<!-- source: Thermodynamics.tex L267 -->
+:::{dropdown} Solution
+Apply [](#eq-vant-hoff-integrated) with $\Delta\un{r} H^0 = -91.80\ \mathrm{kJ\,mol^{-1}}$ held
+constant — the first Ulich approximation, which is this course's default:
+
+```matlab
+R = 8.314;    T1 = 298.15;    T2 = 450;      % J/(mol K), K, K
+
+K1  = 5.432e5;                                % from Example 3.2
+drH = -91.80e3;                               % J/mol, first Ulich: constant
+
+K2 = K1*exp(-drH/R*(1/T2 - 1/T1))             % K2 = 2.03
+```
+
+$K$ collapses from $5.4\times10^5$ to about **2.03** over 152 K. That is the exponential in
+[](#eq-vant-hoff) doing its work, and it is the central engineering tension of the Haber–Bosch
+process: the reaction is exothermic, so heating it to get a workable *rate* destroys the
+equilibrium *yield*. Everything about the industrial process — the pressure, the recycle loop, the
+catalyst — is a response to that conflict.
+
+**Now the comparison.** Chapter 2 quoted $K\un{p} = 1.397\ \mathrm{bar^{-2}}$, equivalently
+$K = 1.397$ from [Example 3.1](#ex-three-constants). We obtained 2.03 — high by 45 %. The
+approximation is what failed, not the arithmetic. Recall $\Delta\un{r} c\un{p} \approx
+-45.5\ \mathrm{J\,mol^{-1}\,K^{-1}}$ for this reaction, which is not negligible over 152 K. Redoing
+it with the second Ulich approximation, $\Delta\un{r}c\un{p} = \text{const}$, so that
+
+$$
+\Delta\un{r} H^0(T_2) = \Delta\un{r} H^0(T\un{R}) + \Delta\un{r} c\un{p}(T_2 - T\un{R}) ,
+\qquad
+\Delta\un{r} S^0(T_2) = \Delta\un{r} S^0(T\un{R}) + \Delta\un{r} c\un{p} \ln\frac{T_2}{T\un{R}} ,
+$$
+
+gives $\Delta\un{r}G^0(450) = -1.13\ \mathrm{kJ\,mol^{-1}}$ and $K = 1.35$ — now within 4 % of the
+quoted value. The residual gap is the temperature dependence of $\Delta\un{r} c\un{p}$ itself,
+which the full polynomial treatment captures and which yields the 1.397 used in chapter 2.
+
+So the three levels of approximation introduced above land at
+
+| treatment | $K(450\ \mathrm{K})$ | error |
+|:---|---:|---:|
+| first Ulich, $\Delta\un{r}c\un{p} = 0$ | 2.03 | +45 % |
+| second Ulich, $\Delta\un{r}c\un{p} = \text{const}$ | 1.35 | −3 % |
+| full $\Delta\un{r}c\un{p}(T)$ polynomial | 1.397 | — |
+
+The lesson is not that the first Ulich approximation is bad — it got the collapse from $10^5$ to
+order unity, which is the engineering conclusion — but that you should know its accuracy before
+quoting a conversion to three digits.
+:::
+::::
+
+## Summary
 
 - At constant $T$ and $p$, equilibrium is fixed by $\sum_i \nu_i \mu_i = 0$. Substituting
   $\mu_i = \mu_i^0 + RT\ln a_i$ yields the dimensionless equilibrium constant
