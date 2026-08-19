@@ -4,12 +4,6 @@ short_title: Mass balances
 label: ch-mass-balances
 ---
 
-<!-- LaTeX source: MassBalance.tex -->
-<!-- Porting notes: mhchem is math-only here, so \ce{} in prose needs $...$; and \un{} expands to
-     _{\textrm{...}}, so species subscripts must be written _{\ce{N2}}, never \un{\ce{N2}}.
-     Nested directives need a longer outer fence (:::: around :::).
-     Figure alt text is taken verbatim from the \includegraphics[alt={...}] in the LaTeX source. -->
-
 :::{admonition} Learning objectives
 :class: tip
 After completing this chapter, you should be able to:
@@ -33,8 +27,6 @@ ourselves to isothermal processes throughout. Mass balances are the foundation f
 follows in reaction kinetics.
 
 ## Types of systems
-
-<!-- source: MassBalance.tex L18 -->
 
 :::{admonition} Discussion
 :class: seealso
@@ -83,8 +75,6 @@ where $z$ stands for any extensive quantity — mass $m$, molar amount $n$, or e
 instance — and the dotted symbols denote the corresponding flow and production rates.
 
 ## Material balances
-
-<!-- source: MassBalance.tex L68 -->
 
 To develop the mass balance of a reactor, consider a species $A_i$ inside a fixed region of space,
 the **control volume**, bounded by the system boundary. The species can cross the boundary on entry
@@ -144,7 +134,7 @@ $$
 $$ (eq-mole-species)
 
 You can of course convert one balance into the other using $m_i = n_i M_i$, where $M_i$ is the
-molecular mass of species $i$. **We will typically work with the mole balance in this course.**
+molar mass of species $i$. **We will typically work with the mole balance in this course.**
 
 The production or generation term is of particular importance to us, because it is where the
 chemical reactions enter. Its general definition for a species $i$ in a volume, assuming a single
@@ -186,8 +176,6 @@ $$
 $$
 
 ## Material balance of the batch reactor
-
-<!-- source: MassBalance.tex L171 -->
 
 There are three general reactor types, classified by their mode of operation and type of mixing:
 the **batch reactor**, the **continuously stirred tank reactor (CSTR)**, and the **plug-flow
@@ -238,7 +226,8 @@ $$
 \frac{\mathrm{d}c_i}{\mathrm{d}t} = \sum_j \nu_{ij} r_j .
 $$ (eq-batch-c-multi)
 
-This collection of $S$ component balances is written compactly in matrix form as
+This collection of component balances — one for each of the $S$ species, coupled through the $M$
+reactions — is written compactly in matrix form as
 
 $$
 \frac{\mathrm{d}\vect{c}}{\mathrm{d}t} = \mtrx{N}\, \vect{r} ,
@@ -283,8 +272,6 @@ incomplete mixing and through temperature gradients driven by reaction enthalpy;
 ignore both effects.
 
 ## Summary
-
-<!-- source: MassBalance.tex L242 -->
 
 - Systems are classified as *open* (mass and energy can cross the boundary), *closed* (only energy
   crosses), or *isolated* (neither crosses). Real chemical reactors are typically open or closed.
