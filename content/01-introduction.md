@@ -81,21 +81,23 @@ Two points about the notes themselves are worth stating here:
 
 The material is organized in four parts, each building on the one before.
 
-**Reaction stoichiometry and thermodynamics.** The bookkeeping that every reacting system obeys:
-how to encode a reaction mathematically, how to describe a mixture, and how to track its
-composition as the reaction proceeds ([](#ch-stoichiometry)). Then the thermodynamic limits —
+**Stoichiometry, thermodynamics, and reactor balances.** The bookkeeping that every reacting
+system obeys: how to encode a reaction mathematically, how to describe a mixture, and how to track
+its composition as the reaction proceeds ([](#ch-stoichiometry)). Then the thermodynamic limits —
 what equilibrium permits, and how it shifts with temperature and pressure
-([](#ch-thermodynamics)).
+([](#ch-thermodynamics)). Then the mass balances for the ideal reactor types
+([](#ch-mass-balances)), the equations into which every rate law that follows is substituted.
 
-**Reactor balances and rate laws.** Mass balances for the ideal reactor types
-([](#ch-mass-balances)), the rate laws that go into them ([](#ch-reaction-kinetics)), what changes
-when several reactions run at once ([](#ch-multiple-reactions)), and how rate laws are extracted
-from experimental data in the first place ([](#ch-experiments)).
+<!-- The links into chapters 5-11 are removed while those chapters are withheld from the site;
+     restore them as each chapter is released. See the toc in myst.yml. -->
+
+**Rate laws and kinetics.** Where a rate law comes from and how to integrate it in a batch reactor,
+what changes when several reactions run at once, and how rate laws are extracted from experimental
+data in the first place.
 
 **Molecular basis of reaction rates.** Where a rate constant comes from — collisions, energy
-barriers, and transition states ([](#ch-microscopic)) — and how elementary steps assemble into the
-mechanisms behind observed global rate laws ([](#ch-mechanisms)).
+barriers, and transition states — and how elementary steps assemble into the mechanisms behind
+observed global rate laws.
 
 **Catalysis.** How a solid catalyst changes a reaction and how to write rate laws for catalytic
-cycles ([](#ch-hetcat)), and how nature solves the same problem with enzymes
-([](#ch-biocatalysis)).
+cycles, and how nature solves the same problem with enzymes.

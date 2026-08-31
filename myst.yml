@@ -64,27 +64,34 @@ project:
     - file: content/01-introduction.md
     - file: content/02-stoichiometry.md
     - file: content/03-thermodynamics.md
+    - file: content/04-mass-balances.md
 
-    - title: Reactor balances and rate laws
-      children:
-        - file: content/04-mass-balances.md
-        - file: content/05-reaction-kinetics.md
-        - file: content/06-multiple-reactions.md
-        - file: content/07-experimental-kinetics.md
-
-    - title: Molecular basis of reaction rates
-      children:
-        - file: content/08-microscopic.md
-        - file: content/09-mechanisms.md
-
-    - title: Catalysis
-      children:
-        - file: content/10-heterogeneous-catalysis.md
-        - file: content/11-biocatalysis.md
-
-    - title: Back matter
-      children:
-        - file: content/references.md
+    # Chapters 5-11 are withheld from the published site until they have had
+    # the same cleanup pass as 1-4. Uncomment a chapter to release it, and
+    # restore its cross-references in the ch. 1 roadmap at the same time
+    # ("What this course covers"). References comes back with the first
+    # chapter that actually cites something -- 1-4 cite nothing, so the
+    # bibliography would render empty.
+    #
+    # - title: Rate laws and kinetics
+    #   children:
+    #     - file: content/05-reaction-kinetics.md
+    #     - file: content/06-multiple-reactions.md
+    #     - file: content/07-experimental-kinetics.md
+    #
+    # - title: Molecular basis of reaction rates
+    #   children:
+    #     - file: content/08-microscopic.md
+    #     - file: content/09-mechanisms.md
+    #
+    # - title: Catalysis
+    #   children:
+    #     - file: content/10-heterogeneous-catalysis.md
+    #     - file: content/11-biocatalysis.md
+    #
+    # - title: Back matter
+    #   children:
+    #     - file: content/references.md
 
 site:
   template: book-theme
