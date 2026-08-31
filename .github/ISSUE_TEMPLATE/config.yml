@@ -1,0 +1,10 @@
+# Students should not open blank issues; the form above collects what is
+# actually needed to locate a problem in the notes.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Course questions (homework, exams, logistics)
+    url: https://gatech.instructure.com/courses/528900/discussion_topics
+    about: >-
+      Anything that is not an error in the lecture notes belongs on the Canvas
+      discussion board, where the whole class can see the answer.

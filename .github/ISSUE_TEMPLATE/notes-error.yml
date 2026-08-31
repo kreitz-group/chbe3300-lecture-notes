@@ -1,0 +1,87 @@
+# Issue form for students reporting problems in the lecture notes.
+#
+# The chapter dropdown lists only the chapters currently published on the
+# site. When a chapter is released (see the toc in myst.yml), add it here
+# too, otherwise students have no way to report against it.
+
+name: Report a problem in the notes
+description: Something in the lecture notes is wrong, unclear, or broken.
+title: "[Ch. ?] "
+labels: ["notes"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the notes — finding errors is genuinely useful,
+        and corrections make the notes better for everyone in the class.
+
+        For questions about homework, exams, or course logistics, please use the
+        Canvas discussion board instead. This tracker is only for the notes themselves.
+
+  - type: dropdown
+    id: chapter
+    attributes:
+      label: Which chapter?
+      options:
+        - "Homepage"
+        - "1 — Introduction"
+        - "2 — Stoichiometry and Definitions"
+        - "3 — Chemical Thermodynamics"
+        - "4 — Mass Balance of Chemical Reactors"
+        - "Not sure / somewhere else"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem is it?
+      options:
+        - "Math or numerical error — an equation or a number looks wrong"
+        - "Typo or wording"
+        - "Figure — wrong, unreadable, or doesn't match the text"
+        - "Explanation is unclear or a step is missing"
+        - "Site problem — broken link, page won't load, math not rendering"
+        - "Something else"
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Where exactly?
+      description: >-
+        The numbered section, equation, or figure is the most useful thing you can
+        give us — every one of them is numbered on the page.
+      placeholder: "e.g. section 2.3, equation (2.7), or figure 3.1"
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Page address
+      description: Copy the address out of your browser's address bar.
+      placeholder: "https://kreitz.chbe.gatech.edu/chbe3300-lecture-notes/stoichiometry"
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong?
+      description: >-
+        Quote the sentence or equation as it currently reads, then say what looks
+        wrong about it. If a number doesn't come out, show what you got.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+      description: >-
+        Optional. If you think you know the correction, put it here — but a report
+        without one is still worth filing.
+    validations:
+      required: false
