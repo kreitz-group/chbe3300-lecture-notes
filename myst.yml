@@ -102,3 +102,5 @@ site:
   actions:
     - title: LaTeX notes (PDF)
       url: https://github.com/kreitz-group/chbe3300-lecture-notes
+    - title: Report an issue
+      url: https://github.com/kreitz-group/chbe3300-lecture-notes/issues/new
