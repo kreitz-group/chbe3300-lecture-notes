@@ -73,11 +73,11 @@ project:
     # chapter that actually cites something -- 1-4 cite nothing, so the
     # bibliography would render empty.
     #
-    # - title: Rate laws and kinetics
-    #   children:
-    #     - file: content/05-reaction-kinetics.md
-    #     - file: content/06-multiple-reactions.md
-    #     - file: content/07-experimental-kinetics.md
+    - title: Rate laws and kinetics
+      children:
+        - file: content/05-reaction-kinetics.md
+        #- file: content/06-multiple-reactions.md
+        #- file: content/07-experimental-kinetics.md
     #
     # - title: Molecular basis of reaction rates
     #   children:

@@ -356,10 +356,10 @@ $$ (eq-mass-action)
 This approach is called **mass action kinetics**. As noted, it typically does not work for global
 or lumped reactions, but it does work for elementary reactions.
 
+<!-- 
 ## Integrated rate laws
 
-<!-- source: ReactionKinetics.tex L287 -->
-
+source: ReactionKinetics.tex L287
 Reaction rate laws can be rather complex functions and frequently have to be determined from
 experiments. For some simple kinetics, however, we can find an analytical solution to the material
 balance of the batch reactor. Such a solution gives the temporal concentration profile, and we can
@@ -367,8 +367,7 @@ use it to design batch reactors. We will look at a few rate laws, starting with 
 
 ### Irreversible, first-order reaction
 
-<!-- source: ReactionKinetics.tex L297 -->
-
+source: ReactionKinetics.tex L297
 We assume an irreversible reaction in a batch reactor,
 
 $$
@@ -574,8 +573,7 @@ half of it. You will work with this quantity in the homework assignment.
 
 ### Irreversible, zero-order reaction
 
-<!-- source: ReactionKinetics.tex L366 -->
-
+source: ReactionKinetics.tex L366
 There are of course many other reaction orders, and we give two more examples. The first is a
 zero-order rate law.
 
@@ -624,8 +622,7 @@ $$ (eq-zero-order-tend)
 
 ### Irreversible, second-order reaction
 
-<!-- source: ReactionKinetics.tex L397 -->
-
+source: ReactionKinetics.tex L397
 The last example we discuss is second-order reactions, of which there are two types. Consider
 
 $$
@@ -686,8 +683,7 @@ to plug numbers into the material balances we have derived.
 
 ### Dimensionless equations
 
-<!-- source: ReactionKinetics.tex L440 -->
-
+source: ReactionKinetics.tex L440
 You can already see that there are many rate laws out there, each with very different rate
 constants. That makes it difficult to compare different reaction orders, starting concentrations,
 and rate constants, since they carry different units. This is why the chemical engineering
@@ -767,8 +763,7 @@ of irreversible reactions.
 
 ### Second-order irreversible reactions, first order in both reactants
 
-<!-- source: ReactionKinetics.tex L511 -->
-
+source: ReactionKinetics.tex L511
 For Case II the solution of the material balance is more complicated. Formulate the mass balances
 for the two reactants:
 
@@ -876,8 +871,7 @@ The full step-by-step derivation is uploaded to Canvas; you can also try integra
 
 ## Interlude: solving ordinary differential equations numerically
 
-<!-- source: ReactionKinetics.tex L581 -->
-
+source: ReactionKinetics.tex L581
 There are other rate laws for which we can find analytical solutions. In most cases, however, we
 have to rely on numerical methods to solve our material balances — especially for more complex
 systems with multiple reactions. Luckily there is a wide range of numerical tools available, and
@@ -952,8 +946,7 @@ $$
 (sec-reversible-first-order)=
 ## Reversible, first-order reaction
 
-<!-- source: ReactionKinetics.tex L634 -->
-
+source: ReactionKinetics.tex L634
 So far we have only looked at irreversible reactions. Basically all reactions, however, are
 equilibrium reactions; in some cases the equilibrium simply lies so far to one side that we can
 treat the reaction as irreversible. For reversible reactions it is also possible to derive an
@@ -1101,8 +1094,7 @@ reversible.**
 
 ## Summary
 
-<!-- source: ReactionKinetics.tex L738 -->
-
+source: ReactionKinetics.tex L738
 - The rate of reaction $r = (1/V)\,\mathrm{d}\xi/\mathrm{d}t$ is intensive and species-independent;
   the species production rate is $r_i = \nu_i r$, [](#eq-ri-nui-r).
 - Boudart's five rules: (1) the rate decreases monotonically with extent of reaction, autocatalytic
@@ -1126,3 +1118,5 @@ reversible.**
   $c\un{B,eq}/c\un{A,eq} = k\un{fwd}/k\un{rev} = K$, [](#eq-k-from-kratios); for general mass action
   kinetics, $k\un{fwd}/k\un{rev} = K\un{c}$, [](#eq-kc-from-kratios). Kinetics and thermodynamics
   are linked through the rate-constant ratio.
+ -->
+
