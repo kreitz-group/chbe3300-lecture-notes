@@ -1188,7 +1188,7 @@ Da_I = \frac{r_0 t}{c\un{1,0}} = c\un{1,0}^{\,n-1} k t ,
 \qquad\text{with}\qquad r_0 = k\, c\un{1,0}^{\,n} .
 $$ (eq-damkohler)
 
-The reaction time is $t$, and the time constant of the reaction is $c\un{1,0}/r_0$ — the time it
+The reaction time in a batch reactor is $t$, and the time constant of the reaction is $c\un{1,0}/r_0$ — the time it
 would take to consume all of the limiting reactant if the rate stayed at its initial value. The
 useful thing is that $Da_I$ describes the extent of reaction independently of the details of the
 kinetics. Looking at the expression above, the right-hand side contains $Da_I = kt$ for a
