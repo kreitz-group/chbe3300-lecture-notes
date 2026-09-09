@@ -554,7 +554,7 @@ hold off
 
 :::{tip} Check yourself
 At $T = 380$ K the script should give $k = 5.65\times10^{-3}\ \mathrm{s^{-1}}$ and a half-life of
-about 123 s. Reproduce those numbers before trusting anything else the script tells you.
+about 123 s. Try to reproduce those numbers.
 :::
 
 A useful quantity is the **half-life** of the reactant, the time at which half of the initial
@@ -574,7 +574,8 @@ half of it. You will work with this quantity in the homework assignment.
 
 ### Irreversible, zero-order reaction
 
-source: ReactionKinetics.tex L366
+<!-- source: ReactionKinetics.tex L366 -->
+
 There are of course many other reaction orders, and we give two more examples. The first is a
 zero-order rate law.
 
@@ -621,9 +622,132 @@ $$
 t\un{end} = \frac{c\un{A,0}}{k} .
 $$ (eq-zero-order-tend)
 
+This is worth dwelling on, because it breaks the pattern we established for first order. Setting
+$c\un{A} = c\un{A,0}/2$ in [](#eq-zero-order-solution) gives the half-life
+
+$$
+\frac{c\un{A,0}}{2} = c\un{A,0} - k\, t_{1/2}
+\quad \Rightarrow \quad
+t_{1/2} = \frac{c\un{A,0}}{2k} = \frac{t\un{end}}{2} ,
+$$ (eq-half-life-zero-order)
+
+which *does* depend on the initial concentration — twice as much reactant takes twice as long to
+half-consume. Compare that with [](#eq-half-life-first-order), where $c\un{A,0}$ cancelled out
+entirely. Note also that [](#eq-zero-order-solution) only holds while there is reactant left: past
+$t\un{end}$ it predicts negative concentrations, so any implementation has to clamp it at zero.
+
+:::{admonition} Live example
+:class: seealso
+Drag the initial concentration and watch what a zero-order reaction does that a first-order one
+never does: it hits the axis, at a time you can predict exactly.
+:::
+
+```{marimo} python
+cA0_zero = mo.ui.slider(
+    start=0.5,
+    stop=2.0,
+    step=0.1,
+    value=1.0,
+    label="Initial concentration cA0 (mol/m^3)",
+    show_value=True,
+)
+cA0_zero
+```
+
+```{marimo} python
+k_zero = 0.02  # mol/(m^3 s), zero-order rate constant
+
+t_zero = np.linspace(0, 150, 400)
+# Clamp at zero: the analytical line would go negative past t_end.
+cA_zero = np.maximum(cA0_zero.value - k_zero * t_zero, 0.0)
+
+t_end_zero = cA0_zero.value / k_zero
+t_half_zero = cA0_zero.value / (2 * k_zero)
+
+mo.md(
+    f"With $c_{{A,0}} = {cA0_zero.value:.1f}\\ \\mathrm{{mol\\,m^{{-3}}}}$ and "
+    f"$k = {k_zero}\\ \\mathrm{{mol\\,m^{{-3}}\\,s^{{-1}}}}$, the reactor runs dry at "
+    f"$t_\\mathrm{{end}} = {t_end_zero:.0f}\\ \\mathrm{{s}}$, with "
+    f"$t_{{1/2}} = {t_half_zero:.0f}\\ \\mathrm{{s}}$ — exactly half of it."
+)
+```
+
+```{marimo} python
+fig_zero, ax_zero = plt.subplots(figsize=(5.5, 3.9))
+
+ax_zero.plot(t_zero, cA_zero, lw=2.0, color="#2a78d6")
+ax_zero.axvline(t_end_zero, ls=":", lw=1.4, color="0.45")
+ax_zero.annotate(
+    r"$t_\mathrm{end}$",
+    xy=(t_end_zero, 2.0),
+    xytext=(-6, 0),
+    textcoords="offset points",
+    ha="right",
+    va="top",
+    fontsize=13,
+    color="0.3",
+)
+
+ax_zero.set_xlim(0, 150)
+ax_zero.set_ylim(0, 2.1)
+ax_zero.set_xlabel("time (s)", fontsize=13)
+ax_zero.set_ylabel(r"$c_\mathrm{A}$ (mol m$^{-3}$)", fontsize=13)
+ax_zero.tick_params(labelsize=12, width=1.2, length=5)
+for sp_zero in ax_zero.spines.values():
+    sp_zero.set_linewidth(1.2)
+
+fig_zero.tight_layout()
+fig_zero
+```
+
+The axes are deliberately held fixed, so that raising $c\un{A,0}$ visibly pushes $t\un{end}$ to the
+right rather than rescaling the picture. In MATLAB:
+
+```matlab
+cA0 = 1;      % mol/m^3 -- change this to move along the slider
+k   = 0.02;   % mol/(m^3 s), zero-order rate constant
+
+t_end  = cA0/k;        % s, all of A consumed
+t_half = cA0/(2*k);    % s, half-life
+
+time = linspace(0, 150, 400);
+
+% max(...,0) clamps the line: past t_end the solution is not valid
+cA = max(cA0 - k*time, 0);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(time, cA, 'LineWidth', 2.0, 'Color', [0.165 0.471 0.839])
+xline(t_end, ':', 'LineWidth', 1.4, 'Color', [0.45 0.45 0.45])
+
+xlim([0 150])
+ylim([0 2.1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$c_\mathrm{A}\ \left(\mathrm{mol\,m^{-3}}\right)$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+At $c\un{A,0} = 1\ \mathrm{mol\,m^{-3}}$ you should get $t\un{end} = 50$ s and
+$t_{1/2} = 25$ s. Now double the initial concentration: both double. Do the same experiment on the
+first-order script above and the half-life will not budge.
+:::
+
 ### Irreversible, second-order reaction
 
-source: ReactionKinetics.tex L397
+<!-- source: ReactionKinetics.tex L397 -->
+
 The last example we discuss is second-order reactions, of which there are two types. Consider
 
 $$
@@ -678,10 +802,347 @@ c\un{A} &= \frac{c\un{A,0}}{1 + k t\, c\un{A,0}} .
 \end{aligned}
 $$ (eq-second-order-casei)
 
-The solution generalizes to an $n$-th order reaction, $r = k c\un{A}^n$; you can find the
-derivation and result in the Hill & Root textbook. Before moving to Case II, let us take some time
-to plug numbers into the material balances we have derived.
+The half-life follows the same way, and lands in the third possible place:
 
+$$
+\frac{1}{2} = \frac{1}{1 + k\, t_{1/2}\, c\un{A,0}}
+\quad \Rightarrow \quad
+t_{1/2} = \frac{1}{k\, c\un{A,0}} .
+$$ (eq-half-life-second-order)
+
+So we now have three different answers to the same question. The first-order half-life does not
+depend on $c\un{A,0}$ at all, the zero-order half-life is *proportional* to it, and the second-order
+half-life is *inversely* proportional to it — a more concentrated feed loses its first half faster.
+The tail behaves differently too: [](#eq-second-order-casei) decays like $1/t$, so unlike the
+zero-order case the reaction never actually finishes, and unlike the first-order case it lingers far
+longer than an exponential would.
+
+:::{admonition} Live example
+:class: seealso
+Same slider, same rate-constant *number* as the zero-order example — but watch the shape of the
+tail, and watch the half-life move in the opposite direction.
+:::
+
+```{marimo} python
+cA0_sec = mo.ui.slider(
+    start=0.5,
+    stop=2.0,
+    step=0.1,
+    value=1.0,
+    label="Initial concentration cA0 (mol/m^3)",
+    show_value=True,
+)
+cA0_sec
+```
+
+```{marimo} python
+k_sec = 0.02  # m^3/(mol s), second-order rate constant
+
+t_sec = np.linspace(0, 150, 400)
+cA_sec = cA0_sec.value / (1 + k_sec * cA0_sec.value * t_sec)
+
+t_half_sec = 1 / (k_sec * cA0_sec.value)
+f_end_sec = 1 / (1 + k_sec * cA0_sec.value * 150)
+
+mo.md(
+    f"With $c_{{A,0}} = {cA0_sec.value:.1f}\\ \\mathrm{{mol\\,m^{{-3}}}}$ and "
+    f"$k = {k_sec}\\ \\mathrm{{m^3\\,mol^{{-1}}\\,s^{{-1}}}}$: "
+    f"$t_{{1/2}} = {t_half_sec:.0f}\\ \\mathrm{{s}}$, and after 150 s there is still "
+    f"${100 * f_end_sec:.0f}\\%$ of A left."
+)
+```
+
+```{marimo} python
+fig_sec, ax_sec = plt.subplots(figsize=(5.5, 3.9))
+
+ax_sec.plot(t_sec, cA_sec, lw=2.0, color="#eb6834")
+ax_sec.axvline(t_half_sec, ls=":", lw=1.4, color="0.45")
+ax_sec.annotate(
+    r"$t_{1/2}$",
+    xy=(t_half_sec, 2.0),
+    xytext=(6, 0),
+    textcoords="offset points",
+    ha="left",
+    va="top",
+    fontsize=13,
+    color="0.3",
+)
+
+ax_sec.set_xlim(0, 150)
+ax_sec.set_ylim(0, 2.1)
+ax_sec.set_xlabel("time (s)", fontsize=13)
+ax_sec.set_ylabel(r"$c_\mathrm{A}$ (mol m$^{-3}$)", fontsize=13)
+ax_sec.tick_params(labelsize=12, width=1.2, length=5)
+for sp_sec in ax_sec.spines.values():
+    sp_sec.set_linewidth(1.2)
+
+fig_sec.tight_layout()
+fig_sec
+```
+
+In MATLAB:
+
+```matlab
+cA0 = 1;      % mol/m^3 -- change this to move along the slider
+k   = 0.02;   % m^3/(mol s), second-order rate constant
+
+t_half = 1/(k*cA0);   % s, half-life
+
+time = linspace(0, 150, 400);
+
+cA = cA0./(1 + k*cA0*time);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(time, cA, 'LineWidth', 2.0, 'Color', [0.922 0.408 0.204])
+xline(t_half, ':', 'LineWidth', 1.4, 'Color', [0.45 0.45 0.45])
+
+xlim([0 150])
+ylim([0 2.1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$c_\mathrm{A}\ \left(\mathrm{mol\,m^{-3}}\right)$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+At $c\un{A,0} = 1\ \mathrm{mol\,m^{-3}}$ you should get $t_{1/2} = 50$ s and 25% of A remaining at
+150 s. The first-order script with $k = 0.02\ \mathrm{s^{-1}}$ leaves only 5% at that point,
+despite the rate constants reading as the same number. Hold on to that discrepancy — it is the
+subject of the next two sections.
+:::
+
+The solution generalizes to an $n$-th order reaction, $r = k c\un{A}^n$; you can find the
+derivation and result in the Hill & Root textbook. Before moving to Case II, let us put the three
+rate laws we now have side by side, because comparing them turns out to be harder than it looks.
+
+### Three orders, three rate constants
+
+Give all three rate laws the same initial concentration and — deliberately — the same *numerical*
+rate constant:
+
+| Order | Rate law | $k$ | Units of $k$ |
+|:--|:--|:--|:--|
+| zero | $r = k$ | $0.02$ | $\mathrm{mol\,m^{-3}\,s^{-1}}$ |
+| first | $r = k\, c\un{A}$ | $0.02$ | $\mathrm{s^{-1}}$ |
+| second | $r = k\, c\un{A}^2$ | $0.02$ | $\mathrm{m^3\,mol^{-1}\,s^{-1}}$ |
+
+:::{admonition} Discussion
+:class: seealso
+All three rate constants read $0.02$. Which of these three reactions is the fastest?
+:::
+
+The question has no answer as posed, and that is the point. The three rate constants are not three
+values of one quantity — they are three *different quantities* that happen to share a number. You
+cannot rank them, because $\mathrm{s^{-1}}$ and $\mathrm{m^3\,mol^{-1}\,s^{-1}}$ are not comparable,
+any more than a speed and an acceleration are. Worse, the ranking that *does* exist is not even
+fixed: it depends on $c\un{A,0}$, which appears in two of the three half-lives and with opposite
+signs of influence.
+
+The left panel below shows this mess directly. Drag either slider and all three curves move, each in
+its own way — the zero-order line slides its intercept, the first-order curve rescales without
+changing shape, and the second-order curve changes shape entirely.
+
+The right panel shows the same three reactions after we stop measuring time in seconds and start
+measuring it in units natural to each rate law: $kt$ for first order, $kt/c\un{A,0}$ for zero order,
+and $k c\un{A,0} t$ for second order. In each case this is the combination of $k$, $c\un{A,0}$ and
+$t$ that comes out as a pure number — for first order it is the argument of the exponential, and for
+the other two it is the group that multiplies time in the solution.
+
+:::{admonition} Live example
+:class: seealso
+Drag both sliders and watch the two panels. The left one never settles. **The right one does not
+move at all.**
+:::
+
+```{marimo} python
+cmp_cA0 = mo.ui.slider(
+    start=0.5,
+    stop=2.0,
+    step=0.1,
+    value=1.0,
+    label="Initial concentration cA0 (mol/m^3)",
+    show_value=True,
+)
+cmp_kfac = mo.ui.slider(
+    start=0.5,
+    stop=2.0,
+    step=0.1,
+    value=1.0,
+    label="Rate constants, multiple of 0.02",
+    show_value=True,
+)
+mo.vstack([cmp_cA0, cmp_kfac])
+```
+
+```{marimo} python
+# One number, three different quantities. The units are what distinguish them.
+cmp_k0 = 0.02 * cmp_kfac.value  # mol/(m^3 s)
+cmp_k1 = 0.02 * cmp_kfac.value  # 1/s
+cmp_k2 = 0.02 * cmp_kfac.value  # m^3/(mol s)
+
+# --- left panel: concentration against time, in seconds -------------------
+cmp_t = np.linspace(0, 150, 400)
+cmp_c_zero = np.maximum(cmp_cA0.value - cmp_k0 * cmp_t, 0.0)
+cmp_c_first = cmp_cA0.value * np.exp(-cmp_k1 * cmp_t)
+cmp_c_second = cmp_cA0.value / (1 + cmp_k2 * cmp_cA0.value * cmp_t)
+
+# --- right panel: remaining fraction against the dimensionless clock ------
+# Note what is absent here: neither slider appears. That is the whole point.
+cmp_Da = np.linspace(0, 2, 400)
+cmp_f_zero = np.maximum(1 - cmp_Da, 0.0)
+cmp_f_first = np.exp(-cmp_Da)
+cmp_f_second = 1 / (1 + cmp_Da)
+
+mo.md(
+    f"Half-lives at $c_{{A,0}} = {cmp_cA0.value:.1f}\\ \\mathrm{{mol\\,m^{{-3}}}}$: "
+    f"zero order ${cmp_cA0.value / (2 * cmp_k0):.0f}\\ \\mathrm{{s}}$, "
+    f"first order ${np.log(2) / cmp_k1:.0f}\\ \\mathrm{{s}}$, "
+    f"second order ${1 / (cmp_k2 * cmp_cA0.value):.0f}\\ \\mathrm{{s}}$. "
+    f"On the dimensionless clock they are always $0.5$, $\\ln 2 = 0.693$ and $1$ — "
+    f"whatever the sliders say."
+)
+```
+
+```{marimo} python
+cmp_fig, (cmp_ax_t, cmp_ax_nd) = plt.subplots(1, 2, figsize=(9.6, 3.9))
+
+cmp_colors = ["#2a78d6", "#eb6834", "#1baf7a"]
+
+cmp_ax_t.plot(cmp_t, cmp_c_zero, lw=2.0, color=cmp_colors[0], label="zero order")
+cmp_ax_t.plot(cmp_t, cmp_c_first, lw=2.0, color=cmp_colors[1], label="first order")
+cmp_ax_t.plot(cmp_t, cmp_c_second, lw=2.0, color=cmp_colors[2], label="second order")
+cmp_ax_t.set_xlim(0, 150)
+cmp_ax_t.set_ylim(0, 2.1)
+cmp_ax_t.set_xlabel("time (s)", fontsize=13)
+cmp_ax_t.set_ylabel(r"$c_\mathrm{A}$ (mol m$^{-3}$)", fontsize=13)
+cmp_ax_t.set_title("dimensional", fontsize=13, color="0.3")
+cmp_ax_t.legend(loc="upper right", fontsize=11, frameon=False)
+
+cmp_ax_nd.plot(cmp_Da, cmp_f_zero, lw=2.0, color=cmp_colors[0])
+cmp_ax_nd.plot(cmp_Da, cmp_f_first, lw=2.0, color=cmp_colors[1])
+cmp_ax_nd.plot(cmp_Da, cmp_f_second, lw=2.0, color=cmp_colors[2])
+cmp_ax_nd.set_xlim(0, 2)
+cmp_ax_nd.set_ylim(0, 1.02)
+cmp_ax_nd.set_xlabel("dimensionless time (1)", fontsize=13)
+cmp_ax_nd.set_ylabel(r"$f = c_\mathrm{A}/c_\mathrm{A,0}$ (1)", fontsize=13)
+cmp_ax_nd.set_title("dimensionless", fontsize=13, color="0.3")
+
+# Direct labels, so identity is never carried by colour alone.
+for cmp_txt, cmp_xy, cmp_col in [
+    ("zero", (0.80, 0.24), cmp_colors[0]),
+    ("first", (1.95, 0.14), cmp_colors[1]),
+    ("second", (1.95, 0.36), cmp_colors[2]),
+]:
+    cmp_ax_nd.annotate(
+        cmp_txt,
+        xy=cmp_xy,
+        ha="right" if cmp_xy[0] > 1.5 else "left",
+        va="bottom",
+        fontsize=12,
+        color=cmp_col,
+    )
+
+for cmp_ax in (cmp_ax_t, cmp_ax_nd):
+    cmp_ax.tick_params(labelsize=12, width=1.2, length=5)
+    for cmp_sp in cmp_ax.spines.values():
+        cmp_sp.set_linewidth(1.2)
+
+cmp_fig.tight_layout()
+cmp_fig
+```
+
+The same comparison in MATLAB:
+
+```matlab
+cA0  = 1;     % mol/m^3   -- change these two to move along the sliders
+kfac = 1;     % (1)
+
+k0 = 0.02*kfac;   % mol/(m^3 s)
+k1 = 0.02*kfac;   % 1/s
+k2 = 0.02*kfac;   % m^3/(mol s)
+
+time = linspace(0, 150, 400);
+Da   = linspace(0, 2, 400);
+
+cZero   = max(cA0 - k0*time, 0);
+cFirst  = cA0*exp(-k1*time);
+cSecond = cA0./(1 + k2*cA0*time);
+
+fZero   = max(1 - Da, 0);
+fFirst  = exp(-Da);
+fSecond = 1./(1 + Da);
+
+blue = [0.165 0.471 0.839];  orange = [0.922 0.408 0.204];  aqua = [0.106 0.686 0.478];
+
+figure('Units','centimeters','Position',[5 5 26 10])
+
+subplot(1,2,1)
+hold on
+plot(time, cZero,   'LineWidth', 2.0, 'Color', blue,   'DisplayName','zero order')
+plot(time, cFirst,  'LineWidth', 2.0, 'Color', orange, 'DisplayName','first order')
+plot(time, cSecond, 'LineWidth', 2.0, 'Color', aqua,   'DisplayName','second order')
+xlim([0 150]); ylim([0 2.1])
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$c_\mathrm{A}\ \left(\mathrm{mol\,m^{-3}}\right)$','Interpreter','latex','FontSize',16)
+title('dimensional','Interpreter','latex','FontSize',16)
+legend('Interpreter','latex','Location','northeast','FontSize',14)
+set(gca,'FontName','lmodern','FontSize',16,'LineWidth',1.5, ...
+        'TickLength',[0.015 0.015],'Box','on')
+hold off
+
+subplot(1,2,2)
+hold on
+plot(Da, fZero,   'LineWidth', 2.0, 'Color', blue)
+plot(Da, fFirst,  'LineWidth', 2.0, 'Color', orange)
+plot(Da, fSecond, 'LineWidth', 2.0, 'Color', aqua)
+xlim([0 2]); ylim([0 1.02])
+xlabel('$\mathrm{dimensionless\ time\ (1)}$','Interpreter','latex','FontSize',16)
+ylabel('$f = c_\mathrm{A}/c_\mathrm{A,0}\ (1)$','Interpreter','latex','FontSize',16)
+title('dimensionless','Interpreter','latex','FontSize',16)
+text(0.80, 0.24, 'zero',   'Color', blue,   'FontSize', 14)
+text(1.95, 0.14, 'first',  'Color', orange, 'FontSize', 14, 'HorizontalAlignment','right')
+text(1.95, 0.36, 'second', 'Color', aqua,   'FontSize', 14, 'HorizontalAlignment','right')
+set(gca,'FontName','lmodern','FontSize',16,'LineWidth',1.5, ...
+        'TickLength',[0.015 0.015],'Box','on')
+hold off
+```
+
+:::{tip} Check yourself
+At $c\un{A,0} = 1\ \mathrm{mol\,m^{-3}}$ the half-lives come out as 25 s (zero), 35 s (first) and
+50 s (second) — so the second-order reaction looks like the slowest of the three. Now drag
+$c\un{A,0}$ to $2\ \mathrm{mol\,m^{-3}}$: they become 50 s, 35 s and 25 s, and the second-order
+reaction is now the *fastest*. **The ranking reverses**, on the same three rate constants. Find the
+concentration at which the zero- and second-order half-lives are equal by hand, and check it
+against the slider.
+:::
+
+Look at what the right-hand panel costs us and what it buys. It costs the dimensional information:
+we can no longer read off a time in seconds. It buys the ability to make statements that hold for
+*every* zero-order reaction, at every concentration, with every rate constant — for example that a
+zero-order reaction is exactly half done when its dimensionless clock reads $0.5$, and completely
+done when it reads $1$. Two parameters, $k$ and $c\un{A,0}$, have collapsed into a single curve per
+reaction order.
+
+:::{admonition} Discussion
+:class: seealso
+The right panel has three curves rather than one. What information is still carried by the reaction
+order that the dimensionless clock could not absorb?
+:::
+
+The three combinations $kt/c\un{A,0}$, $kt$ and $k c\un{A,0} t$ are not three unrelated tricks;
+they are one quantity written out for $n = 0$, $1$ and $2$. That quantity has a name, and the next
+section introduces it properly as the **Damköhler number**.
 
 <!-- 
 ### Dimensionless equations
