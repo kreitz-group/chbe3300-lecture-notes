@@ -943,13 +943,11 @@ All three rate constants read $0.02$. Which of these three reactions is the fast
 :::
 
 The question has no answer as posed, and that is the point. The three rate constants are not three
-values of one quantity — they are three *different quantities* that happen to share a number. You
-cannot rank them, because $\mathrm{s^{-1}}$ and $\mathrm{m^3\,mol^{-1}\,s^{-1}}$ are not comparable,
-any more than a speed and an acceleration are. Worse, the ranking that *does* exist is not even
-fixed: it depends on $c\un{A,0}$, which appears in two of the three half-lives and with opposite
+values of one quantity. You cannot rank them, because $\mathrm{s^{-1}}$ and $\mathrm{m^3\,mol^{-1}\,s^{-1}}$ are not comparable. 
+Worse, the ranking that *does* exist is not even fixed: it depends on $c\un{A,0}$, which appears in two of the three half-lives and with opposite
 signs of influence.
 
-The left panel below shows this mess directly. Drag either slider and all three curves move, each in
+<!-- The left panel below shows this mess directly. Drag either slider and all three curves move, each in
 its own way — the zero-order line slides its intercept, the first-order curve rescales without
 changing shape, and the second-order curve changes shape entirely.
 
@@ -1142,12 +1140,11 @@ order that the dimensionless clock could not absorb?
 
 The three combinations $kt/c\un{A,0}$, $kt$ and $k c\un{A,0} t$ are not three unrelated tricks;
 they are one quantity written out for $n = 0$, $1$ and $2$. That quantity has a name, and the next
-section introduces it properly as the **Damköhler number**.
+section introduces it properly as the **Damköhler number**. --> 
 
-<!-- 
+
 ### Dimensionless equations
 
-source: ReactionKinetics.tex L440
 You can already see that there are many rate laws out there, each with very different rate
 constants. That makes it difficult to compare different reaction orders, starting concentrations,
 and rate constants, since they carry different units. This is why the chemical engineering
@@ -1224,6 +1221,8 @@ How long does it take for a reaction to reach $f = 0$, or a conversion $X = 1$, 
 Fractional conversion of species A as a function of the $Da_I$ number for various reaction orders
 of irreversible reactions.
 :::
+
+<!-- 
 
 ### Second-order irreversible reactions, first order in both reactants
 
