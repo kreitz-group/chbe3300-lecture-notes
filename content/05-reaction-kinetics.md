@@ -356,7 +356,7 @@ $$ (eq-mass-action)
 This approach is called **mass action kinetics**. As noted, it typically does not work for global
 or lumped reactions, but it does work for elementary reactions.
 
-<!-- 
+
 ## Integrated rate laws
 
 source: ReactionKinetics.tex L287
@@ -681,6 +681,8 @@ The solution generalizes to an $n$-th order reaction, $r = k c\un{A}^n$; you can
 derivation and result in the Hill & Root textbook. Before moving to Case II, let us take some time
 to plug numbers into the material balances we have derived.
 
+
+<!-- 
 ### Dimensionless equations
 
 source: ReactionKinetics.tex L440
