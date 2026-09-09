@@ -518,7 +518,7 @@ cB0 = 0;      % mol/m^3
 Ea  = 60;     % kJ/mol
 R   = 8.314;  % J/mol/K
 
-T = 380;      % K -- change this to move along the slider
+T = 380;      % K
 
 k = @(temp) 1e6*exp(-Ea*1e3/R/temp);   % 1/s
 
@@ -700,8 +700,7 @@ fig_zero.tight_layout()
 fig_zero
 ```
 
-The axes are deliberately held fixed, so that raising $c\un{A,0}$ visibly pushes $t\un{end}$ to the
-right rather than rescaling the picture. In MATLAB:
+In MATLAB:
 
 ```matlab
 cA0 = 1;      % mol/m^3 -- change this to move along the slider
@@ -741,7 +740,7 @@ hold off
 :::{tip} Check yourself
 At $c\un{A,0} = 1\ \mathrm{mol\,m^{-3}}$ you should get $t\un{end} = 50$ s and
 $t_{1/2} = 25$ s. Now double the initial concentration: both double. Do the same experiment on the
-first-order script above and the half-life will not budge.
+first-order script above and the half-life will not change.
 :::
 
 ### Irreversible, second-order reaction
@@ -762,11 +761,7 @@ $$
 r = k\, c\un{A}^2 \qquad \text{(Case I)} ,
 $$
 
-and would be second order with respect to the concentration of A. Keep an eye on the stoichiometric
-coefficient when you use a real example: for the $\ce{NO2}$ decomposition above
-$\nu_{\ce{NO2}} = -2$, so the mole balance picks up an extra factor of two relative to the generic
-$\nu\un{A} = -1$ case worked out below.
-
+and would be second order with respect to the concentration of A or in this case \ce{NO2}.
 Alternatively, a second-order rate law can arise for
 
 $$
@@ -918,7 +913,7 @@ hold off
 :::{tip} Check yourself
 At $c\un{A,0} = 1\ \mathrm{mol\,m^{-3}}$ you should get $t_{1/2} = 50$ s and 25% of A remaining at
 150 s. The first-order script with $k = 0.02\ \mathrm{s^{-1}}$ leaves only 5% at that point,
-despite the rate constants reading as the same number. Hold on to that discrepancy — it is the
+despite the rate constants having the same number. Hold on to that discrepancy — it is the
 subject of the next two sections.
 :::
 
@@ -947,7 +942,7 @@ values of one quantity. You cannot rank them, because $\mathrm{s^{-1}}$ and $\ma
 Worse, the ranking that *does* exist is not even fixed: it depends on $c\un{A,0}$, which appears in two of the three half-lives and with opposite
 signs of influence.
 
-<!-- The left panel below shows this mess directly. Drag either slider and all three curves move, each in
+The left panel below shows this mess directly. Drag either slider and all three curves move, each in
 its own way — the zero-order line slides its intercept, the first-order curve rescales without
 changing shape, and the second-order curve changes shape entirely.
 
@@ -1063,7 +1058,7 @@ cmp_fig
 The same comparison in MATLAB:
 
 ```matlab
-cA0  = 1;     % mol/m^3   -- change these two to move along the sliders
+cA0  = 1;     % mol/m^3  
 kfac = 1;     % (1)
 
 k0 = 0.02*kfac;   % mol/(m^3 s)
@@ -1118,15 +1113,12 @@ hold off
 
 :::{tip} Check yourself
 At $c\un{A,0} = 1\ \mathrm{mol\,m^{-3}}$ the half-lives come out as 25 s (zero), 35 s (first) and
-50 s (second) — so the second-order reaction looks like the slowest of the three. Now drag
+50 s (second). The second-order reaction looks like the slowest of the three. Now drag
 $c\un{A,0}$ to $2\ \mathrm{mol\,m^{-3}}$: they become 50 s, 35 s and 25 s, and the second-order
-reaction is now the *fastest*. **The ranking reverses**, on the same three rate constants. Find the
-concentration at which the zero- and second-order half-lives are equal by hand, and check it
-against the slider.
+reaction is now the *fastest*. **The ranking reverses**, on the same three rate constants. 
 :::
 
-Look at what the right-hand panel costs us and what it buys. It costs the dimensional information:
-we can no longer read off a time in seconds. It buys the ability to make statements that hold for
+Making it dimensionless allows us to make statements that hold for
 *every* zero-order reaction, at every concentration, with every rate constant — for example that a
 zero-order reaction is exactly half done when its dimensionless clock reads $0.5$, and completely
 done when it reads $1$. Two parameters, $k$ and $c\un{A,0}$, have collapsed into a single curve per
@@ -1139,8 +1131,7 @@ order that the dimensionless clock could not absorb?
 :::
 
 The three combinations $kt/c\un{A,0}$, $kt$ and $k c\un{A,0} t$ are not three unrelated tricks;
-they are one quantity written out for $n = 0$, $1$ and $2$. That quantity has a name, and the next
-section introduces it properly as the **Damköhler number**. --> 
+they are one quantity written out for $n = 0$, $1$ and $2$. That quantity is called the **Damköhler number**. 
 
 
 ### Dimensionless equations
@@ -1150,10 +1141,11 @@ constants. That makes it difficult to compare different reaction orders, startin
 and rate constants, since they carry different units. This is why the chemical engineering
 community developed dimensionless numbers.
 
-:::{admonition} Discussion
+<!-- :::{admonition} Discussion
 :class: seealso
 Have some of you already heard about dimensionless numbers? Can you name one?
 :::
+--> 
 
 To define them, look at the batch-reactor material balance for the first-order rate law,
 
@@ -1222,11 +1214,10 @@ Fractional conversion of species A as a function of the $Da_I$ number for variou
 of irreversible reactions.
 :::
 
-<!-- 
+
 
 ### Second-order irreversible reactions, first order in both reactants
 
-source: ReactionKinetics.tex L511
 For Case II the solution of the material balance is more complicated. Formulate the mass balances
 for the two reactants:
 
@@ -1334,7 +1325,6 @@ The full step-by-step derivation is uploaded to Canvas; you can also try integra
 
 ## Interlude: solving ordinary differential equations numerically
 
-source: ReactionKinetics.tex L581
 There are other rate laws for which we can find analytical solutions. In most cases, however, we
 have to rely on numerical methods to solve our material balances — especially for more complex
 systems with multiple reactions. Luckily there is a wide range of numerical tools available, and
@@ -1409,7 +1399,6 @@ $$
 (sec-reversible-first-order)=
 ## Reversible, first-order reaction
 
-source: ReactionKinetics.tex L634
 So far we have only looked at irreversible reactions. Basically all reactions, however, are
 equilibrium reactions; in some cases the equilibrium simply lies so far to one side that we can
 treat the reaction as irreversible. For reversible reactions it is also possible to derive an
@@ -1557,7 +1546,6 @@ reversible.**
 
 ## Summary
 
-source: ReactionKinetics.tex L738
 - The rate of reaction $r = (1/V)\,\mathrm{d}\xi/\mathrm{d}t$ is intensive and species-independent;
   the species production rate is $r_i = \nu_i r$, [](#eq-ri-nui-r).
 - Boudart's five rules: (1) the rate decreases monotonically with extent of reaction, autocatalytic
