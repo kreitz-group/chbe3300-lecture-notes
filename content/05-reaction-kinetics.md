@@ -359,7 +359,7 @@ or lumped reactions, but it does work for elementary reactions.
 
 ## Integrated rate laws
 
-source: ReactionKinetics.tex L287
+<!-- source: ReactionKinetics.tex L287-->
 Reaction rate laws can be rather complex functions and frequently have to be determined from
 experiments. For some simple kinetics, however, we can find an analytical solution to the material
 balance of the batch reactor. Such a solution gives the temporal concentration profile, and we can
@@ -367,7 +367,7 @@ use it to design batch reactors. We will look at a few rate laws, starting with 
 
 ### Irreversible, first-order reaction
 
-source: ReactionKinetics.tex L297
+<!-- source: ReactionKinetics.tex L297-->
 We assume an irreversible reaction in a batch reactor,
 
 $$
@@ -481,9 +481,10 @@ time = np.linspace(0, 200, 200)
 cA = cA0 * np.exp(-k * time)
 cB = cB0 + cA0 * (1 - np.exp(-k * time))
 
+mant, expo = f"{k:.2e}".split("e")
 mo.md(
     f"At $T = {T.value}\\ \\mathrm{{K}}$: "
-    f"$k = {k:.3e}\\ \\mathrm{{s^{{-1}}}}$, "
+    f"$k = {mant} \\times 10^{{{int(expo)}}}\\ \\mathrm{{s^{{-1}}}}$, "
     f"half-life $t_{{1/2}} = {np.log(2) / k:.1f}\\ \\mathrm{{s}}$."
 )
 ```
