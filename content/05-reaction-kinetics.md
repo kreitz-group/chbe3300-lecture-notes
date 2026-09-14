@@ -1396,6 +1396,131 @@ c\un{A} &= 1\ \mathrm{mol\,m^{-3}}
 \end{aligned}
 $$
 
+:::{admonition} Live example
+:class: seealso
+Change the number of steps and watch the numerical solution approach the exact one as $h$ shrinks.
+:::
+
+```{marimo} python
+ec_steps = mo.ui.slider(
+    start=2,
+    stop=40,
+    step=1,
+    value=10,
+    label="Number of steps",
+    show_value=True,
+)
+ec_steps
+```
+
+```{marimo} python
+ec_cA0 = 1.0   # mol/m^3
+ec_k = 0.02    # 1/s
+ec_t_end = 200.0  # s
+
+ec_h = ec_t_end / ec_steps.value
+ec_t = np.linspace(0, ec_t_end, ec_steps.value + 1)
+
+# Euler-Cauchy: y_{i+1} = y_i + h f(x_i, y_i) with f = -k cA
+ec_cA = np.empty_like(ec_t)
+ec_cA[0] = ec_cA0
+for ec_i in range(ec_steps.value):
+    ec_cA[ec_i + 1] = ec_cA[ec_i] + ec_h * (-ec_k * ec_cA[ec_i])
+
+ec_t_exact = np.linspace(0, ec_t_end, 200)
+ec_cA_exact = ec_cA0 * np.exp(-ec_k * ec_t_exact)
+
+ec_err = np.max(np.abs(ec_cA - ec_cA0 * np.exp(-ec_k * ec_t)))
+
+mo.md(
+    f"Step size $h = {ec_h:.1f}\\ \\mathrm{{s}}$; "
+    f"after the first step $c_\\mathrm{{A}} = {ec_cA[1]:.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$ "
+    f"against the exact ${ec_cA0 * np.exp(-ec_k * ec_h):.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$. "
+    f"Largest error over the whole interval: ${ec_err:.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$."
+)
+```
+
+```{marimo} python
+fig_ec, ax_ec = plt.subplots(figsize=(5.5, 3.9))
+
+ax_ec.plot(ec_t_exact, ec_cA_exact, lw=2.0, label="exact")
+ax_ec.plot(ec_t, ec_cA, lw=2.0, marker="o", ms=5, label="numerical")
+
+ax_ec.set_xlim(0, 200)
+ax_ec.set_ylim(0, 1)
+ax_ec.set_xlabel("time (s)", fontsize=13)
+ax_ec.set_ylabel(r"$c_\mathrm{A}$ (mol m$^{-3}$)", fontsize=13)
+ax_ec.tick_params(labelsize=12, width=1.2, length=5)
+for sp_ec in ax_ec.spines.values():
+    sp_ec.set_linewidth(1.2)
+ax_ec.legend(loc="upper right", fontsize=13, frameon=False)
+
+fig_ec.tight_layout()
+fig_ec
+```
+
+In MATLAB, set `steps` to the number of steps you want and run:
+
+```matlab
+% Parameters
+cA0 = 1;     % mol/m3
+cB0 = 0;     % mol/m3
+k   = 0.02;  % 1/s
+
+% Number of steps
+steps = 10;
+
+t_arr = linspace(0, 200, steps+1);
+h = t_arr(2) - t_arr(1);   % step size, s
+
+% Euler-Cauchy method
+cA = zeros(1, length(t_arr));
+
+n = 0;
+for i = t_arr
+    if i == 0
+        cA(n+1) = cA0;
+    else
+        cA(n+1) = cA(n) + h*(-k*cA(n));
+    end
+    n = n+1;
+end
+
+% Exact analytical solution
+cA_exact = @(time) ...
+    cA0*exp(-k*time);
+
+t_space = linspace(0, 200, 100);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(t_space, cA_exact(t_space), ...
+    'LineWidth', 2.0, 'LineStyle','-','DisplayName','exact')
+
+plot(t_arr, cA, ...
+    'LineWidth', 2.0, 'LineStyle','-','DisplayName','numerical', 'Marker','o')
+
+xlim([0 200])
+ylim([0 1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{concentration\ of\ A\ \left(mol\,m^{-3}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','east','FontSize',16)
+
+grid off
+hold off
+```
+
+
 (sec-reversible-first-order)=
 ## Reversible, first-order reaction
 
@@ -1513,6 +1638,116 @@ K = \frac{c\un{B,eq}}{c\un{A,eq}} = \frac{k\un{fwd}}{k\un{rev}} .
 $$ (eq-k-from-kratios)
 
 The concentration profiles at equilibrium depend only on the ratio $k\un{fwd}/k\un{rev}$.
+
+:::{admonition} Live example
+:class: seealso
+Drag the two rate constants: the approach to equilibrium is set by their sum, the equilibrium
+itself only by their ratio.
+:::
+
+```{marimo} python
+rev_kfwd = mo.ui.slider(
+    start=0.2,
+    stop=10.0,
+    step=0.2,
+    value=3.4,
+    label="k_fwd (1/s)",
+    show_value=True,
+)
+rev_krev = mo.ui.slider(
+    start=0.2,
+    stop=10.0,
+    step=0.2,
+    value=1.8,
+    label="k_rev (1/s)",
+    show_value=True,
+)
+mo.vstack([rev_kfwd, rev_krev])
+```
+
+```{marimo} python
+rev_cA0 = 1.0  # mol/m^3
+rev_cB0 = 0.0  # mol/m^3
+
+rev_ksum = rev_kfwd.value + rev_krev.value
+rev_t = np.linspace(0, 5, 200)
+rev_cA = rev_cA0 * (rev_krev.value + rev_kfwd.value * np.exp(-rev_ksum * rev_t)) / rev_ksum
+rev_cB = rev_cA0 - rev_cA
+
+rev_cA_eq = rev_krev.value * rev_cA0 / rev_ksum
+rev_cB_eq = rev_kfwd.value * rev_cA0 / rev_ksum
+
+mo.md(
+    f"$K = k_\\mathrm{{fwd}}/k_\\mathrm{{rev}} = {rev_kfwd.value / rev_krev.value:.2f}$, "
+    f"$c_\\mathrm{{A,eq}} = {rev_cA_eq:.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$, "
+    f"$c_\\mathrm{{B,eq}} = {rev_cB_eq:.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$."
+)
+```
+
+```{marimo} python
+fig_rev, ax_rev = plt.subplots(figsize=(5.5, 3.9))
+
+ax_rev.plot(rev_t, rev_cA, lw=2.0, label="A")
+ax_rev.plot(rev_t, rev_cB, lw=2.0, label="B")
+ax_rev.axhline(rev_cA_eq, ls=":", lw=1.2, color="0.45")
+ax_rev.axhline(rev_cB_eq, ls=":", lw=1.2, color="0.45")
+
+ax_rev.set_xlim(0, 5)
+ax_rev.set_ylim(0, 1)
+ax_rev.set_xlabel("time (s)", fontsize=13)
+ax_rev.set_ylabel(r"concentration (mol m$^{-3}$)", fontsize=13)
+ax_rev.tick_params(labelsize=12, width=1.2, length=5)
+for sp_rev in ax_rev.spines.values():
+    sp_rev.set_linewidth(1.2)
+ax_rev.legend(loc="center right", fontsize=13, frameon=False)
+
+fig_rev.tight_layout()
+fig_rev
+```
+
+In MATLAB, set `kfwd` and `krev` and run:
+
+```matlab
+cA0 = 1;  % mol/m3
+cB0 = 0;  % mol/m3
+
+kfwd = 3.4;  % 1/s
+krev = 1.8;  % 1/s
+
+cA = @(time) ...
+    cA0*(krev+kfwd.*exp(-(kfwd+krev).*time))/(kfwd+krev);
+
+cB = @(time) ...
+    cA0.*(1-(krev+kfwd.*exp(-(kfwd+krev).*time))/(kfwd+krev));
+
+time = linspace(0, 5, 100);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(time, cA(time), ...
+    'LineWidth', 2.0, 'LineStyle','-','DisplayName','A')
+plot(time, cB(time), ...
+    'LineWidth', 2.0, 'LineStyle','-','DisplayName','B')
+
+xlim([0 5])
+ylim([0 1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{concentration\ \left(mol\,m^{-3}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','east','FontSize',16)
+
+grid off
+hold off
+```
 
 :::{admonition} Discussion
 :class: seealso
