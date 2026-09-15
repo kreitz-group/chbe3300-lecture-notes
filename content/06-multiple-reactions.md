@@ -18,9 +18,12 @@ After completing this chapter, you should be able to:
 - Solve the batch-reactor mass balances for two parallel first-order reactions and recognize that the product selectivity reduces to the ratio of rate constants.
 - Define and compute the conversion $X$, the selectivity $S$, and the yield $Y$
 - Apply the pseudo-steady-state approximation (PSSA) and the quasi-equilibrium approximation (QEA), recognize the timescale conditions under which each is valid, and use them to reduce an ODE system to closed-form rate expressions.
+<!--
 - Apply the PSSA to a radical chain mechanism (HBr synthesis) to derive an apparent rate law and identify the apparent rate constant and apparent activation energy.
 - Apply the QEA to a pre-equilibrium mechanism ($\ce{NO + Br2}$) to derive a closed-form rate expression in terms of the equilibrium constant and a slow-step rate constant.
 - Apply the rate-determining step (RDS) assumption and recognize when it can be invoked safely.
+-->
+
 :::
 
 We have looked into various simple reaction systems, considering only a single irreversible or reversible reaction. Unfortunately chemistry is not that simple, and we have to deal with much more complex systems in which multiple reactions occur simultaneously. We can broadly distinguish four types of reaction system: parallel, series, independent, and complex.
@@ -1177,13 +1180,12 @@ Comparison of the concentration profile of B from the ODE system and the QEA for
 $k\un{+2}$.
 :::
 
-## Application of PSSA and QEA to derive global rate expressions
+<!--
 
-<!-- source: multiple_reactions.tex L635 -->
+## Application of PSSA and QEA to derive global rate expressions
 
 ### PSSA: HBr synthesis
 
-<!-- source: multiple_reactions.tex L638 -->
 
 **Example.** As a first application, consider the photochemical production of hydrogen bromide from
 the elements in the gas phase,
@@ -1333,7 +1335,6 @@ $k_a = 2k\un{+2}\sqrt{k\un{+1}/k\un{-1}}$ and $k_b = k\un{-2}/k_3$.
 
 ### Why are no other reactions relevant in the mechanism?
 
-<!-- source: multiple_reactions.tex L754 -->
 
 This is an excellent question, and one we revisit rigorously in [](#ch-mechanisms). Identifying the
 relevant reaction pathways within an enormous chemical reaction space is a research-level problem
@@ -1370,7 +1371,6 @@ constants directly.
 
 ### QEA: $\ce{NO + Br2}$ synthesis of nitrosyl bromide
 
-<!-- source: multiple_reactions.tex L783 -->
 
 **Example.** Consider the reaction
 
@@ -1426,7 +1426,6 @@ $$
 
 ### The rate-determining step assumption
 
-<!-- source: multiple_reactions.tex L827 -->
 
 Consider a more complex reaction sequence in which one step is much slower than the others. That
 slowest step is the bottleneck, or **rate-determining step** (RDS), and the overall rate is set
@@ -1465,7 +1464,9 @@ If the reverse rate of the slow step is comparable to its forward rate near equi
 approximation $r \approx r\un{forward}$ breaks down. The net rate
 $r\un{forward} - r\un{reverse}$ can be very different from $r\un{forward}$ alone, even when the
 forward step is the slowest in the mechanism. In such cases the full quasi-equilibrium analysis is
-required.
+required. 
+
+-->
 
 ## Summary
 
@@ -1485,20 +1486,12 @@ required.
   $c\un{B}$, [](#eq-series-cb), and the species balance gives $c\un{C}$, [](#eq-series-cc). The
   intermediate B goes through a maximum, so the optimal stop-time is finite.
 - PSSA: when an intermediate is short-lived ($k\un{out} \gg k\un{in}$), set
-  $\mathrm{d}c\un{B}/\mathrm{d}t \approx 0$, [](#eq-pssa-def). It is the *net* rate of production
-  that is approximately zero, not $c\un{B}$ itself.
-- QEA: when one step equilibrates much faster than the others, impose the equilibrium constraint
-  $c\un{B} = K\un{1}c\un{A}$, [](#eq-qea-constraint); the rate of the fast step does *not* vanish —
-  it is the indeterminate form $k\un{-1} \to \infty$ times
-  $(K\un{1}c\un{A} - c\un{B}) \to 0$.
-- Both PSSA and QEA reduce the order of the ODE system by replacing one ODE with an algebraic
-  constraint — valuable both for stiff numerical problems and for deriving closed-form rate laws to
-  compare with experiment.
-- Applying the PSSA to the radical chain mechanism of HBr synthesis recovers the experimentally
-  observed half-order dependence on $\ce{Br2}$, [](#eq-hbr-rate-low), and predicts an apparent
-  activation energy $E\un{a,app} = E\un{a,+2} + (E\un{a,+1} - E\un{a,-1})/2$, [](#eq-hbr-eapp).
-- Applying the QEA to a fast pre-equilibrium step (the $\ce{NO + Br2}$ mechanism) gives the
-  closed-form rate $r_{\ce{NOBr}} = 2k_2 K\un{1} c_{\ce{NO}}^2 c_{\ce{Br2}}$, [](#eq-nobr-rate).
-- The rate-determining-step assumption is the limiting form of the QEA: the slowest step sets the
-  overall rate, with all other steps in quasi-equilibrium. Use with caution when the slow step is
-  reversible.
+  $\mathrm{d}c\un{B}/\mathrm{d}t \approx 0$, [](#eq-pssa-def). It is the *net* rate of production that is approximately zero, not $c\un{B}$ itself.
+- QEA: when one step equilibrates much faster than the others, impose the equilibrium constraint $c\un{B} = K\un{1}c\un{A}$, [](#eq-qea-constraint); the rate of the fast step does *not* vanish — it is the indeterminate form $k\un{-1} \to \infty$ times $(K\un{1}c\un{A} - c\un{B}) \to 0$.
+- Both PSSA and QEA reduce the order of the ODE system by replacing one ODE with an algebraic constraint — valuable both for stiff numerical problems and for deriving closed-form rate laws to compare with experiment.
+
+<!-- 
+- Applying the PSSA to the radical chain mechanism of HBr synthesis recovers the experimentally observed half-order dependence on $\ce{Br2}$, [](#eq-hbr-rate-low), and predicts an apparent activation energy $E\un{a,app} = E\un{a,+2} + (E\un{a,+1} - E\un{a,-1})/2$, [](#eq-hbr-eapp).
+- Applying the QEA to a fast pre-equilibrium step (the $\ce{NO + Br2}$ mechanism) gives the closed-form rate $r_{\ce{NOBr}} = 2k_2 K\un{1} c_{\ce{NO}}^2 c_{\ce{Br2}}$, [](#eq-nobr-rate).
+- The rate-determining-step assumption is the limiting form of the QEA: the slowest step sets the overall rate, with all other steps in quasi-equilibrium. Use with caution when the slow step is reversible.
+-->
