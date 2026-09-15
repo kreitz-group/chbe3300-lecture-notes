@@ -260,30 +260,21 @@ $c\un{B} = 0.688$ and $c\un{C} = 0.313\ \mathrm{mol\,m^{-3}}$, and their ratio i
 
 <!-- source: multiple_reactions.tex L123 -->
 
-In a system with multiple reactions, achieving a high conversion of the reactant is no longer
-enough. Recall that the conversion of a reactant $i$ and the unconverted fraction $f$ were defined
-as
+In a system with multiple reactions, achieving a high conversion of the reactant is no longer enough. Recall that the conversion of a reactant $i$ and the unconverted fraction $f$ were defined as
 
 $$
 X = \frac{n\un{i,0} - n_i}{n\un{i,0}} , \qquad f = 1 - X = \frac{n_i}{n\un{i,0}} .
 $$ (eq-conversion-def)
 
-A high conversion is necessary, but what we really want is for the converted reactant to end up in
-the desired product. If side products are formed, downstream separations are needed, which directly
-affects the economics of the process. We therefore try to boost the production of the target
-product while suppressing side products.
+A high conversion is necessary, but what we really want is for the converted reactant to end up in the desired product. If side products are formed, downstream separations are needed, which directly affects the economics of the process. As reaction engineers, we therefore try to boost the production of the target product while suppressing side products.
 
-The quantity that captures how a converted reactant is partitioned among the possible products is
-the **selectivity**. Consider a reactant A that can be converted into either B or C. The
-selectivity of producing B from A is defined as
+The quantity that captures how a converted reactant is partitioned among the possible products is the **selectivity**. Consider a reactant A that can be converted into either B or C. The selectivity of producing B from A is defined as
 
 $$
 S\un{B,A} = \frac{n\un{B} - n\un{B,0}}{n\un{A} - n\un{A,0}}\, \frac{\nu\un{A}}{\nu\un{B}} .
 $$ (eq-selectivity-def)
 
-The ratio of moles is already dimensionless; the stoichiometric factor $\nu\un{A}/\nu\un{B}$ is what
-normalizes $S\un{B,A}$ so that it is positive and bounded between 0 and 1. The same definition
-extends to any number of products formed from a common reactant.
+The ratio of moles is already dimensionless; the stoichiometric factor $\nu\un{A}/\nu\un{B}$ is what normalizes $S\un{B,A}$ so that it is positive and bounded between 0 and 1. The same definition extends to any number of products formed from a common reactant.
 
 **Example.** Consider methanol synthesis from synthesis gas,
 
@@ -300,8 +291,7 @@ $$
 \end{aligned}
 $$
 
-forming dimethyl ether ($\ce{CH3OCH3}$) and methyl acetate ($\ce{CH3COOCH3}$). The following molar
-amounts were measured after a reaction time $t_1$.
+forming dimethyl ether ($\ce{CH3OCH3}$) and methyl acetate ($\ce{CH3COOCH3}$). The following molar amounts were measured after a reaction time $t_1$.
 
 :::{table} Molar amounts (in mol) measured for the methanol-synthesis example, used to calculate selectivity.
 :label: tab-selectivity-example
@@ -326,21 +316,17 @@ S\un{CH3COOCH3,CO} &= \frac{0.02\ \mathrm{mol} - 0}{0.78\ \mathrm{mol} - 1\ \mat
 \end{aligned}
 $$
 
-The sum over all selectivities equals 1 and indicates how the converted reactant is partitioned
-among the products.
+The sum over all selectivities equals 1 and indicates how the converted reactant is partitioned among the products.
 
-For systems where the rates rather than the integrated amounts are known, it is more convenient to
-work with the **point selectivity**, or instantaneous selectivity, defined as the ratio of the
-production rates of two species $i$ and $j$:
+For systems where the rates rather than the amounts are known, it is more convenient to work with the **point selectivity**, or instantaneous selectivity, defined as the ratio of the production rates of two species $i$ and $j$:
 
 $$
 S\un{ij} = \frac{r_i}{r_j} .
 $$ (eq-point-selectivity)
 
-The integral selectivity in [](#eq-selectivity-def) characterizes the cumulative behavior over a
-finite reaction time and is the natural quantity when batch yields are reported; the point
-selectivity in [](#eq-point-selectivity) characterizes the local behavior at a given concentration
-and is the natural quantity when designing or comparing reactor configurations.
+The selectivity in [](#eq-selectivity-def) characterizes the cumulative behavior over a
+certain reaction time.
+The point selectivity in [](#eq-point-selectivity) characterizes the local behavior at a specific concentration and time in the reaction.
 
 Another important quantity is the **yield** $Y$, defined as
 
@@ -352,15 +338,13 @@ $$
 Y\un{B} = X\un{A} \cdot S\un{B,A} .
 $$ (eq-yield-xs)
 
-The yield is the fraction of the initial reactant A that has been converted into product B. For the
-methanol example,
+The yield is the fraction of the initial reactant A that has been converted into product B. For the methanol example,
 
 $$
 Y\un{CH3OH} = \frac{0 - 0.1\ \mathrm{mol}}{1\ \mathrm{mol}}\,\frac{-1}{1} = 0.1 ,
 $$
 
-which equals the product of selectivity and conversion, as [](#eq-yield-xs) states. Analogously, an
-**instantaneous yield** can be defined as
+which equals the product of selectivity and conversion, as [](#eq-yield-xs) states. Analogously, an **instantaneous yield** can be defined as
 
 $$
 Y\un{B} = \frac{r\un{B}}{r\un{A}}\, \frac{\nu\un{A}}{\nu\un{B}} .
@@ -370,7 +354,7 @@ $$ (eq-inst-yield)
 
 <!-- source: multiple_reactions.tex L206 -->
 
-Consider the reaction
+The second case that I want to discuss is a series of reaction. Consider the reaction
 
 $$
 \ce{A -> B -> C} .
@@ -389,10 +373,7 @@ What is our intuition for the shape of the concentration profiles? What do they 
 Sketch of the concentration profiles for reactions in series.
 :::
 
-There are many examples of this type of reaction sequence. A series reaction poses a design
-challenge, because the intermediate B is itself reacted away to C, so we have to optimize the time
-at which we stop the reaction in order to maximize B. We therefore need to understand reactions in
-series quantitatively.
+There are many examples of this type of reaction sequence. A series reaction poses a design challenge, because the intermediate B is itself reacted away to C, so we have to optimize the time at which we stop the reaction in order to maximize B. We therefore need to understand reactions in series quantitatively.
 
 Let the reaction rates be given by simple first-order expressions in the corresponding reactants,
 
@@ -430,9 +411,7 @@ $$
 \frac{\mathrm{d}c\un{B}}{\mathrm{d}t} + k_2 c\un{B} = k_1 c\un{A,0}\exp\left(-k_1 t\right) .
 $$ (eq-series-dcb-nonsep)
 
-The variables can no longer be separated, so we need a more general technique. The standard tool
-for first-order linear ODEs is the **integrating-factor method**, which applies to any equation of
-the form
+The variables can no longer be separated, so we need a more general technique. The standard tool for first-order linear ODEs is the **integrating-factor method**, which applies to any equation of the form
 
 $$
 y' + p(t)\, y = f(t) ,
@@ -501,9 +480,7 @@ $$ (eq-series-cb)
 Does [](#eq-series-cb) make sense? Check the limits at $t = 0$ and $t \to \infty$.
 :::
 
-For species C we could integrate $\mathrm{d}c\un{C}/\mathrm{d}t = k_2 c\un{B}$ directly, but that is
-tedious. A cleaner shortcut uses the overall species balance: summing [](#eq-series-dca),
-[](#eq-series-dcb), and [](#eq-series-dcc) gives
+For species C we could integrate $\mathrm{d}c\un{C}/\mathrm{d}t = k_2 c\un{B}$ directly, but that is tedious. A cleaner shortcut uses the overall species balance: summing [](#eq-series-dca), [](#eq-series-dcb), and [](#eq-series-dcc) gives
 
 $$
 \begin{aligned}
@@ -534,16 +511,13 @@ $$ (eq-series-cc)
 
 :::{admonition} Live example
 :class: seealso
-Drag the sliders to change $k_1$ and $k_2$ and watch the maximum of B move. Setting $k_2$ equal to
-$k_1$ is allowed — the expressions above are then indeterminate, and the code switches to the
-limiting form $c\un{B} = c\un{A,0}\, k_1 t\, \exp(-k_1 t)$. The MATLAB code that produces the same
-result follows underneath.
+Drag the sliders to change $k_1$ and $k_2$ and watch the maximum of B move. Setting $k_2$ equal to $k_1$ is allowed — the expressions above are then indeterminate, and the code switches to the limiting form $c\un{B} = c\un{A,0}\, k_1 t\, \exp(-k_1 t)$. The MATLAB code that produces the same result follows underneath.
 :::
 
 ```{marimo} python
 ser_k1 = mo.ui.slider(
     start=0.2,
-    stop=5,
+    stop=10,
     step=0.1,
     value=1.0,
     label="Rate constant k1 (1/s)",
@@ -551,7 +525,7 @@ ser_k1 = mo.ui.slider(
 )
 ser_k2 = mo.ui.slider(
     start=0.2,
-    stop=10,
+    stop=100,
     step=0.1,
     value=2.0,
     label="Rate constant k2 (1/s)",
@@ -672,14 +646,10 @@ hold off
 
 :::{tip} Check yourself
 Set $\mathrm{d}c\un{B}/\mathrm{d}t = 0$ in [](#eq-series-cb) and show that B peaks at
-$t\un{max} = \ln(k_2/k_1)/(k_2 - k_1)$. For $k_1 = 1\ \mathrm{s^{-1}}$ and $k_2 = 2\ \mathrm{s^{-1}}$
-this gives $t\un{max} = \ln 2 = 0.693\ \mathrm{s}$ and $c\un{B,max} = 0.25\ \mathrm{mol\,m^{-3}}$,
-which the script should reproduce. What happens to $t\un{max}$ and $c\un{B,max}$ as $k_2$ grows?
+$t\un{max} = \ln(k_2/k_1)/(k_2 - k_1)$. For $k_1 = 1\ \mathrm{s^{-1}}$ and $k_2 = 2\ \mathrm{s^{-1}}$ this gives $t\un{max} = \ln 2 = 0.693\ \mathrm{s}$ and $c\un{B,max} = 0.25\ \mathrm{mol\,m^{-3}}$, which the script should reproduce. What happens to $t\un{max}$ and $c\un{B,max}$ as $k_2$ grows?
 :::
 
-The derivation was tedious, but the result is worth keeping. For different ratios of rate constants
-the concentration profiles look very different, and we can leverage the rate-constant ratio to
-simplify our kinetic analysis — the topic of the next section.
+The derivation was tedious, but the result is worth keeping. For different ratios of rate constants the concentration profiles look very different, and we can leverage the rate-constant ratio to simplify our kinetic analysis — the topic of the next section.
 
 ## Timescales
 
