@@ -15,54 +15,35 @@ label: ch-multiple-reactions
 :class: tip
 After completing this chapter, you should be able to:
 
-- Classify multi-reaction systems as parallel, series, independent, or complex.
-- Solve the batch-reactor mass balances for two parallel first-order reactions and recognize that
-  the product selectivity reduces to the ratio of rate constants.
-- Define and compute the conversion $X$, the selectivity $S\un{B,A}$, and the yield $Y\un{B}$, and
-  use the relation $Y\un{B} = X\un{A} \cdot S\un{B,A}$.
-- Distinguish overall (integral) selectivity and yield from instantaneous (point) selectivity and
-  yield.
-- Apply the integrating-factor method to derive the analytical concentration profile $c\un{B}(t)$
-  for a series first-order reaction $\ce{A -> B -> C}$, and obtain $c\un{C}$ via the species mass
-  balance.
-- State the pseudo-steady-state approximation (PSSA) and the quasi-equilibrium approximation (QEA),
-  recognize the timescale conditions under which each is valid, and use them to reduce an ODE
-  system to closed-form rate expressions.
-- Apply the PSSA to a radical chain mechanism (HBr synthesis) to derive an apparent rate law and
-  identify the apparent rate constant and apparent activation energy.
-- Apply the QEA to a pre-equilibrium mechanism ($\ce{NO + Br2}$) to derive a closed-form rate
-  expression in terms of the equilibrium constant and a slow-step rate constant.
-- State the rate-determining step (RDS) assumption and recognize when it can be invoked safely.
+- Solve the batch-reactor mass balances for two parallel first-order reactions and recognize that the product selectivity reduces to the ratio of rate constants.
+- Define and compute the conversion $X$, the selectivity $S$, and the yield $Y$
+- Apply the pseudo-steady-state approximation (PSSA) and the quasi-equilibrium approximation (QEA), recognize the timescale conditions under which each is valid, and use them to reduce an ODE system to closed-form rate expressions.
+- Apply the PSSA to a radical chain mechanism (HBr synthesis) to derive an apparent rate law and identify the apparent rate constant and apparent activation energy.
+- Apply the QEA to a pre-equilibrium mechanism ($\ce{NO + Br2}$) to derive a closed-form rate expression in terms of the equilibrium constant and a slow-step rate constant.
+- Apply the rate-determining step (RDS) assumption and recognize when it can be invoked safely.
 :::
 
-We have looked into various simple reaction systems, considering only a single irreversible or
-reversible reaction. Unfortunately chemistry is not that simple, and we have to deal with much more
-complex systems in which multiple reactions occur simultaneously. We can broadly distinguish four
-types of reaction system: parallel, series, independent, and complex.
+We have looked into various simple reaction systems, considering only a single irreversible or reversible reaction. Unfortunately chemistry is not that simple, and we have to deal with much more complex systems in which multiple reactions occur simultaneously. We can broadly distinguish four types of reaction system: parallel, series, independent, and complex.
 
-In a system with **parallel reactions**, a reactant is converted to two possible products by
-different pathways:
+In a system with **parallel reactions**, a reactant is converted to two possible products by different pathways:
 
 $$
 \ce{A ->[$k_1$] B} \qquad \ce{A ->[$k_2$] C} .
 $$
 
-An example is the epoxidation of ethylene to ethylene oxide, a key intermediate in the production
-of ethylene glycol,
+An example is the epoxidation of ethylene to ethylene oxide, a key intermediate in the production of ethylene glycol,
 
 $$
 \ce{C2H4 + 0.5 O2 -> C2H4O} ,
 $$
 
-where it is necessary to avoid the complete combustion of ethylene to worthless $\ce{CO2}$,
+where it is necessary to avoid the complete combustion of ethylene to $\ce{CO2}$,
 
 $$
 \ce{C2H4 + 3 O2 -> 2 CO2 + 2 H2O} .
 $$
 
-In addition to parallel reactions we frequently have **reactions in series**. The second step may
-be an unwanted reaction of our product to a worthless side product, or a necessary intermediate
-that is later converted to the target product:
+In addition to parallel reactions we frequently have **reactions in series**. The second step may be an unwanted reaction of our product to an undesired side product, or a necessary intermediate that is later converted to the target product:
 
 $$
 \ce{A -> B -> C} .
@@ -83,36 +64,23 @@ $$
 \end{aligned}
 $$
 
-Solving the material balance for independent reactions is straightforward: we can consider each
-reaction in isolation and apply the rules derived before. By contrast, when two reactions *do*
-share a reactant or product they are **coupled**, or *dependent*, and the mass balances must be
-solved together. A reversible reaction $\ce{A <=> B}$ is the simplest example: the forward and
-reverse steps share both species and cannot be analyzed in isolation.
+Solving the material balance for independent reactions is straightforward: we can consider each reaction in isolation and apply the rules derived before. By contrast, when two reactions *do* share a reactant or product they are **coupled**, or *dependent*, and the mass balances must be solved together. A reversible reaction $\ce{A <=> B}$ is the simplest example: the forward and reverse steps share both species and cannot be analyzed in isolation.
 
-The last category is the **complex** reaction system, combining the previous types: multiple
-parallel reactions, reactions in series, and possibly some independent reactions. An example is the
-partial oxidation of n-butane ($\ce{C4H10}$) to maleic anhydride ($\ce{C4H2O3}$) over a vanadium
-phosphate oxide (VPO) catalyst, a major industrial chemical produced at roughly 3 million tonnes
-per year. Maleic anhydride is used as an intermediate to make polyester resins, copolymers, and
-lubricants.
+The last category is the **complex** reaction system, combining the previous types: multiple parallel reactions, reactions in series, and possibly some independent reactions. An example is the partial oxidation of n-butane ($\ce{C4H10}$) to maleic anhydride ($\ce{C4H2O3}$) over a vanadium phosphate oxide (VPO) catalyst, a major industrial chemical produced at roughly 3 million tonnes per year. Maleic anhydride is used as an intermediate to make polyester resins, copolymers, and lubricants.
 
 :::{figure} ../figures/MA_system.png
 :label: fig-ma-network
 :alt: Reaction network diagram. n-butane at top left has three outgoing arrows: one straight across the top to MA, maleic anhydride, and two descending to AcA, acetic acid, and AcrA, acrylic acid. AcA and AcrA each have two outgoing arrows, to CO and to CO2, crossing over one another. MA at top right also has two arrows down to CO and CO2. Below the network is the skeletal structure of maleic anhydride, a five-membered ring with one ring oxygen, a carbon-carbon double bond, and two carbonyl oxygens.
 :width: 60%
 
-Complex reaction network of maleic anhydride (MA) synthesis from n-butane by partial oxidation,
-which leads to various side products and undesired parallel products, including acrylic acid
-(AcrA) and acetic acid (AcA).
+Complex reaction network of maleic anhydride (MA) synthesis from n-butane by partial oxidation, which leads to various side products and undesired parallel products, including acrylic acid (AcrA) and acetic acid (AcA).
 :::
 
 ## Parallel reactions, irreversible
 
 <!-- source: multiple_reactions.tex L70 -->
 
-For some multi-reaction systems it is possible to derive analytical solutions to the material
-balances of the batch reactor. Consider a simple network of two parallel reactions with first-order
-kinetics,
+For some multi-reaction systems it is possible to derive analytical solutions to the material balances of the batch reactor. Consider a simple network of two parallel reactions with first-order kinetics,
 
 $$
 r_1 = k_1 c\un{A} , \qquad r_2 = k_2 c\un{A} ,
@@ -132,8 +100,7 @@ $$
 \frac{c\un{A}}{c\un{A,0}} = \exp\left[-(k_1 + k_2)t\right] .
 $$ (eq-parallel-ca)
 
-Inserting this into the differential equation for B, separating the variables, and integrating
-gives
+Inserting this into the differential equation for B, separating the variables, and integrating gives
 
 $$
 \frac{c\un{B}}{c\un{A,0}} = \frac{c\un{B,0}}{c\un{A,0}}
@@ -152,28 +119,21 @@ $$ (eq-parallel-cc)
 :alt: Hand-drawn plot of concentration against time for two parallel reactions with k1 equal to twice k2. The curve for A starts at its initial value and decays to zero. The curves for B and C both rise from zero and level off, with B levelling off at roughly twice the plateau value of C.
 :width: 70%
 
-Concentration profiles for two parallel first-order reactions $\ce{A -> B}$ and $\ce{A -> C}$ in a
-constant-volume batch reactor.
+Concentration profiles for two parallel first-order reactions $\ce{A -> B}$ and $\ce{A -> C}$ in a constant-volume batch reactor.
 :::
 
-Multiplying [](#eq-parallel-cb) and [](#eq-parallel-cc) by $c\un{A,0}$, subtracting the initial
-concentrations, and taking the ratio gives a simple measure of how much B is produced relative to
-C:
+Taking the ratio of [](#eq-parallel-cb) and [](#eq-parallel-cc) gives a simple measure of how much B is produced relative to C:
 
 $$
 \frac{c\un{B} - c\un{B,0}}{c\un{C} - c\un{C,0}} = \frac{k_1}{k_2} .
 $$ (eq-parallel-ratio)
 
-The product ratio depends only on the ratio of rate constants, not on $c\un{A,0}$ or on time. We
-revisit this result in the next section, where selectivity is defined formally.
+The product ratio depends only on the ratio of rate constants, not on $c\un{A,0}$ or on time. We revisit this result in the next section, where selectivity is defined.
 
 :::{admonition} Live example
 :class: seealso
-The figure below is interactive and runs entirely in your browser — nothing to install, though it
-takes a few seconds to wake up the first time. Drag the sliders to change the two rate constants:
-the plateaus of B and C move with $k_1/(k_1 + k_2)$ and $k_2/(k_1 + k_2)$, but their ratio is
-$k_1/k_2$ from the very first instant. The MATLAB code that produces the same result follows
-underneath.
+Drag the sliders to change the two rate constants:
+the plateaus of B and C move with $k_1/(k_1 + k_2)$ and $k_2/(k_1 + k_2)$, but their ratio is always $k_1/k_2$. The MATLAB code that produces the same result follows underneath.
 :::
 
 ```{marimo} python
@@ -293,8 +253,7 @@ hold off
 
 :::{tip} Check yourself
 With $k_1 = 2.2\ \mathrm{s^{-1}}$ and $k_2 = 1\ \mathrm{s^{-1}}$ the plateaus are
-$c\un{B} = 0.688$ and $c\un{C} = 0.313\ \mathrm{mol\,m^{-3}}$, and their ratio is 2.2 at every
-instant. Check both against [](#eq-parallel-cb), [](#eq-parallel-cc), and [](#eq-parallel-ratio).
+$c\un{B} = 0.688$ and $c\un{C} = 0.313\ \mathrm{mol\,m^{-3}}$, and their ratio is 2.2 at every instant. Check both against [](#eq-parallel-cb), [](#eq-parallel-cc), and [](#eq-parallel-ratio).
 :::
 
 ## Selectivity and yield
