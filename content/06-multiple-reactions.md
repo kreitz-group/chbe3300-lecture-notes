@@ -167,6 +167,136 @@ $$ (eq-parallel-ratio)
 The product ratio depends only on the ratio of rate constants, not on $c\un{A,0}$ or on time. We
 revisit this result in the next section, where selectivity is defined formally.
 
+:::{admonition} Live example
+:class: seealso
+The figure below is interactive and runs entirely in your browser — nothing to install, though it
+takes a few seconds to wake up the first time. Drag the sliders to change the two rate constants:
+the plateaus of B and C move with $k_1/(k_1 + k_2)$ and $k_2/(k_1 + k_2)$, but their ratio is
+$k_1/k_2$ from the very first instant. The MATLAB code that produces the same result follows
+underneath.
+:::
+
+```{marimo} python
+import marimo as mo
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+```{marimo} python
+par_k1 = mo.ui.slider(
+    start=0.2,
+    stop=5,
+    step=0.1,
+    value=2.2,
+    label="Rate constant k1 (1/s)",
+    show_value=True,
+)
+par_k2 = mo.ui.slider(
+    start=0.2,
+    stop=5,
+    step=0.1,
+    value=1.0,
+    label="Rate constant k2 (1/s)",
+    show_value=True,
+)
+mo.vstack([par_k1, par_k2])
+```
+
+```{marimo} python
+par_cA0 = 1.0  # mol/m^3
+par_cB0 = 0.0  # mol/m^3
+par_cC0 = 0.0  # mol/m^3
+
+par_ksum = par_k1.value + par_k2.value
+par_time = np.linspace(0, 5, 200)
+
+# Integrated material balances for A, B, and C
+par_cA = par_cA0 * np.exp(-par_ksum * par_time)
+par_cB = par_cB0 + par_k1.value / par_ksum * (1 - np.exp(-par_ksum * par_time)) * par_cA0
+par_cC = par_cC0 + par_k2.value / par_ksum * (1 - np.exp(-par_ksum * par_time)) * par_cA0
+
+mo.md(
+    f"$k_1/k_2 = {par_k1.value / par_k2.value:.2f}$. "
+    f"At long times $c_\\mathrm{{B}} \\to {par_k1.value / par_ksum * par_cA0:.3f}$ and "
+    f"$c_\\mathrm{{C}} \\to {par_k2.value / par_ksum * par_cA0:.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$; "
+    f"99 % of A is consumed after $t = {np.log(100) / par_ksum:.2f}\\ \\mathrm{{s}}$."
+)
+```
+
+```{marimo} python
+fig_par, ax_par = plt.subplots(figsize=(5.5, 3.9))
+
+ax_par.plot(par_time, par_cA, lw=2.0, label="A")
+ax_par.plot(par_time, par_cB, lw=2.0, label="B")
+ax_par.plot(par_time, par_cC, lw=2.0, label="C")
+
+ax_par.set_xlim(0, 5)
+ax_par.set_ylim(0, 1)
+ax_par.set_xlabel("time (s)", fontsize=13)
+ax_par.set_ylabel(r"concentration (mol m$^{-3}$)", fontsize=13)
+ax_par.tick_params(labelsize=12, width=1.2, length=5)
+for sp_par in ax_par.spines.values():
+    sp_par.set_linewidth(1.2)
+ax_par.legend(loc="center right", fontsize=13, frameon=False)
+
+fig_par.tight_layout()
+fig_par
+```
+
+In MATLAB, set `k1` and `k2` to the values you want and run:
+
+```matlab
+cA0 = 1;  % mol/m3
+cB0 = 0;  % mol/m3
+cC0 = 0;  % mol/m3
+
+k1 = 2.2;  % 1/s
+k2 = 1;    % 1/s
+
+% Integrated material balances for the species A, B, and C
+cA = @(time) ...
+    cA0*exp(-(k1+k2)*time);
+
+cB = @(time) ...
+    cB0 + k1/(k1+k2)*(1-exp(-(k1+k2)*time))*cA0;
+
+cC = @(time) ...
+    cC0 + k2/(k1+k2)*(1-exp(-(k1+k2)*time))*cA0;
+
+time = linspace(0, 5, 100);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(time, cA(time), 'LineWidth', 2.0, 'LineStyle','-','DisplayName','A')
+plot(time, cB(time), 'LineWidth', 2.0, 'LineStyle','-','DisplayName','B')
+plot(time, cC(time), 'LineWidth', 2.0, 'LineStyle','-','DisplayName','C')
+
+xlim([0 5])
+ylim([0 1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{concentration\ \left(mol\,m^{-3}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','east','FontSize',16)
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+With $k_1 = 2.2\ \mathrm{s^{-1}}$ and $k_2 = 1\ \mathrm{s^{-1}}$ the plateaus are
+$c\un{B} = 0.688$ and $c\un{C} = 0.313\ \mathrm{mol\,m^{-3}}$, and their ratio is 2.2 at every
+instant. Check both against [](#eq-parallel-cb), [](#eq-parallel-cc), and [](#eq-parallel-ratio).
+:::
+
 ## Selectivity and yield
 
 <!-- source: multiple_reactions.tex L123 -->
@@ -443,6 +573,151 @@ c\un{C} = c\un{A,0}\left(1 - \frac{k_2}{k_2 - k_1}\exp\left(-k_1 t\right)
 + \frac{k_1}{k_2 - k_1}\exp\left(-k_2 t\right)\right) .
 $$ (eq-series-cc)
 
+:::{admonition} Live example
+:class: seealso
+Drag the sliders to change $k_1$ and $k_2$ and watch the maximum of B move. Setting $k_2$ equal to
+$k_1$ is allowed — the expressions above are then indeterminate, and the code switches to the
+limiting form $c\un{B} = c\un{A,0}\, k_1 t\, \exp(-k_1 t)$. The MATLAB code that produces the same
+result follows underneath.
+:::
+
+```{marimo} python
+ser_k1 = mo.ui.slider(
+    start=0.2,
+    stop=5,
+    step=0.1,
+    value=1.0,
+    label="Rate constant k1 (1/s)",
+    show_value=True,
+)
+ser_k2 = mo.ui.slider(
+    start=0.2,
+    stop=10,
+    step=0.1,
+    value=2.0,
+    label="Rate constant k2 (1/s)",
+    show_value=True,
+)
+mo.vstack([ser_k1, ser_k2])
+```
+
+```{marimo} python
+ser_cA0 = 1.0  # mol/m^3
+ser_cB0 = 0.0  # mol/m^3
+ser_k1v = ser_k1.value
+ser_k2v = ser_k2.value
+ser_time = np.linspace(0, 5, 300)
+
+# Integrated material balances for A, B, and C
+ser_cA = ser_cA0 * np.exp(-ser_k1v * ser_time)
+
+if np.isclose(ser_k1v, ser_k2v):
+    ser_cB = ser_cA0 * ser_k1v * ser_time * np.exp(-ser_k2v * ser_time)
+    ser_t_max = 1 / ser_k1v
+else:
+    ser_cB = ser_k1v * ser_cA0 / (ser_k2v - ser_k1v) * (
+        np.exp(-ser_k1v * ser_time) - np.exp(-ser_k2v * ser_time)
+    ) + ser_cB0 * np.exp(-ser_k2v * ser_time)
+    ser_t_max = np.log(ser_k2v / ser_k1v) / (ser_k2v - ser_k1v)
+
+ser_cC = ser_cA0 + ser_cB0 - ser_cA - ser_cB
+
+if np.isclose(ser_k1v, ser_k2v):
+    ser_cB_max = ser_cA0 * ser_k1v * ser_t_max * np.exp(-ser_k2v * ser_t_max)
+else:
+    ser_cB_max = ser_k1v * ser_cA0 / (ser_k2v - ser_k1v) * (
+        np.exp(-ser_k1v * ser_t_max) - np.exp(-ser_k2v * ser_t_max)
+    )
+
+mo.md(
+    f"$k_2/k_1 = {ser_k2v / ser_k1v:.2f}$. "
+    f"B peaks at $t_\\mathrm{{max}} = {ser_t_max:.3f}\\ \\mathrm{{s}}$ with "
+    f"$c_\\mathrm{{B,max}} = {ser_cB_max:.3f}\\ \\mathrm{{mol\\,m^{{-3}}}}$, "
+    f"i.e. {100 * ser_cB_max / ser_cA0:.1f} % of the initial A."
+)
+```
+
+```{marimo} python
+fig_ser, ax_ser = plt.subplots(figsize=(5.5, 3.9))
+
+ax_ser.plot(ser_time, ser_cA, lw=2.0, label="A")
+ax_ser.plot(ser_time, ser_cB, lw=2.0, label="B")
+ax_ser.plot(ser_time, ser_cC, lw=2.0, label="C")
+ax_ser.axvline(ser_t_max, color="0.6", lw=1.0, ls=":")
+
+ax_ser.set_xlim(0, 5)
+ax_ser.set_ylim(0, 1)
+ax_ser.set_xlabel("time (s)", fontsize=13)
+ax_ser.set_ylabel(r"concentration (mol m$^{-3}$)", fontsize=13)
+ax_ser.tick_params(labelsize=12, width=1.2, length=5)
+for sp_ser in ax_ser.spines.values():
+    sp_ser.set_linewidth(1.2)
+ax_ser.legend(loc="center right", fontsize=13, frameon=False)
+
+fig_ser.tight_layout()
+fig_ser
+```
+
+In MATLAB, set `k1` and `k2` to the values you want and run:
+
+```matlab
+cA0 = 1;  % mol/m3
+cB0 = 0;  % mol/m3
+cC0 = 0;  % mol/m3
+
+k1 = 1;  % 1/s
+k2 = 2;  % 1/s
+
+% Integrated material balances for the species A, B, and C
+cA = @(time) ...
+    cA0.*exp(-k1.*time);
+
+if k1 == k2
+    cB = @(time) ...
+        cA0.*k1.*time.*exp(-k2.*time);
+else
+    cB = @(time) ...
+        k1.*cA0/(k2-k1).*(exp(-k1.*time)-exp(-k2.*time)) + cB0.*exp(-k2.*time);
+end
+
+cC = @(time) ...
+    cA0 + cB0 + cC0 - cA(time) - cB(time);
+
+time = linspace(0, 5, 100);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(time, cA(time), 'LineWidth', 2.0, 'LineStyle','-','DisplayName','A')
+plot(time, cB(time), 'LineWidth', 2.0, 'LineStyle','-','DisplayName','B')
+plot(time, cC(time), 'LineWidth', 2.0, 'LineStyle','-','DisplayName','C')
+
+xlim([0 5])
+ylim([0 1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{concentration\ \left(mol\,m^{-3}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','east','FontSize',16)
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+Set $\mathrm{d}c\un{B}/\mathrm{d}t = 0$ in [](#eq-series-cb) and show that B peaks at
+$t\un{max} = \ln(k_2/k_1)/(k_2 - k_1)$. For $k_1 = 1\ \mathrm{s^{-1}}$ and $k_2 = 2\ \mathrm{s^{-1}}$
+this gives $t\un{max} = \ln 2 = 0.693\ \mathrm{s}$ and $c\un{B,max} = 0.25\ \mathrm{mol\,m^{-3}}$,
+which the script should reproduce. What happens to $t\un{max}$ and $c\un{B,max}$ as $k_2$ grows?
+:::
+
 The derivation was tedious, but the result is worth keeping. For different ratios of rate constants
 the concentration profiles look very different, and we can leverage the rate-constant ratio to
 simplify our kinetic analysis — the topic of the next section.
@@ -592,6 +867,169 @@ Comparison of the ODE system with the PSSA for various values of $k_2$.
 
 The PSSA agrees with the full ODE solution increasingly well as $k_2$ becomes large, as expected.
 The approximation still fails at very short times, however, during the initial fast transient.
+
+:::{admonition} Live example
+:class: seealso
+Solid lines are the numerical solution of the full ODE system, dashed lines the PSSA result from
+[](#eq-pssa-cb) and [](#eq-pssa-cc). Increase $k_2$ to see the two converge, and shorten the time
+window to zoom in on the transient at the start, where the PSSA is always off. The MATLAB code that
+produces the same result follows underneath.
+:::
+
+```{marimo} python
+pssa_k2 = mo.ui.slider(
+    steps=[1, 2, 5, 10, 20, 50, 100],
+    value=10,
+    label="Rate constant k2 (1/s)",
+    show_value=True,
+)
+pssa_t_end = mo.ui.slider(
+    steps=[0.2, 0.5, 1, 2, 5, 10],
+    value=10,
+    label="Time window (s)",
+    show_value=True,
+)
+mo.vstack([pssa_k2, pssa_t_end])
+```
+
+```{marimo} python
+pssa_cA0 = 1.0  # mol/m^3
+pssa_k1 = 1.0   # 1/s
+pssa_k2v = float(pssa_k2.value)
+
+# Full ODE system, integrated with a fixed-step Runge-Kutta scheme (ode45 in MATLAB)
+pssa_t = np.linspace(0, pssa_t_end.value, 4000)
+pssa_h = pssa_t[1] - pssa_t[0]
+
+
+def pssa_model(z):
+    """Right-hand side of the material balances for [A, B, C]."""
+    return np.array([-pssa_k1 * z[0], pssa_k1 * z[0] - pssa_k2v * z[1], pssa_k2v * z[1]])
+
+
+pssa_z = np.empty((len(pssa_t), 3))
+pssa_z[0] = [pssa_cA0, 0.0, 0.0]
+for pssa_i in range(len(pssa_t) - 1):
+    pssa_s1 = pssa_model(pssa_z[pssa_i])
+    pssa_s2 = pssa_model(pssa_z[pssa_i] + 0.5 * pssa_h * pssa_s1)
+    pssa_s3 = pssa_model(pssa_z[pssa_i] + 0.5 * pssa_h * pssa_s2)
+    pssa_s4 = pssa_model(pssa_z[pssa_i] + pssa_h * pssa_s3)
+    pssa_z[pssa_i + 1] = pssa_z[pssa_i] + pssa_h / 6 * (pssa_s1 + 2 * pssa_s2 + 2 * pssa_s3 + pssa_s4)
+
+# PSSA: cB = k1/k2 cA, cC = cA0 (1 - exp(-k1 t))
+pssa_cA = pssa_cA0 * np.exp(-pssa_k1 * pssa_t)
+pssa_cB = pssa_k1 / pssa_k2v * pssa_cA
+pssa_cC = pssa_cA0 * (1 - np.exp(-pssa_k1 * pssa_t))
+
+pssa_dev = np.abs(pssa_cC - pssa_z[:, 2])
+pssa_i_dev = int(np.argmax(pssa_dev))
+
+mo.md(
+    f"$k_2/k_1 = {pssa_k2v / pssa_k1:.0f}$. The PSSA predicts "
+    f"$c_\\mathrm{{B}} = {pssa_k1 / pssa_k2v:.3f}\\, c_\\mathrm{{A}}$; the largest gap in "
+    f"$c_\\mathrm{{C}}$ over this window is {pssa_dev[pssa_i_dev]:.3f} mol m$^{{-3}}$ at "
+    f"$t = {pssa_t[pssa_i_dev]:.2f}\\ \\mathrm{{s}}$."
+)
+```
+
+```{marimo} python
+fig_pssa, ax_pssa = plt.subplots(figsize=(5.5, 3.9))
+
+# Zoomed-in windows drop A, which is identical in both models, so B and C fill the axes.
+pssa_show_A = pssa_t_end.value >= 1
+if pssa_show_A:
+    ax_pssa.plot(pssa_t, pssa_z[:, 0], lw=2.0, color="C0", label="A")
+    pssa_y_max = 1.0
+else:
+    pssa_y_max = 1.1 * max(pssa_z[:, 1:].max(), pssa_cC.max())
+ax_pssa.plot(pssa_t, pssa_z[:, 1], lw=2.0, color="C1", label="B")
+ax_pssa.plot(pssa_t, pssa_z[:, 2], lw=2.0, color="C2", label="C")
+ax_pssa.plot(pssa_t, pssa_cB, lw=2.0, ls="--", color="C1", label="B (PSSA)")
+ax_pssa.plot(pssa_t, pssa_cC, lw=2.0, ls="--", color="C2", label="C (PSSA)")
+
+ax_pssa.set_xlim(0, pssa_t_end.value)
+ax_pssa.set_ylim(0, pssa_y_max)
+ax_pssa.set_xlabel("time (s)", fontsize=13)
+ax_pssa.set_ylabel(r"concentration (mol m$^{-3}$)", fontsize=13)
+ax_pssa.tick_params(labelsize=12, width=1.2, length=5)
+for sp_pssa in ax_pssa.spines.values():
+    sp_pssa.set_linewidth(1.2)
+ax_pssa.legend(loc="best", fontsize=12, frameon=False)
+
+fig_pssa.tight_layout()
+fig_pssa
+```
+
+In MATLAB, solve the ODE system with `ode45` and overlay the PSSA. Save this as a script file,
+since it ends with two local functions, and set `k2` to the value you want:
+
+```matlab
+z0 = [1; 0; 0];            % [A; B; C], mol/m3
+t  = linspace(0, 10, 4000); % s
+
+A0 = 1;   % mol/m3
+k1 = 1;   % 1/s
+k2 = 10;  % 1/s
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+% Full ODE system
+[t_sol, z] = ode45(@(tt,zz) model(tt, zz, k1, k2), t, z0);
+
+% Pseudo-steady-state approximation
+[A_pssa, B_pssa, C_pssa] = analytical(A0, t_sol, k1, k2);
+
+plot(t_sol, z(:,1), 'LineWidth', 2.0, 'DisplayName','A')
+plot(t_sol, z(:,2), 'LineWidth', 2.0, 'DisplayName','B')
+plot(t_sol, z(:,3), 'LineWidth', 2.0, 'DisplayName','C')
+plot(t_sol, B_pssa, 'LineWidth', 2.0, 'LineStyle','--', 'DisplayName','B (PSSA)')
+plot(t_sol, C_pssa, 'LineWidth', 2.0, 'LineStyle','--', 'DisplayName','C (PSSA)')
+
+xlim([0 10])
+ylim([0 1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{concentration\ \left(mol\,m^{-3}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','east','FontSize',16)
+
+grid off
+hold off
+
+function dzdt = model(~, z, k1, k2)
+A = z(1);
+B = z(2);
+C = z(3);
+
+dAdt = -k1*A;
+dBdt =  k1*A - k2*B;
+dCdt =  k2*B;
+
+dzdt = [dAdt; dBdt; dCdt];
+end
+
+function [A, B, C] = analytical(A0, t, k1, k2)
+A = A0 .* exp(-k1.*t);
+B = (k1./k2) .* A;
+C = A0 .* (1 - exp(-k1.*t));
+end
+```
+
+:::{tip} Check yourself
+For $k_1 = 1\ \mathrm{s^{-1}}$ and $k_2 = 10\ \mathrm{s^{-1}}$ the PSSA overestimates $c\un{C}$ by
+at most $0.077\ \mathrm{mol\,m^{-3}}$, at $t \approx 0.26\ \mathrm{s}$. At
+$k_2 = 100\ \mathrm{s^{-1}}$ the gap shrinks to about $0.01\ \mathrm{mol\,m^{-3}}$. Extract these
+numbers from your own `ode45` solution. Why does the PSSA always run *ahead* of the true solution
+for C?
+:::
 
 :::{figure} ../figures/reactions_in_series_initial.png
 :label: fig-dev-pssa-ode
