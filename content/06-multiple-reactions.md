@@ -1008,16 +1008,174 @@ Consider a scenario with the following values:
 - $K\un{2} = 5$, so $k\un{-2} = 0.2\ \mathrm{s^{-1}}$
 - $c\un{A,0} = 1\ \mathrm{mol\,L^{-1}}$, $c\un{B,0} = 0.2\ \mathrm{mol\,L^{-1}}$
 
-All rate laws are first order, leading to the concentration profiles in
-[](#fig-reversible-series).
+All rate laws are first order, leading to the concentration profiles below. Unlike the
+irreversible series, A is never fully consumed: all three species approach non-zero equilibrium
+concentrations, drawn as dotted lines.
 
-:::{figure} ../figures/reactions_in_series_w_eq.png
-:label: fig-reversible-series
-:alt: Plot of concentration against time from 0 to 5 seconds for the reversible series. A decays from 1 towards about 0.12 without reaching zero. B starts at 0.2, rises to a maximum of about 0.4 near t equals 0.8 seconds, then falls back to about 0.21. C rises from zero and levels off near 0.87. All three approach non-zero equilibrium values.
-:width: 60%
-
-Reversible reactions in series.
+:::{admonition} Live example
+:class: seealso
+Drag the sliders to change $k\un{+1}$ and $k\un{+2}$. The equilibrium constants stay fixed at
+$K\un{1} = 2$ and $K\un{2} = 5$, so $k\un{-1}$ and $k\un{-2}$ follow along and the final
+composition never changes — only the path towards it does. Make $k\un{+1}$ much larger than
+$k\un{+2}$ and watch B jump to $K\un{1} c\un{A}$ almost immediately; make $k\un{+2}$ much larger
+and the maximum in B disappears. The MATLAB code that produces the same result follows underneath.
 :::
+
+```{marimo} python
+rev_kp1 = mo.ui.slider(
+    steps=[0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
+    value=1,
+    label="Rate constant k+1 (1/s)",
+    show_value=True,
+)
+rev_kp2 = mo.ui.slider(
+    steps=[0.2, 0.5, 1, 2, 5, 10, 20, 50, 100],
+    value=1,
+    label="Rate constant k+2 (1/s)",
+    show_value=True,
+)
+mo.vstack([rev_kp1, rev_kp2])
+```
+
+```{marimo} python
+rev_K1 = 2.0
+rev_K2 = 5.0
+rev_kp1v = float(rev_kp1.value)
+rev_kp2v = float(rev_kp2.value)
+rev_km1 = rev_kp1v / rev_K1  # 1/s
+rev_km2 = rev_kp2v / rev_K2  # 1/s
+rev_z0 = np.array([1.0, 0.2, 0.0])  # [A, B, C], mol/L
+
+# Full ODE system, integrated with a fixed-step Runge-Kutta scheme (ode45 in MATLAB)
+rev_t = np.linspace(0, 5, 4000)
+rev_h = rev_t[1] - rev_t[0]
+
+
+def rev_model(z):
+    """Right-hand side of the material balances for [A, B, C]."""
+    rev_r1 = rev_kp1v * z[0] - rev_km1 * z[1]
+    rev_r2 = rev_kp2v * z[1] - rev_km2 * z[2]
+    return np.array([-rev_r1, rev_r1 - rev_r2, rev_r2])
+
+
+rev_z = np.empty((len(rev_t), 3))
+rev_z[0] = rev_z0
+for rev_i in range(len(rev_t) - 1):
+    rev_s1 = rev_model(rev_z[rev_i])
+    rev_s2 = rev_model(rev_z[rev_i] + 0.5 * rev_h * rev_s1)
+    rev_s3 = rev_model(rev_z[rev_i] + 0.5 * rev_h * rev_s2)
+    rev_s4 = rev_model(rev_z[rev_i] + rev_h * rev_s3)
+    rev_z[rev_i + 1] = rev_z[rev_i] + rev_h / 6 * (rev_s1 + 2 * rev_s2 + 2 * rev_s3 + rev_s4)
+
+# Equilibrium composition follows from K1 and K2 alone
+rev_cA_eq = rev_z0.sum() / (1 + rev_K1 + rev_K1 * rev_K2)
+rev_cB_eq = rev_K1 * rev_cA_eq
+rev_cC_eq = rev_K1 * rev_K2 * rev_cA_eq
+
+rev_i_max = int(np.argmax(rev_z[:, 1]))
+if 0 < rev_i_max < len(rev_t) - 1:
+    rev_peak = (
+        f"B peaks at $t = {rev_t[rev_i_max]:.2f}\\ \\mathrm{{s}}$ with "
+        f"$c_\\mathrm{{B}} = {rev_z[rev_i_max, 1]:.3f}\\ \\mathrm{{mol\\,L^{{-1}}}}$."
+    )
+else:
+    rev_peak = "B has no maximum: it moves monotonically towards its equilibrium value."
+
+mo.md(
+    f"$k_{{-1}} = {rev_km1:.2f}\\ \\mathrm{{s^{{-1}}}}$, "
+    f"$k_{{-2}} = {rev_km2:.2f}\\ \\mathrm{{s^{{-1}}}}$. "
+    f"Equilibrium: $c_\\mathrm{{A}} = {rev_cA_eq:.3f}$, $c_\\mathrm{{B}} = {rev_cB_eq:.3f}$, "
+    f"$c_\\mathrm{{C}} = {rev_cC_eq:.3f}\\ \\mathrm{{mol\\,L^{{-1}}}}$. "
+    + rev_peak
+)
+```
+
+```{marimo} python
+fig_rev, ax_rev = plt.subplots(figsize=(5.5, 3.9))
+
+ax_rev.plot(rev_t, rev_z[:, 0], lw=2.0, color="C0", label="A")
+ax_rev.plot(rev_t, rev_z[:, 1], lw=2.0, color="C1", label="B")
+ax_rev.plot(rev_t, rev_z[:, 2], lw=2.0, color="C2", label="C")
+for rev_c_eq in (rev_cA_eq, rev_cB_eq, rev_cC_eq):
+    ax_rev.axhline(rev_c_eq, color="0.6", lw=1.0, ls=":")
+
+ax_rev.set_xlim(0, 5)
+ax_rev.set_ylim(0, 1)
+ax_rev.set_xlabel("time (s)", fontsize=13)
+ax_rev.set_ylabel(r"concentration (mol L$^{-1}$)", fontsize=13)
+ax_rev.tick_params(labelsize=12, width=1.2, length=5)
+for sp_rev in ax_rev.spines.values():
+    sp_rev.set_linewidth(1.2)
+ax_rev.legend(loc="center right", fontsize=13, frameon=False)
+
+fig_rev.tight_layout()
+fig_rev
+```
+
+In MATLAB, solve the ODE system with `ode45`. Save this as a script file, since it ends with a
+local function, and set `kp1` and `kp2` to the values you want:
+
+```matlab
+z0 = [1; 0.2; 0];          % [A; B; C], mol/L
+t  = linspace(0, 5, 4000);  % s
+
+kp1 = 1;  % 1/s
+kp2 = 1;  % 1/s
+K1  = 2;
+K2  = 5;
+km1 = kp1/K1;  % 1/s
+km2 = kp2/K2;  % 1/s
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+% Full ODE system
+[t_sol, z] = ode45(@(tt,zz) model(tt, zz, kp1, km1, kp2, km2), t, z0);
+
+% Equilibrium composition follows from K1 and K2 alone
+c_tot = sum(z0);
+A_eq  = c_tot/(1 + K1 + K1*K2);
+B_eq  = K1*A_eq;
+C_eq  = K1*K2*A_eq;
+
+plot(t_sol, z(:,1), 'LineWidth', 2.0, 'DisplayName','A')
+plot(t_sol, z(:,2), 'LineWidth', 2.0, 'DisplayName','B')
+plot(t_sol, z(:,3), 'LineWidth', 2.0, 'DisplayName','C')
+yline([A_eq B_eq C_eq], ':', 'Color', [0.6 0.6 0.6], 'HandleVisibility','off')
+
+xlim([0 5])
+ylim([0 1])
+
+xlabel('$\mathrm{time\ (s)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{concentration\ \left(mol\,L^{-1}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','east','FontSize',16)
+
+grid off
+hold off
+
+function dzdt = model(~, z, kp1, km1, kp2, km2)
+A = z(1);
+B = z(2);
+C = z(3);
+
+r1 = kp1*A - km1*B;
+r2 = kp2*B - km2*C;
+
+dAdt = -r1;
+dBdt =  r1 - r2;
+dCdt =  r2;
+
+dzdt = [dAdt; dBdt; dCdt];
+end
+```
 
 As with the PSSA we can reduce the full mechanism based on a separation of timescales, but the
 underlying assumption is different. Suppose
