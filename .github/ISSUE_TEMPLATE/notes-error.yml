@@ -28,6 +28,9 @@ body:
         - "2 — Stoichiometry and Definitions"
         - "3 — Chemical Thermodynamics"
         - "4 — Mass Balance of Chemical Reactors"
+        - "5 — Reaction Kinetics"
+        - "6 — Kinetics of Multiple Reactions"
+        - "7 — Extracting Rate Laws from Experiments"
         - "Not sure / somewhere else"
     validations:
       required: true

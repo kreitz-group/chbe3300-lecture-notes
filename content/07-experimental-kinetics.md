@@ -181,6 +181,158 @@ What is the main practical drawback of the integral method?
 The integration is often difficult, and several reaction orders may need to be tested before the
 data linearize, which is time-consuming.
 
+The examples in this chapter all use the same measurements: the concentration of A in an isothermal
+batch reactor, sampled every $0.1\ \mathrm{h}$ for two hours, from runs at $50$, $65$, and
+$80\ \mathrm{^\circ C}$. The first two examples use only the run at $65\ \mathrm{^\circ C}$.
+
+:::{admonition} Live example
+:class: seealso
+Choose a postulated reaction order $n$. The plot shows the data in the linearized form
+[](#eq-integral-linearized) — for $n = 1$ that is $\ln(c\un{A,0}/c\un{A})$ vs. $t$ — together with a
+straight-line fit. Only the right order puts the points on the line. For a wrong order the points
+curve systematically around the fit, even when $R^2$ still looks respectable. The MATLAB code that
+produces the same result follows underneath.
+:::
+
+```{marimo} python
+import marimo as mo
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+```{marimo} python
+exp_time = np.round(np.arange(21) * 0.1, 1)  # h
+exp_conc = np.array([  # mol/m^3, one row per temperature
+    [100, 97.14, 94.36, 91.66, 89.04, 86.50, 84.02, 81.62, 79.29, 77.02, 74.82,
+     72.68, 70.60, 68.58, 66.62, 64.71, 62.86, 61.07, 59.32, 57.62, 55.98],
+    [100, 90.48, 81.86, 74.06, 67.01, 60.63, 54.85, 49.63, 44.90, 40.63, 36.76,
+     33.26, 30.09, 27.22, 24.63, 22.29, 20.16, 18.24, 16.51, 14.93, 13.51],
+    [100, 73.29, 53.71, 39.37, 28.85, 21.14, 15.50, 11.38, 8.32, 6.10, 4.47,
+     3.28, 2.40, 1.76, 1.29, 0.95, 0.69, 0.51, 0.37, 0.27, 0.20],
+])
+exp_temps = np.array([50.0, 65.0, 80.0]) + 273  # K
+exp_R = 8.314  # J/(mol K)
+```
+
+```{marimo} python
+int_n = mo.ui.slider(
+    steps=[0, 0.5, 1, 1.5, 2, 3],
+    value=0,
+    label="Postulated reaction order n",
+    show_value=True,
+)
+int_n
+```
+
+```{marimo} python
+int_order = float(int_n.value)
+int_conc = exp_conc[1]  # run at 65 °C
+
+# Linearized integrated rate law, y = m*t + b
+if int_order == 1:
+    int_y = np.log(int_conc[0] / int_conc)
+    int_ylabel = r"$\ln(c_\mathrm{A0}/c_\mathrm{A})$"
+    int_kunit = r"\mathrm{h^{-1}}"
+else:
+    int_y = int_conc ** (1 - int_order)
+    int_ylabel = rf"$c_\mathrm{{A}}^{{{1 - int_order:g}}}$"
+    int_kunit = rf"(\mathrm{{mol\,m^{{-3}}}})^{{{1 - int_order:g}}}\,\mathrm{{h^{{-1}}}}"
+
+int_m, int_b = np.polyfit(exp_time, int_y, 1)
+int_fit = int_m * exp_time + int_b
+int_r2 = 1 - np.sum((int_y - int_fit) ** 2) / np.sum((int_y - int_y.mean()) ** 2)
+int_k = int_m if int_order == 1 else -int_m / (1 - int_order)
+
+mo.md(f"$n = {int_order:g}$: $k = {int_k:.4g}\\ {int_kunit}$, $R^2 = {int_r2:.4f}$.")
+```
+
+```{marimo} python
+fig_int, ax_int = plt.subplots(figsize=(5.5, 3.9))
+
+ax_int.plot(exp_time, int_y, "o", ms=6, label="Exp. data")
+ax_int.plot(exp_time, int_fit, lw=2.0, label="Fit")
+
+ax_int.set_xlim(0, 2.1)
+ax_int.set_xlabel("time (h)", fontsize=13)
+ax_int.set_ylabel(int_ylabel, fontsize=13)
+ax_int.tick_params(labelsize=12, width=1.2, length=5)
+for sp_int in ax_int.spines.values():
+    sp_int.set_linewidth(1.2)
+ax_int.legend(loc="best", fontsize=13, frameon=False)
+
+fig_int.tight_layout()
+fig_int
+```
+
+In MATLAB, set `n` to the order you want to test and run:
+
+```matlab
+% Experimental data
+time = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, ...
+        1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2];     % h
+conc = [100, 90.48, 81.86, 74.06, 67.01, 60.63, 54.85, 49.63, ...
+        44.90, 40.63, 36.76, 33.26, 30.09, 27.22, 24.63, 22.29, ...
+        20.16, 18.24, 16.51, 14.93, 13.51];                       % mol/m3
+
+n = 0;  % postulated reaction order
+
+% Plot the data in the linearized form that belongs to this order
+if n == 1
+    y = log(conc(1)./conc);   % ln(cA0/cA) = k*t
+    y_label = '$\mathrm{ln(c_{A0}/c_A)\ \left(1\right)}$';
+else
+    y = conc.^(1-n);          % cA^(1-n) = cA0^(1-n) - (1-n)*k*t
+    y_label = sprintf('$\\mathrm{c_A^{%g}}$', 1-n);
+end
+
+% Linear regression y = m*x + b
+mdl = fitlm(time, y);
+b = mdl.Coefficients.Estimate(1);  % the built-in function puts the intercept first
+m = mdl.Coefficients.Estimate(2);
+
+if n == 1
+    k = m;
+else
+    k = -m/(1-n);
+end
+fprintf('n = %g: k = %.4g, R^2 = %.4f\n', n, k, mdl.Rsquared.Ordinary)
+
+y_fitted = m*time + b;
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(time, y, ...
+    'LineWidth', 2.0, 'LineStyle','None','DisplayName','Exp. Data',...
+    'Marker','o','MarkerFaceColor','auto')
+
+plot(time, y_fitted, ...
+    'LineWidth', 2.0, 'LineStyle','-','DisplayName','Fit')
+
+xlim([0 2.1])
+
+xlabel('$\mathrm{time\ (h)}$','Interpreter','latex','FontSize',16)
+ylabel(y_label,'Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','best','FontSize',16)
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+Only $n = 1$ gives $R^2 = 1.0000$, with $k = 1.00\ \mathrm{h^{-1}}$. Notice that $n = 0.5$ and
+$n = 1.5$ still reach $R^2 = 0.982$, so a high $R^2$ alone does not confirm a rate law. The
+systematic curvature of the points around the line is the better test.
+:::
+
 ## Differential method
 
 <!-- source: Experiments.tex L145 -->
@@ -190,8 +342,8 @@ useful for complex rate laws, where the integral form is hard to obtain analytic
 is:
 
 - Determine $\mathrm{d}c\un{A}/\mathrm{d}t$ from the $c\un{A}$ vs. $t$ data.
-- Postulate a rate law — or obtain it from a mechanistic analysis using the PSSA, QEA, or RDS
-  assumption — linearize it, and plot the data appropriately.
+- Postulate a rate law — or obtain it from a mechanistic analysis using the PSSA or the QEA —
+  linearize it, and plot the data appropriately.
 
 :::{figure} ../figures/DiffMethod.png
 :label: fig-differential
@@ -201,10 +353,10 @@ is:
 Reaction rates can be determined from concentration-versus-time data by differentiation.
 :::
 
-The derivative can be approximated by a finite-difference quotient. The species production rate is
+The derivative can be approximated by a finite-difference quotient, which gives the reaction rate as
 
 $$
-r_i = \frac{1}{\nu_i}\frac{\Delta c_i}{\Delta t} .
+r = \frac{1}{\nu_i}\frac{\Delta c_i}{\Delta t} .
 $$ (eq-species-rate-diff)
 
 The simplest finite-difference scheme is the forward difference,
@@ -226,7 +378,7 @@ Once the rate has been extracted from the experimental data, the reaction order 
 constant can be determined by linear regression, by nonlinear regression, or graphically. We start
 with the graphical approach.
 
-**Example.**
+For an $n$th-order rate law, taking the logarithm of the mass balance gives
 
 $$
 \begin{aligned}
@@ -236,7 +388,7 @@ $$
 \end{aligned}
 $$ (eq-differential-linearized)
 
-the linearized form. Using the differential method, both $n$ and $k$ can be extracted from a single
+a straight line in $\ln(c\un{A})$. Using the differential method, both $n$ and $k$ can be extracted from a single
 plot, whereas the integral method generally requires several attempts.
 
 :::{figure} ../figures/DifferentialMethod.png
@@ -245,6 +397,183 @@ plot, whereas the integral method generally requires several attempts.
 :width: 65%
 
 Graphical illustration of the differential method.
+:::
+
+:::{admonition} Live example
+:class: seealso
+The same run at $65\ \mathrm{^\circ C}$, analysed with the differential method. Rates are computed
+with the forward difference, [](#eq-forward-difference), called the Newton method in the code, and
+with the central difference, [](#eq-central-difference). Each set of rates is then fitted with
+[](#eq-differential-linearized). Use the slider to space the samples further apart: both schemes
+keep returning $n = 1$, but the forward difference underestimates $k$ more and more. It assigns the
+slope of the secant over $[t, t + \Delta t]$ to the left end of the interval, where the rate is
+highest. The MATLAB code that produces the same result follows underneath.
+:::
+
+```{marimo} python
+dif_dt = mo.ui.slider(
+    steps=[0.1, 0.2, 0.5],
+    value=0.1,
+    label="Sampling interval Δt (h)",
+    show_value=True,
+)
+dif_dt
+```
+
+```{marimo} python
+dif_every = int(round(dif_dt.value / 0.1))
+dif_t = exp_time[::dif_every]
+dif_c = exp_conc[1][::dif_every]  # run at 65 °C
+
+# Forward (Newton) difference: rate at t[i] from points i and i+1
+dif_r_fwd = -(dif_c[1:] - dif_c[:-1]) / (dif_t[1:] - dif_t[:-1])
+# Symmetric difference: rate at t[i] from points i-1 and i+1
+dif_r_sym = -(dif_c[2:] - dif_c[:-2]) / (dif_t[2:] - dif_t[:-2])
+
+# Linearized rate law ln(r) = n ln(c) + ln(k)
+dif_n_fwd, dif_lnk_fwd = np.polyfit(np.log(dif_c[:-1]), np.log(dif_r_fwd), 1)
+dif_n_sym, dif_lnk_sym = np.polyfit(np.log(dif_c[1:-1]), np.log(dif_r_sym), 1)
+
+mo.md(
+    f"Newton method: $n = {dif_n_fwd:.3f}$, "
+    f"$k = {np.exp(dif_lnk_fwd):.3f}\\ \\mathrm{{h^{{-1}}}}$. "
+    f"Symmetric difference: $n = {dif_n_sym:.3f}$, "
+    f"$k = {np.exp(dif_lnk_sym):.3f}\\ \\mathrm{{h^{{-1}}}}$."
+)
+```
+
+```{marimo} python
+fig_dif, (ax_dif1, ax_dif2) = plt.subplots(1, 2, figsize=(9, 3.6))
+
+ax_dif1.plot(dif_t[:-1], dif_r_fwd, "o", ms=6, color="C0", label="Newton method")
+ax_dif1.plot(dif_t[1:-1], dif_r_sym, "s", ms=6, color="C1", label="Sym. diff. method")
+ax_dif1.set_xlim(0, 2.1)
+ax_dif1.set_ylim(0, 100)
+ax_dif1.set_xlabel("time (h)", fontsize=13)
+ax_dif1.set_ylabel(r"$r$ (mol m$^{-3}$ h$^{-1}$)", fontsize=13)
+ax_dif1.legend(loc="upper right", fontsize=11, frameon=False)
+
+dif_x = np.log(dif_c)
+ax_dif2.plot(np.log(dif_c[:-1]), np.log(dif_r_fwd), "o", ms=6, color="C0")
+ax_dif2.plot(np.log(dif_c[1:-1]), np.log(dif_r_sym), "s", ms=6, color="C1")
+ax_dif2.plot(dif_x, dif_n_fwd * dif_x + dif_lnk_fwd, "-", lw=2.0, color="C0")
+ax_dif2.plot(dif_x, dif_n_sym * dif_x + dif_lnk_sym, "--", lw=2.0, color="C1")
+ax_dif2.set_xlabel(r"$\ln(c_\mathrm{A})$", fontsize=13)
+ax_dif2.set_ylabel(r"$\ln(r_\mathrm{A})$", fontsize=13)
+
+for ax_d in (ax_dif1, ax_dif2):
+    ax_d.tick_params(labelsize=12, width=1.2, length=5)
+    for sp_dif in ax_d.spines.values():
+        sp_dif.set_linewidth(1.2)
+
+fig_dif.tight_layout()
+fig_dif
+```
+
+In MATLAB, set `every` to the sampling interval you want and run:
+
+```matlab
+% Experimental data
+time = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, ...
+        1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2];     % h
+conc = [100, 90.48, 81.86, 74.06, 67.01, 60.63, 54.85, 49.63, ...
+        44.90, 40.63, 36.76, 33.26, 30.09, 27.22, 24.63, 22.29, ...
+        20.16, 18.24, 16.51, 14.93, 13.51];                       % mol/m3
+
+every = 1;  % use every n-th sample: 1 -> 0.1 h, 2 -> 0.2 h, 5 -> 0.5 h
+t = time(1:every:end);
+c = conc(1:every:end);
+
+% Calculate the rates using numerical differentiation
+r_Newton = zeros(1, numel(t)-1);  % forward (Newton) difference
+r_SDM    = zeros(1, numel(t)-2);  % symmetric difference
+
+for index = 1:numel(t)-1
+    r_Newton(index) = -(c(index+1)-c(index))/(t(index+1)-t(index));
+end
+
+for index = 2:numel(t)-1
+    r_SDM(index-1) = -(c(index+1)-c(index-1))/(t(index+1)-t(index-1));
+end
+
+% Linearized rate law: ln(r) = n*ln(cA) + ln(k)
+mdl_Newton = fitlm(log(c(1:end-1)), log(r_Newton));
+mdl_SDM    = fitlm(log(c(2:end-1)), log(r_SDM));
+
+n_Newton = mdl_Newton.Coefficients.Estimate(2);
+k_Newton = exp(mdl_Newton.Coefficients.Estimate(1));
+n_SDM    = mdl_SDM.Coefficients.Estimate(2);
+k_SDM    = exp(mdl_SDM.Coefficients.Estimate(1));
+
+fprintf('Newton method:     n = %.3f, k = %.3f 1/h\n', n_Newton, k_Newton)
+fprintf('Sym. diff. method: n = %.3f, k = %.3f 1/h\n', n_SDM, k_SDM)
+
+% Rates vs. time
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(t(1:end-1), r_Newton, ...
+    'LineWidth', 2.0, 'LineStyle','None','DisplayName','Newton Method',...
+    'Marker','o')
+plot(t(2:end-1), r_SDM, ...
+    'LineWidth', 2.0, 'LineStyle','None','DisplayName','Sym. Diff. Method',...
+    'Marker','s')
+
+xlim([0 2.1])
+ylim([0 100])
+
+xlabel('$\mathrm{time\ (h)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{r\ \left(mol\,m^{-3}\,h^{-1}\right)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','northeast','FontSize',16)
+
+grid off
+hold off
+
+% ln(r) vs. ln(cA) with the linear fits
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(log(c(1:end-1)), log(r_Newton), ...
+    'LineWidth', 2.0, 'LineStyle','None','DisplayName','Newton Method',...
+    'Marker','o')
+plot(log(c(2:end-1)), log(r_SDM), ...
+    'LineWidth', 2.0, 'LineStyle','None','DisplayName','Sym. Diff. Method',...
+    'Marker','s')
+plot(log(c), n_Newton*log(c) + log(k_Newton), ...
+    'LineWidth', 2.0, 'LineStyle','-','HandleVisibility','off')
+plot(log(c), n_SDM*log(c) + log(k_SDM), ...
+    'LineWidth', 2.0, 'LineStyle','--','HandleVisibility','off')
+
+xlabel('$\mathrm{ln(c_A)}$','Interpreter','latex','FontSize',16)
+ylabel('$\mathrm{ln(r_A)}$','Interpreter','latex','FontSize',16)
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Interpreter','latex','Location','northwest','FontSize',16)
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+At $\Delta t = 0.1\ \mathrm{h}$ the Newton method gives $k = 0.953$ and the symmetric difference
+gives $1.003\ \mathrm{h^{-1}}$; at $\Delta t = 0.5\ \mathrm{h}$ they give $0.788$ and $1.043$. For
+first-order data, $c\un{A} = c\un{A,0}e^{-kt}$, show that the forward difference returns
+$(1 - e^{-k\Delta t})/\Delta t$ instead of $k$ and the central difference returns
+$\sinh(k\Delta t)/\Delta t$. Evaluate both with $k = 1\ \mathrm{h^{-1}}$ from the integral method.
 :::
 
 ## Temperature dependence
@@ -271,6 +600,165 @@ $$
 \ln\left(\frac{k_2}{k_1}\right) = \frac{E\un{a}}{R}\left[\frac{1}{T_1} - \frac{1}{T_2}\right] .
 $$ (eq-arrhenius-two-point)
 
+:::{admonition} Live example
+:class: seealso
+All three runs, at $50$, $65$, and $80\ \mathrm{^\circ C}$, analysed in two linear steps. First, the
+differential method at each temperature: rates from central differences (MATLAB's `gradient`, which
+falls back to one-sided differences at the two end points), then a fit of
+[](#eq-differential-linearized) that gives $n$ and $\ln k$. Second, a fit of $\ln k$ vs. $1000/T$,
+[](#eq-arrhenius-linear), that gives $E\un{a}$ from the slope and $A$ from the intercept. This
+example has no controls; it is computed from the data in your browser, and the MATLAB code that
+produces the same result follows underneath.
+:::
+
+```{marimo} python
+arr_lnc = np.log(exp_conc)
+arr_lnr = np.log(-np.gradient(exp_conc, exp_time, axis=1))
+
+# Differential method at each temperature: ln(r) = n ln(c) + ln(k)
+arr_fits = np.array([np.polyfit(arr_lnc[i], arr_lnr[i], 1) for i in range(3)])
+arr_order, arr_lnk = arr_fits[:, 0], arr_fits[:, 1]
+
+# Arrhenius fit: ln(k) = -(Ea/R) (1/T) + ln(A), with x = 1000/T
+arr_x = 1000 / exp_temps
+arr_slope, arr_int = np.polyfit(arr_x, arr_lnk, 1)
+arr_Ea = -arr_slope * exp_R * 1000  # J/mol
+arr_A = np.exp(arr_int)  # 1/h
+
+mo.md(
+    "Reaction orders: "
+    + ", ".join(f"${n:.3f}$" for n in arr_order)
+    + "; rate constants: "
+    + ", ".join(f"${np.exp(lk):.3f}$" for lk in arr_lnk)
+    + r"$\ \mathrm{h^{-1}}$. "
+    + f"$E_\\mathrm{{a}} = {arr_Ea / 1000:.2f}\\ \\mathrm{{kJ\\,mol^{{-1}}}}$, "
+    + f"$A = {arr_A:.2e}\\ \\mathrm{{h^{{-1}}}}$."
+)
+```
+
+```{marimo} python
+fig_arr, (ax_arr1, ax_arr2) = plt.subplots(1, 2, figsize=(9, 3.6))
+
+for arr_i in range(3):
+    ax_arr1.plot(arr_lnc[arr_i], arr_lnr[arr_i], "o", ms=5, color=f"C{arr_i}",
+                 label=f"{exp_temps[arr_i] - 273:.0f} °C")
+    ax_arr1.plot(arr_lnc[arr_i], arr_order[arr_i] * arr_lnc[arr_i] + arr_lnk[arr_i],
+                 "-", lw=1.5, color=f"C{arr_i}")
+ax_arr1.set_xlim(-2, 5)
+ax_arr1.set_ylim(-2, 6)
+ax_arr1.set_xlabel(r"$\ln(c)$", fontsize=13)
+ax_arr1.set_ylabel(r"$\ln(r)$", fontsize=13)
+ax_arr1.legend(loc="lower right", fontsize=11, frameon=False)
+
+ax_arr2.plot(arr_x, arr_lnk, "ko", ms=7, label=r"$\ln(k)$")
+ax_arr2.plot(arr_x, arr_slope * arr_x + arr_int, "k-", lw=1.5, label="Arrhenius fit")
+ax_arr2.set_xlim(2.8, 3.15)
+ax_arr2.set_ylim(-1.5, 1.5)
+ax_arr2.set_xlabel(r"$1000/T$ (K$^{-1}$)", fontsize=13)
+ax_arr2.set_ylabel(r"$\ln(k)$", fontsize=13)
+ax_arr2.legend(loc="upper right", fontsize=11, frameon=False)
+
+for ax_a in (ax_arr1, ax_arr2):
+    ax_a.tick_params(labelsize=12, width=1.2, length=5)
+    for sp_arr in ax_a.spines.values():
+        sp_arr.set_linewidth(1.2)
+
+fig_arr.tight_layout()
+fig_arr
+```
+
+In MATLAB:
+
+```matlab
+% Time in hours
+time = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, ...
+        1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2];
+
+% Concentration c in mol/m^3, one row per temperature
+conc = [100, 97.14, 94.36, 91.66, 89.04, 86.50, 84.02, 81.62, 79.29, 77.02, 74.82, 72.68, 70.60, 68.58, 66.62, 64.71, 62.86, 61.07, 59.32, 57.62, 55.98;
+        100, 90.48, 81.86, 74.06, 67.01, 60.63, 54.85, 49.63, 44.90, 40.63, 36.76, 33.26, 30.09, 27.22, 24.63, 22.29, 20.16, 18.24, 16.51, 14.93, 13.51;
+        100, 73.29, 53.71, 39.37, 28.85, 21.14, 15.50, 11.38, 8.32, 6.10, 4.47, 3.28, 2.40, 1.76, 1.29, 0.95, 0.69, 0.51, 0.37, 0.27, 0.20];
+
+% Temperature in Kelvin
+temps = [50, 65, 80] + 273;
+
+%% Rates by numerical differentiation
+rate   = zeros(size(conc));
+lnrate = zeros(size(conc));
+lnconc = zeros(size(conc));
+
+for i = 1:size(conc,1)
+    rate(i,:)   = -gradient(conc(i,:), time);  % central differences inside, one-sided at the ends
+    lnrate(i,:) = log(rate(i,:));
+    lnconc(i,:) = log(conc(i,:));
+end
+
+%% Fit the linearized rate law ln(r) = n*ln(c) + ln(k) at each temperature
+lnk   = zeros(size(conc,1),1);
+order = zeros(size(conc,1),1);
+
+for i = 1:size(conc,1)
+    p = polyfit(lnconc(i,:), lnrate(i,:), 1);
+    order(i) = p(1);   % slope = reaction order
+    lnk(i)   = p(2);   % intercept = ln(k)
+end
+
+disp(table((temps-273)', order, exp(lnk), 'VariableNames', {'T_degC','n','k_per_h'}))
+
+%% Arrhenius fit: ln(k) = -(Ea/R)*(1/T) + ln(A), with x = 1000/T
+x = 1000 ./ temps;
+y = lnk';
+
+p = polyfit(x, y, 1);   % p(1) = slope, p(2) = intercept
+
+R  = 8.314;             % J/(mol K)
+Ea = -p(1) * R * 1000;  % J/mol (the factor 1000 undoes x = 1000/T)
+A  = exp(p(2));         % same units as k, 1/h
+
+fprintf('Ea = %.2f kJ/mol\n', Ea/1000);
+fprintf('A  = %.2e 1/h\n', A);
+
+%% Plotting
+figure('Position',[100 100 1000 400])
+tiledlayout(1,2,'TileSpacing','compact','Padding','compact')
+
+% ln(r) vs ln(c) with the fitted lines
+nexttile
+hold on; grid on
+for i = 1:size(conc,1)
+    h = plot(lnconc(i,:), lnrate(i,:), 'o', 'LineWidth', 2, 'MarkerSize', 8, ...
+        'DisplayName', sprintf('%d °C', temps(i)-273));
+    plot(lnconc(i,:), order(i)*lnconc(i,:) + lnk(i), '-', ...
+        'Color', h.Color, 'LineWidth', 1.5, 'HandleVisibility', 'off')
+end
+legend('Location','best')
+xlim([-2 5])
+ylim([-2 6])
+xlabel('$\ln(c)$','Interpreter','latex')
+ylabel('$\ln(r)$','Interpreter','latex')
+set(gca,'FontSize',14)
+
+% Arrhenius plot
+nexttile
+hold on; grid on
+plot(1000./temps, lnk, 'ko', 'LineWidth', 2, 'MarkerSize', 9, 'DisplayName', 'ln(k)')
+plot(x, polyval(p, x), 'k-', 'LineWidth', 1.5, 'DisplayName', 'Arrhenius fit')
+legend('Location','best')
+xlim([2.8 3.15])
+ylim([-1.5 1.5])
+xlabel('$1000/T\ \mathrm{(K^{-1})}$','Interpreter','latex')
+ylabel('$\ln(k)$','Interpreter','latex')
+set(gca,'FontSize',14)
+```
+
+:::{tip} Check yourself
+The orders come out at $n = 0.99$ rather than exactly 1, a small bias from the one-sided
+differences at the ends of each run. The Arrhenius fit gives
+$E\un{a} = 74.5\ \mathrm{kJ\,mol^{-1}}$ and $A = 3.4 \times 10^{11}\ \mathrm{h^{-1}}$. Check the
+activation energy with the two-point formula, [](#eq-arrhenius-two-point), using the rate constants
+at $50$ and $80\ \mathrm{^\circ C}$.
+:::
+
 ## Nonlinear regression
 
 <!-- source: Experiments.tex L229 -->
@@ -280,7 +768,8 @@ still very useful as sanity checks, because the linearization makes the paramete
 visually transparent. In a modern lab, however, parameters are typically extracted by nonlinear
 regression directly against the ODE system.
 
-For the simple reaction $\ce{A -> products}$ with first-order kinetics in A,
+For the simple reaction $\ce{A -> products}$ with an $n$th-order rate law in A, the batch-reactor
+mass balance is
 
 $$
 \frac{\mathrm{d}c\un{A}}{\mathrm{d}t}
@@ -297,9 +786,417 @@ $$
 $$ (eq-nonlinear-objective)
 
 This is the standard approach for complex rate expressions. A wide range of nonlinear optimizers is
-available in MATLAB or Python — Levenberg–Marquardt, BFGS, and others. In most cases you will need
+available — Nelder–Mead, Levenberg–Marquardt, BFGS, and others; in MATLAB, `fminsearch` minimizes a
+scalar objective and `lsqnonlin` minimizes a sum of squared residuals. In most cases you will need
 to provide parameter bounds and reasonable initial guesses, since the objective function often has
 many local minima.
+
+In the two examples below the residuals are concentrations: each iteration solves the batch-reactor
+mass balance, [](#eq-nonlinear-ode) with $n = 1$, and compares the simulated $c\un{A}(t)$ with the
+measured one.
+
+:::{admonition} Live example
+:class: seealso
+A fit to a single run. With only one temperature, the data contain no information about the
+temperature dependence, so $A$ and $E\un{a}$ cannot both be determined: $E\un{a}$ is fixed and only
+$A$ is fitted, with `fminsearch`. Choose the run, then change the fixed activation energy. $A$ moves
+by orders of magnitude, but the fit and its sum of squared residuals do not change at all. Every
+pair $(A, E\un{a})$ that gives the same $k(T)$ describes this run equally well. The MATLAB code that
+produces the same result follows underneath.
+:::
+
+```{marimo} python
+from scipy.optimize import minimize_scalar
+
+nls_run = mo.ui.dropdown(
+    options={"50 °C": 0, "65 °C": 1, "80 °C": 2},
+    value="50 °C",
+    label="Run used for the fit",
+)
+nls_Ea = mo.ui.slider(
+    steps=[60, 65, 70, 75, 80, 85, 90],
+    value=75,
+    label="Fixed activation energy Ea (kJ/mol)",
+    show_value=True,
+)
+mo.vstack([nls_run, nls_Ea])
+```
+
+```{marimo} python
+nls_i = nls_run.value
+nls_c = exp_conc[nls_i]
+nls_T = exp_temps[nls_i]
+nls_Ea_J = nls_Ea.value * 1e3  # J/mol
+
+
+def nls_sim(k0):
+    """Solution of dc/dt = -k0 exp(-Ea/RT) c at the sample times (what ode45 computes)."""
+    return nls_c[0] * np.exp(-k0 * np.exp(-nls_Ea_J / (exp_R * nls_T)) * exp_time)
+
+
+def nls_cost(log_k0):
+    return np.sum((nls_sim(10**log_k0) - nls_c) ** 2)
+
+
+# Minimize over log10(k0) so the search is well scaled for any Ea
+nls_opt = minimize_scalar(nls_cost, bounds=(0, 20), method="bounded",
+                          options={"xatol": 1e-10})
+nls_k0 = 10**nls_opt.x
+nls_fit = nls_sim(nls_k0)
+
+mo.md(
+    f"$E_\\mathrm{{a}} = {nls_Ea.value:.2f}\\ \\mathrm{{kJ\\,mol^{{-1}}}}$ (fixed), "
+    f"$A = {nls_k0:.2e}\\ \\mathrm{{h^{{-1}}}}$, "
+    f"sum of squared residuals $= {nls_opt.fun:.4f}\\ (\\mathrm{{mol\\,m^{{-3}}}})^2$."
+)
+```
+
+```{marimo} python
+fig_nls, (ax_nls1, ax_nls2) = plt.subplots(1, 2, figsize=(9, 3.6))
+nls_col = f"C{nls_i}"
+nls_label = f"{nls_T - 273:.0f} °C"
+
+ax_nls1.plot(exp_time, nls_fit, "-", lw=2.0, color=nls_col, label=f"{nls_label}, fit")
+ax_nls1.plot(exp_time, nls_c, "o", ms=6, mfc="none", color=nls_col, label=f"{nls_label}, exp")
+ax_nls1.set_xlim(0, 2.1)
+ax_nls1.set_ylim(0, 105)
+ax_nls1.set_xlabel("time (h)", fontsize=13)
+ax_nls1.set_ylabel(r"$c$ (mol m$^{-3}$)", fontsize=13)
+ax_nls1.legend(loc="upper right", fontsize=11, frameon=False)
+
+ax_nls2.plot([0, 100], [0, 100], ":", color="0.5", lw=1.0)
+ax_nls2.plot(nls_c, nls_fit, "o", ms=6, mfc="none", color=nls_col, label=nls_label)
+ax_nls2.set_xlim(0, 105)
+ax_nls2.set_ylim(0, 105)
+ax_nls2.set_xlabel(r"$c_\mathrm{exp}$ (mol m$^{-3}$)", fontsize=13)
+ax_nls2.set_ylabel(r"$c_\mathrm{fit}$ (mol m$^{-3}$)", fontsize=13)
+ax_nls2.legend(loc="lower right", fontsize=11, frameon=False)
+
+for ax_n in (ax_nls1, ax_nls2):
+    ax_n.tick_params(labelsize=12, width=1.2, length=5)
+    for sp_nls in ax_n.spines.values():
+        sp_nls.set_linewidth(1.2)
+
+fig_nls.tight_layout()
+fig_nls
+```
+
+In MATLAB, save this as a script file, since it ends with local functions, and set
+`data_set_eval` and `Ea_init` to the values you want:
+
+```matlab
+% Time in hours
+time = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, ...
+        1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2];
+
+% Concentration c in mol/m^3, one row per temperature
+conc = [100, 97.14, 94.36, 91.66, 89.04, 86.50, 84.02, 81.62, 79.29, 77.02, 74.82, 72.68, 70.60, 68.58, 66.62, 64.71, 62.86, 61.07, 59.32, 57.62, 55.98;
+        100, 90.48, 81.86, 74.06, 67.01, 60.63, 54.85, 49.63, 44.90, 40.63, 36.76, 33.26, 30.09, 27.22, 24.63, 22.29, 20.16, 18.24, 16.51, 14.93, 13.51;
+        100, 73.29, 53.71, 39.37, 28.85, 21.14, 15.50, 11.38, 8.32, 6.10, 4.47, 3.28, 2.40, 1.76, 1.29, 0.95, 0.69, 0.51, 0.37, 0.27, 0.20];
+
+% Temperature in Kelvin
+temps = [50, 65, 80] + 273;
+
+%% Parameters
+% Select which dataset to use for fitting
+% 1: T = 50 °C, 2: T = 65 °C, 3: T = 80 °C
+data_set_eval = 1;
+
+% Initial guesses for the parameters before optimization
+% k0: pre-exponential factor (Arrhenius), units: 1/h
+% Ea: activation energy, units: J/mol (fixed during optimization)
+k0_init = 3.5e11;
+Ea_init = 75e3;
+
+%% Optimization using fminsearch (Nelder-Mead)
+t_data = time;
+c_data = conc(data_set_eval, :);
+T_data = temps(data_set_eval);
+
+% Since Ea is fixed, only k0 is optimized. The anonymous function @(p)
+% fixes Ea and the data while letting p = k0 vary; fminsearch minimizes
+% the scalar cost returned by cost_Temp.
+p0 = k0_init;
+p_opt = fminsearch(@(p) cost_Temp(p, Ea_init, t_data, c_data, T_data), p0);
+
+k0_fit = p_opt(1);
+Ea_fit = Ea_init;   % Ea was not optimized, so we keep its initial value
+
+fprintf('Ea = %.2f kJ/mol (fixed)\n', Ea_fit/1000);
+fprintf('A  = %.2e 1/h\n', k0_fit);
+fprintf('SSE = %.4f (mol/m3)^2\n', cost_Temp(k0_fit, Ea_fit, t_data, c_data, T_data));
+
+%% Simulate with the fitted parameters
+c_fit = sim_exp_Temp(t_data, c_data(1), k0_fit, Ea_fit, T_data);
+
+label_T = [num2str(T_data - 273), ' °C'];
+
+%% Plotting
+figure('Position', [100, 100, 1000, 500]);
+
+% Left: concentration vs time
+subplot(1, 2, 1);
+hold on; grid on; box on
+plot(t_data, c_fit, '-', 'LineWidth', 2, 'DisplayName', [label_T, ', fit']);
+plot(t_data, c_data, 'o', 'MarkerSize', 9, 'DisplayName', [label_T, ', exp']);
+xlabel('$t \;/\; \mathrm{h}$', 'Interpreter', 'latex', 'FontSize', 12);
+ylabel('$c \;/\; \mathrm{mol \; m^{-3}}$', 'Interpreter', 'latex', 'FontSize', 12);
+legend('Location', 'best');
+hold off;
+
+% Right: parity plot (simulated vs experimental concentration)
+subplot(1, 2, 2);
+hold on; grid on; box on
+plot(c_data, c_fit, 'o', 'LineWidth', 2, 'MarkerSize', 9, 'DisplayName', label_T);
+plot([0 100], [0 100], 'k:', 'HandleVisibility', 'off');
+xlabel('$c_\mathrm{exp} \;/\;\mathrm{mol\; m^{-3}}$', 'Interpreter', 'latex', 'FontSize', 12);
+ylabel('$c_\mathrm{fit} \;/\;\mathrm{mol\; m^{-3}}$', 'Interpreter', 'latex', 'FontSize', 12);
+legend('Location', 'best');
+hold off;
+
+function dcdt = balance_Temp(~, c, k0, Ea, T)
+    % Batch-reactor mass balance for a first-order Arrhenius reaction:
+    % dc/dt = -k0 * exp(-Ea / RT) * c
+    R = 8.314;  % universal gas constant, J/(mol K)
+    dcdt = -k0 * exp(-Ea / (R * T)) * c;
+end
+
+function sim = sim_exp_Temp(time, c_init, k0, Ea, T)
+    % Solves the ODE and returns the simulated concentrations at the
+    % experimental time points as a row vector, matching the data layout.
+    opts = odeset('RelTol', 1e-8, 'AbsTol', 1e-10);
+    [~, sol] = ode45(@(t, c) balance_Temp(t, c, k0, Ea, T), time, c_init, opts);
+    sim = sol';
+end
+
+function cost = cost_Temp(p, Ea, time, data, T)
+    % Sum of squared residuals between simulation and experiment
+    k0 = p(1);
+    sim = sim_exp_Temp(time, data(1), k0, Ea, T);
+    residuals = sim - data;
+    cost = sum(residuals.^2);
+end
+```
+
+:::{tip} Check yourself
+For the run at $50\ \mathrm{^\circ C}$, $E\un{a} = 75\ \mathrm{kJ\,mol^{-1}}$ gives
+$A = 3.91 \times 10^{11}\ \mathrm{h^{-1}}$ and $E\un{a} = 60\ \mathrm{kJ\,mol^{-1}}$ gives
+$A = 1.47 \times 10^{9}\ \mathrm{h^{-1}}$. Show that both pairs give the same rate constant,
+$k(323\ \mathrm{K}) = 0.290\ \mathrm{h^{-1}}$.
+:::
+
+To separate $A$ from $E\un{a}$, the fit must see several temperatures at once. The residuals of all
+runs are concatenated into one vector and minimized together with `lsqnonlin`.
+
+:::{admonition} Live example
+:class: seealso
+A global fit of $A$ and $E\un{a}$ to all three runs simultaneously. Untick a temperature to leave
+its run out of the fit: its curve is then a *prediction* from the other two, drawn dashed. How well a
+fitted model predicts a run it has never seen is a much stronger test than how well it fits the
+runs it was fitted to. The MATLAB code that produces the same result follows underneath.
+:::
+
+```{marimo} python
+from scipy.optimize import least_squares
+
+glb_use = mo.ui.array(
+    [mo.ui.checkbox(value=True, label=f"{t - 273:.0f} °C") for t in exp_temps]
+)
+mo.hstack([mo.md("Runs used in the fit:"), glb_use.hstack(gap=1.5)], justify="start")
+```
+
+```{marimo} python
+glb_sets = [i for i in range(3) if glb_use.value[i]]
+
+
+def glb_sim(k0, Ea, i):
+    """Solution of dc/dt = -k0 exp(-Ea/RT) c for run i (what ode45 computes)."""
+    return exp_conc[i, 0] * np.exp(-k0 * np.exp(-Ea / (exp_R * exp_temps[i])) * exp_time)
+
+
+def glb_resid(p):
+    # p = [log10(k0), Ea in kJ/mol]; both are of order 10-100, so the fit is well scaled
+    return np.concatenate([glb_sim(10 ** p[0], p[1] * 1e3, i) - exp_conc[i] for i in glb_sets])
+
+
+if len(glb_sets) >= 2:
+    glb_opt = least_squares(glb_resid, x0=[np.log10(3.1e11), 75.0],
+                            bounds=([0, 5], [13, 150]), xtol=1e-12, ftol=1e-12)
+    glb_k0, glb_Ea = 10 ** glb_opt.x[0], glb_opt.x[1] * 1e3
+    glb_msg = mo.md(
+        f"$E_\\mathrm{{a}} = {glb_Ea / 1000:.2f}\\ \\mathrm{{kJ\\,mol^{{-1}}}}$, "
+        f"$A = {glb_k0:.2e}\\ \\mathrm{{h^{{-1}}}}$, "
+        f"sum of squared residuals $= {np.sum(glb_opt.fun ** 2):.4f}\\ (\\mathrm{{mol\\,m^{{-3}}}})^2$."
+    )
+else:
+    glb_k0 = glb_Ea = None
+    glb_msg = mo.md(
+        "Select at least two runs: a single temperature cannot separate $A$ from $E_\\mathrm{a}$."
+    )
+glb_msg
+```
+
+```{marimo} python
+fig_glb, (ax_glb1, ax_glb2) = plt.subplots(1, 2, figsize=(9, 3.6))
+ax_glb2.plot([0, 100], [0, 100], ":", color="0.5", lw=1.0)
+
+for glb_i in range(3):
+    glb_col = f"C{glb_i}"
+    glb_label = f"{exp_temps[glb_i] - 273:.0f} °C"
+    ax_glb1.plot(exp_time, exp_conc[glb_i], "o", ms=5, mfc="none", color=glb_col)
+    if glb_k0 is not None:
+        glb_fit = glb_sim(glb_k0, glb_Ea, glb_i)
+        glb_used = glb_i in glb_sets
+        ax_glb1.plot(exp_time, glb_fit, "-" if glb_used else "--", lw=2.0, color=glb_col,
+                     label=f"{glb_label}, {'fit' if glb_used else 'predicted'}")
+        ax_glb2.plot(exp_conc[glb_i], glb_fit, "o", ms=5, mfc="none", color=glb_col,
+                     label=glb_label)
+
+ax_glb1.set_xlim(0, 2.1)
+ax_glb1.set_ylim(0, 105)
+ax_glb1.set_xlabel("time (h)", fontsize=13)
+ax_glb1.set_ylabel(r"$c$ (mol m$^{-3}$)", fontsize=13)
+ax_glb2.set_xlim(0, 105)
+ax_glb2.set_ylim(0, 105)
+ax_glb2.set_xlabel(r"$c_\mathrm{exp}$ (mol m$^{-3}$)", fontsize=13)
+ax_glb2.set_ylabel(r"$c_\mathrm{fit}$ (mol m$^{-3}$)", fontsize=13)
+if glb_k0 is not None:
+    ax_glb1.legend(loc="upper right", fontsize=10, frameon=False)
+    ax_glb2.legend(loc="lower right", fontsize=10, frameon=False)
+
+for ax_g in (ax_glb1, ax_glb2):
+    ax_g.tick_params(labelsize=12, width=1.2, length=5)
+    for sp_glb in ax_g.spines.values():
+        sp_glb.set_linewidth(1.2)
+
+fig_glb.tight_layout()
+fig_glb
+```
+
+In MATLAB, save this as a script file and list the runs to fit in `fit_sets`. Note that the listing
+fits $\log_{10} A$ rather than $A$: $A \approx 10^{11}$ and $E\un{a} \approx 10^{5}$ differ by six
+orders of magnitude, and on that scale `lsqnonlin` stalls before it has moved $A$ from its initial
+guess. Rescaling parameters to similar magnitudes is a routine part of setting up a fit.
+
+```matlab
+% Time in hours
+time = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, ...
+        1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2];
+
+% Concentration c in mol/m^3, one row per temperature
+conc = [100, 97.14, 94.36, 91.66, 89.04, 86.50, 84.02, 81.62, 79.29, 77.02, 74.82, 72.68, 70.60, 68.58, 66.62, 64.71, 62.86, 61.07, 59.32, 57.62, 55.98;
+        100, 90.48, 81.86, 74.06, 67.01, 60.63, 54.85, 49.63, 44.90, 40.63, 36.76, 33.26, 30.09, 27.22, 24.63, 22.29, 20.16, 18.24, 16.51, 14.93, 13.51;
+        100, 73.29, 53.71, 39.37, 28.85, 21.14, 15.50, 11.38, 8.32, 6.10, 4.47, 3.28, 2.40, 1.76, 1.29, 0.95, 0.69, 0.51, 0.37, 0.27, 0.20];
+
+% Temperature in Kelvin
+temps = [50, 65, 80] + 273;
+
+fit_sets = [1 2 3];  % experiments used in the fit; the others are predicted
+
+%% Setup
+c_inits = conc(:,1)';  % initial concentrations of all experiments
+
+% Initial guesses for both free parameters
+k0_init = 3.1e11;  % 1/h
+Ea_init = 75e3;    % J/mol
+
+% k0 (~1e11) and Ea (~1e5) differ by six orders of magnitude, which stalls
+% the optimizer. Fitting log10(k0) instead puts both on a similar scale.
+p0 = [log10(k0_init), Ea_init];
+lb = [log10(1),     5e3];    % k0 >= 1 1/h,    Ea >= 5 kJ/mol
+ub = [log10(10e12), 150e3];  % k0 <= 1e13 1/h, Ea <= 150 kJ/mol
+
+%% Optimization using lsqnonlin (least squares)
+% All experiments are fitted at once by concatenating their residuals into
+% a single vector; lsqnonlin minimizes the sum of its squares.
+opts = optimoptions('lsqnonlin', 'Display', 'iter');
+p_opt = lsqnonlin(@(p) resid_Temp_multi(p, time, c_inits(fit_sets), ...
+                  conc(fit_sets,:), temps(fit_sets)), p0, lb, ub, opts);
+
+k0_fit = 10^p_opt(1);  % back-transform from log10 scale
+Ea_fit = p_opt(2);
+
+fprintf('Ea = %.2f kJ/mol\n', Ea_fit/1000);
+fprintf('A  = %.2e 1/h\n', k0_fit);
+
+%% Simulate every experiment with the fitted parameters
+sim_res = zeros(size(conc));
+for i = 1:size(conc, 1)
+    sim_res(i,:) = sim_exp_Temp(time, c_inits(i), k0_fit, Ea_fit, temps(i));
+end
+
+%% Plotting
+figure('Position', [100, 100, 1400, 600]);
+colors = lines(3);
+
+% Left: concentration vs time. Solid lines are fits, dashed are predictions.
+subplot(1, 2, 1);
+hold on; grid on;
+for i = 1:size(conc, 1)
+    label_T = [num2str(temps(i)-273), ' °C'];
+    if ismember(i, fit_sets)
+        style = '-';  tag = ', fit';
+    else
+        style = '--'; tag = ', predicted';
+    end
+    plot(time, sim_res(i,:), style, 'Color', colors(i,:), 'LineWidth', 2, ...
+        'DisplayName', [label_T, tag]);
+    plot(time, conc(i,:), 'o', 'Color', colors(i,:), 'MarkerSize', 9, ...
+        'DisplayName', [label_T, ', exp']);
+end
+xlabel('$t \quad \mathrm{(h)}$', 'Interpreter', 'latex', 'FontSize', 12);
+ylabel('$c \quad \mathrm{(mol\,m^{-3})}$', 'Interpreter', 'latex', 'FontSize', 12);
+legend('Location', 'best');
+hold off;
+
+% Right: parity plot (simulated vs experimental concentration)
+subplot(1, 2, 2);
+hold on; grid on;
+for i = 1:size(conc, 1)
+    plot(conc(i,:), sim_res(i,:), 'o', 'Color', colors(i,:), 'LineWidth', 2, ...
+        'MarkerSize', 9, 'DisplayName', [num2str(temps(i)-273), ' °C']);
+end
+plot([0 100], [0 100], 'k:', 'HandleVisibility', 'off');
+xlabel('$c_\mathrm{exp} \quad \mathrm{(mol\,m^{-3})}$', 'Interpreter', 'latex', 'FontSize', 12);
+ylabel('$c_\mathrm{fit} \quad \mathrm{(mol\,m^{-3})}$', 'Interpreter', 'latex', 'FontSize', 12);
+legend('Location', 'best');
+hold off;
+
+function dcdt = balance_Temp(~, c, k0, Ea, T)
+    % Batch-reactor mass balance for a first-order Arrhenius reaction:
+    % dc/dt = -k0 * exp(-Ea / RT) * c
+    R = 8.314;  % universal gas constant, J/(mol K)
+    dcdt = -k0 * exp(-Ea / (R * T)) * c;
+end
+
+function sim = sim_exp_Temp(time, c_init, k0, Ea, T)
+    % Solves the ODE for one experiment and returns the simulated
+    % concentrations at the experimental time points as a row vector.
+    opts = odeset('RelTol', 1e-8, 'AbsTol', 1e-10);
+    [~, sol] = ode45(@(t, c) balance_Temp(t, c, k0, Ea, T), time, c_init, opts);
+    sim = sol';
+end
+
+function res = resid_Temp_multi(p, time, c_inits, data, T)
+    % Residuals of all experiments, concatenated into one row vector.
+    %   p(1) = log10(k0), p(2) = Ea
+    %   data : experimental concentrations, one row per experiment
+    k0 = 10^p(1);
+    Ea = p(2);
+    res = [];
+    for i = 1:length(T)
+        sim = sim_exp_Temp(time, c_inits(i), k0, Ea, T(i));
+        res = [res, sim - data(i,:)];
+    end
+end
+```
+
+:::{tip} Check yourself
+The global fit to all three runs gives $E\un{a} = 74.93\ \mathrm{kJ\,mol^{-1}}$ and
+$A = 3.80 \times 10^{11}\ \mathrm{h^{-1}}$, close to the two-step linearized result in the
+previous section ($74.5\ \mathrm{kJ\,mol^{-1}}$). Fitted to the $50$ and
+$65\ \mathrm{^\circ C}$ runs only, it predicts the $80\ \mathrm{^\circ C}$ run almost exactly.
+:::
 
 ## Excess of reactants methods
 
@@ -397,7 +1294,9 @@ reactant and is therefore negative, so it is $-r\un{A,0}$ that we take the logar
 The methods in this chapter extract empirical rate-law parameters but cannot tell us what happens
 at the atomic level. They do not verify a proposed reaction mechanism on their own. Discriminating
 between candidate mechanisms generally requires complementary information, such as
-electronic-structure calculations of the underlying elementary steps ([](#ch-microscopic)).
+electronic-structure calculations of the underlying elementary steps.
+<!-- Restore the link ([](#ch-microscopic)) when chapter 8 is released. -->
+
 :::
 
 ## Experimental data
@@ -593,7 +1492,9 @@ needed to reconstruct the rest.
   analytical accuracy, reproducibility.
 - Empirical rate-law fitting cannot verify a reaction mechanism; complementary tools —
   electronic-structure calculations, isotope labeling, spectroscopy — are needed for mechanistic
-  discrimination ([](#ch-microscopic), [](#ch-mechanisms)).
+  discrimination.
+  <!-- Restore the links ([](#ch-microscopic), [](#ch-mechanisms)) when chapters 8 and 9 are released. -->
+
 - For a reaction network with more reactions than independent ones, the rank $R_\nu$ of the
   stoichiometric matrix sets the number of key species that must be measured. Non-key species follow
   from $\Delta\vect{n}_2 = \mtrx{N}_{2,1}\,\mtrx{N}_{1,1}^{-1}\,\Delta\vect{n}_1$, [](#eq-nonkey).

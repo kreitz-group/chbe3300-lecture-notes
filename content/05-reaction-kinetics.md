@@ -211,7 +211,8 @@ Can anyone name an example of an autocatalytic reaction?
 
 The reaction rate equation is a complex function, so we try to factor out some — if not all — of
 the temperature dependence into a prefactor, our rate constant. We will say much more about rate
-constants when we look into transition state theory in [](#ch-microscopic).
+constants when we look into transition state theory in a later chapter.
+<!-- Restore the link ([](#ch-microscopic)) when chapter 8 is released. -->
 
 ### 3. The rate constant has an Arrhenius form
 
@@ -261,8 +262,9 @@ $E\un{a}/R$ has units of temperature.
 :::
 
 It is related to some barrier of activation. We leave this vague intentionally, because we will go
-into it when we discuss transition state theory in [](#ch-microscopic). Spoiler: it has to do with
+into it when we discuss transition state theory in a later chapter. Spoiler: it has to do with
 free energy.
+<!-- Restore the link ([](#ch-microscopic)) when chapter 8 is released. -->
 
 ### 4. The power law approach
 
@@ -308,9 +310,10 @@ slows the reaction down as it progresses. In example 2 above, $\ce{NH3}$ inhibit
 
 There is one exception, where the reaction orders *are* the stoichiometric numbers: **elementary
 reactions**. Elementary reactions are the individual reaction steps that make up a reaction
-mechanism, and we will study them in detail in [](#ch-mechanisms). We will not dive into the fifth
+mechanism, and we will study them in detail in a later chapter. We will not dive into the fifth
 Boudart rule yet, leaving it open until we reach reversible reactions in
 [](#sec-reversible-first-order).
+<!-- Restore the link ([](#ch-mechanisms)) when chapter 9 is released. -->
 
 ### The law of mass action
 
