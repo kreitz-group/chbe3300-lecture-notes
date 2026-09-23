@@ -16,28 +16,15 @@ label: ch-experiments
 :class: tip
 After completing this chapter, you should be able to:
 
-- Explain why a kinetic experiment measures the extent of reaction, or a related observable, rather
-  than the reaction rate itself.
-- State the rules a kinetic measurement must satisfy, and distinguish chemical from physical
-  (*in situ* / *in operando*) measurement methods.
-- Apply the integral method: postulate a rate law, integrate the batch-reactor mass balance,
-  linearize, and extract $k$ and $n$ graphically.
-- Apply the differential method: estimate $\mathrm{d}c\un{A}/\mathrm{d}t$ from concentration data
-  using forward, central, or higher-order finite-difference formulas, then linearize
-  $\ln(-\mathrm{d}c\un{A}/\mathrm{d}t)$ vs. $\ln c\un{A}$ to read off $n$ and $k$.
-- Linearize the Arrhenius equation and extract $E\un{a}$ and $A$ from a $\ln k$ vs. $1/T$ plot, or
-  from rate constants at two temperatures.
+- Explain why a kinetic experiment measures the extent of reaction, or a related observable, rather than the reaction rate itself.
+- State the rules a kinetic measurement must satisfy, and distinguish chemical from physical (*in situ* / *in operando*) measurement methods.
+- Apply the integral method and differential method
 - Set up and solve a nonlinear regression problem to fit kinetic parameters from
   concentration-versus-time data.
-- Apply the isolation (excess-of-reactants) method to decouple the reaction orders of two
+- Apply the excess-of-reactants method to decouple the reaction orders of two
   reactants.
-- Apply the method of initial rates to extract $n$ and $k$ when reverse reactions or product
-  inhibition would otherwise distort the analysis.
-- Identify common pitfalls in kinetic experiments: side reactions, transport limitations,
-  temperature gradients, analytical accuracy.
-- Use the rank of the stoichiometric-coefficient matrix to identify a set of key species and key
-  reactions, and reconstruct the changes in the non-key species via
-  $\Delta\vect{n}_2 = \mtrx{N}_{2,1}\,\mtrx{N}_{1,1}^{-1}\,\Delta\vect{n}_1$.
+- Apply the method of initial rates to extract $n$ and $k$ when reverse reactions or product inhibition would otherwise distort the analysis.
+- Use the rank of the stoichiometric-coefficient matrix to identify a set of key species and key reactions, and reconstruct the changes in the non-key species
 :::
 
 Until now we have assumed that the reaction rate can be written as
@@ -50,20 +37,17 @@ This is the power-law approximation, and the parameters $k$, $n$, $m$, … are t
 from experiments. Their values are set by Nature for a given reaction, but Nature does not tell us
 what they are; we have to measure them in the lab.
 
+<!-- 
 :::{admonition} Discussion
 :class: seealso
 Show of hands: who has done experiments in a lab? And collected concentration-versus-time data?
 :::
-
-We now turn to the question of how to perform kinetic experiments and how to determine kinetic
-parameters by regression.
+ -->
 
 **The reaction rate cannot be measured directly.** What is measured is the extent of reaction, or a
 related observable, and the rate is then inferred from the data.
-
 We focus on batch reactors here. Another common class is flow reactors — continuous stirred-tank or
-plug-flow — but those have different material balances and are covered in ChBE 4320. Batch reactors
-are widely used in practice for kinetic studies.
+plug-flow — but those have different material balances and are covered in ChBE 4320. Batch reactors are widely used in practice for kinetic studies.
 
 :::{admonition} Discussion
 :class: seealso
@@ -329,9 +313,7 @@ hold off
 
 :::{tip} Check yourself
 Only $n = 1$ gives $R^2 = 1.0000$, with $k = 1.00\ \mathrm{h^{-1}}$. Notice that $n = 0.5$ and
-$n = 1.5$ still reach $R^2 = 0.982$, so a high $R^2$ alone does not confirm a rate law. The
-systematic curvature of the points around the line is the better test.
-:::
+$n = 1.5$ still reach $R^2 = 0.982$. Since experimental data is never perfect, it can be challenging to accurately determine the reaction order with the integral method :::
 
 ## Differential method
 
@@ -759,10 +741,12 @@ activation energy with the two-point formula, [](#eq-arrhenius-two-point), using
 at $50$ and $80\ \mathrm{^\circ C}$.
 :::
 
+<!-- 
 ## Nonlinear regression
 
 <!-- source: Experiments.tex L229 -->
 
+<!-- 
 The procedures above are the classical, graphical approach. They predate modern computing and are
 still very useful as sanity checks, because the linearization makes the parameter dependence
 visually transparent. In a modern lab, however, parameters are typically extracted by nonlinear
@@ -1197,11 +1181,13 @@ $A = 3.80 \times 10^{11}\ \mathrm{h^{-1}}$, close to the two-step linearized res
 previous section ($74.5\ \mathrm{kJ\,mol^{-1}}$). Fitted to the $50$ and
 $65\ \mathrm{^\circ C}$ runs only, it predicts the $80\ \mathrm{^\circ C}$ run almost exactly.
 :::
+ -->
 
-## Excess of reactants methods
+<!-- ## Excess of reactants methods -->
 
 <!-- source: Experiments.tex L254 -->
 
+<!-- 
 The earlier discussion focused on the simple case $\ce{A -> products}$, but for most reactions of
 practical interest the rate depends on more than one reactant,
 
@@ -1260,9 +1246,11 @@ because linearization can place disproportionate weight on certain regions of th
 the fit. Take care when the data span only a narrow range of concentration.
 
 ## Method of initial rates
+ -->
 
 <!-- source: Experiments.tex L305 -->
 
+<!-- 
 The differential method is attractive because a single experiment is in principle enough to extract
 $k$ and $n$.
 
@@ -1296,13 +1284,15 @@ at the atomic level. They do not verify a proposed reaction mechanism on their o
 between candidate mechanisms generally requires complementary information, such as
 electronic-structure calculations of the underlying elementary steps.
 <!-- Restore the link ([](#ch-microscopic)) when chapter 8 is released. -->
+ -->
 
 :::
 
-## Experimental data
+<!-- ## Experimental data -->
 
 <!-- source: Experiments.tex L330 -->
 
+<!-- 
 The quality of the experimental data is critical. A few common pitfalls that recur in the
 literature are worth keeping in mind.
 
@@ -1317,9 +1307,11 @@ literature are worth keeping in mind.
 - Check reproducibility across multiple runs.
 
 ## Key reactions and key species
+ -->
 
 <!-- source: Experiments.tex L343 -->
 
+<!-- 
 **Example: steam reforming.** Steam reforming of methane is a major industrial process for the
 production of synthesis gas, $\ce{CO}$ and $\ce{H2}$. It involves a complex reaction network:
 
@@ -1463,13 +1455,13 @@ An alternative method that does not require this knowledge uses the **element-sp
 constructed from the elemental composition of each species. The key components are then chosen to be
 those that are easiest to detect, and conservation of elements provides the additional constraints
 needed to reconstruct the rest.
+ -->
 
 ## Summary
 
 <!-- source: Experiments.tex L488 -->
 
-- Kinetic experiments measure the extent of reaction, or a related observable, not the rate
-  directly. Methods are classified as chemical (sampling) or physical (*in situ* / *in operando*).
+- Kinetic experiments measure the extent of reaction, or a related observable, not the rate directly. Methods are classified as chemical (sampling) or physical (*in situ* / *in operando*).
 - Integral method: postulate $r = -k c\un{A}^n$, integrate to get [](#eq-integral-general),
   linearize via [](#eq-integral-linearized), and try values of $n$ until the data fall on a straight
   line.
