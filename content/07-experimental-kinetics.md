@@ -1099,15 +1099,11 @@ at the atomic level. They do not verify a proposed reaction mechanism on their o
 between candidate mechanisms generally requires complementary information, such as
 electronic-structure calculations of the underlying elementary steps.
 <!-- Restore the link ([](#ch-microscopic)) when chapter 8 is released. -->
- -->
 
 :::
 
-<!-- ## Experimental data -->
+## Experimental data 
 
-<!-- source: Experiments.tex L330 -->
-
-<!-- 
 The quality of the experimental data is critical. A few common pitfalls that recur in the
 literature are worth keeping in mind.
 
@@ -1122,11 +1118,7 @@ literature are worth keeping in mind.
 - Check reproducibility across multiple runs.
 
 ## Key reactions and key species
- -->
 
-<!-- source: Experiments.tex L343 -->
-
-<!-- 
 **Example: steam reforming.** Steam reforming of methane is a major industrial process for the
 production of synthesis gas, $\ce{CO}$ and $\ce{H2}$. It involves a complex reaction network:
 
@@ -1270,11 +1262,8 @@ An alternative method that does not require this knowledge uses the **element-sp
 constructed from the elemental composition of each species. The key components are then chosen to be
 those that are easiest to detect, and conservation of elements provides the additional constraints
 needed to reconstruct the rest.
- -->
 
 ## Summary
-
-<!-- source: Experiments.tex L488 -->
 
 - Kinetic experiments measure the extent of reaction, or a related observable, not the rate directly. Methods are classified as chemical (sampling) or physical (*in situ* / *in operando*).
 - Integral method: postulate $r = -k c\un{A}^n$, integrate to get [](#eq-integral-general),
@@ -1300,8 +1289,6 @@ needed to reconstruct the rest.
 - Empirical rate-law fitting cannot verify a reaction mechanism; complementary tools —
   electronic-structure calculations, isotope labeling, spectroscopy — are needed for mechanistic
   discrimination.
-  <!-- Restore the links ([](#ch-microscopic), [](#ch-mechanisms)) when chapters 8 and 9 are released. -->
-
 - For a reaction network with more reactions than independent ones, the rank $R_\nu$ of the
   stoichiometric matrix sets the number of key species that must be measured. Non-key species follow
   from $\Delta\vect{n}_2 = \mtrx{N}_{2,1}\,\mtrx{N}_{1,1}^{-1}\,\Delta\vect{n}_1$, [](#eq-nonkey).
