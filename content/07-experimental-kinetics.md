@@ -313,7 +313,8 @@ hold off
 
 :::{tip} Check yourself
 Only $n = 1$ gives $R^2 = 1.0000$, with $k = 1.00\ \mathrm{h^{-1}}$. Notice that $n = 0.5$ and
-$n = 1.5$ still reach $R^2 = 0.982$. Since experimental data is never perfect, it can be challenging to accurately determine the reaction order with the integral method :::
+$n = 1.5$ still reach $R^2 = 0.982$. Since experimental data is never perfect, it can be challenging to accurately determine the reaction order with the integral method.
+:::
 
 ## Differential method
 
@@ -381,76 +382,26 @@ plot, whereas the integral method generally requires several attempts.
 Graphical illustration of the differential method.
 :::
 
-:::{admonition} Live example
+:::{admonition} Example
 :class: seealso
 The same run at $65\ \mathrm{^\circ C}$, analysed with the differential method. Rates are computed
 with the forward difference, [](#eq-forward-difference), called the Newton method in the code, and
 with the central difference, [](#eq-central-difference). Each set of rates is then fitted with
-[](#eq-differential-linearized). Use the slider to space the samples further apart: both schemes
-keep returning $n = 1$, but the forward difference underestimates $k$ more and more. It assigns the
+[](#eq-differential-linearized). Both schemes return $n = 1$. If you space the samples further apart
+(`every` in the code), the forward difference underestimates $k$ more and more. It assigns the
 slope of the secant over $[t, t + \Delta t]$ to the left end of the interval, where the rate is
-highest. The MATLAB code that produces the same result follows underneath.
+highest.
 :::
 
-```{marimo} python
-dif_dt = mo.ui.slider(
-    steps=[0.1, 0.2, 0.5],
-    value=0.1,
-    label="Sampling interval Δt (h)",
-    show_value=True,
-)
-dif_dt
-```
+:::{figure} ../figures/DifferentialMethod_Example.png
+:label: fig-differential-example
+:alt: Two MATLAB plots for the run at 65 degrees Celsius with samples every 0.1 hours. Left: reaction rate against time from 0 to 2 hours, falling from about 95 to about 15 mol per cubic metre per hour; the Newton-method points (circles) sit slightly below the symmetric-difference points (squares) throughout. Right: natural log of the rate against natural log of the concentration, from about 2.7 to 4.6; both sets of points fall on nearly coincident straight lines of slope one, the Newton line slightly lower.
+:width: 100%
 
-```{marimo} python
-dif_every = int(round(dif_dt.value / 0.1))
-dif_t = exp_time[::dif_every]
-dif_c = exp_conc[1][::dif_every]  # run at 65 °C
-
-# Forward (Newton) difference: rate at t[i] from points i and i+1
-dif_r_fwd = -(dif_c[1:] - dif_c[:-1]) / (dif_t[1:] - dif_t[:-1])
-# Symmetric difference: rate at t[i] from points i-1 and i+1
-dif_r_sym = -(dif_c[2:] - dif_c[:-2]) / (dif_t[2:] - dif_t[:-2])
-
-# Linearized rate law ln(r) = n ln(c) + ln(k)
-dif_n_fwd, dif_lnk_fwd = np.polyfit(np.log(dif_c[:-1]), np.log(dif_r_fwd), 1)
-dif_n_sym, dif_lnk_sym = np.polyfit(np.log(dif_c[1:-1]), np.log(dif_r_sym), 1)
-
-mo.md(
-    f"Newton method: $n = {dif_n_fwd:.3f}$, "
-    f"$k = {np.exp(dif_lnk_fwd):.3f}\\ \\mathrm{{h^{{-1}}}}$. "
-    f"Symmetric difference: $n = {dif_n_sym:.3f}$, "
-    f"$k = {np.exp(dif_lnk_sym):.3f}\\ \\mathrm{{h^{{-1}}}}$."
-)
-```
-
-```{marimo} python
-fig_dif, (ax_dif1, ax_dif2) = plt.subplots(1, 2, figsize=(9, 3.6))
-
-ax_dif1.plot(dif_t[:-1], dif_r_fwd, "o", ms=6, color="C0", label="Newton method")
-ax_dif1.plot(dif_t[1:-1], dif_r_sym, "s", ms=6, color="C1", label="Sym. diff. method")
-ax_dif1.set_xlim(0, 2.1)
-ax_dif1.set_ylim(0, 100)
-ax_dif1.set_xlabel("time (h)", fontsize=13)
-ax_dif1.set_ylabel(r"$r$ (mol m$^{-3}$ h$^{-1}$)", fontsize=13)
-ax_dif1.legend(loc="upper right", fontsize=11, frameon=False)
-
-dif_x = np.log(dif_c)
-ax_dif2.plot(np.log(dif_c[:-1]), np.log(dif_r_fwd), "o", ms=6, color="C0")
-ax_dif2.plot(np.log(dif_c[1:-1]), np.log(dif_r_sym), "s", ms=6, color="C1")
-ax_dif2.plot(dif_x, dif_n_fwd * dif_x + dif_lnk_fwd, "-", lw=2.0, color="C0")
-ax_dif2.plot(dif_x, dif_n_sym * dif_x + dif_lnk_sym, "--", lw=2.0, color="C1")
-ax_dif2.set_xlabel(r"$\ln(c_\mathrm{A})$", fontsize=13)
-ax_dif2.set_ylabel(r"$\ln(r_\mathrm{A})$", fontsize=13)
-
-for ax_d in (ax_dif1, ax_dif2):
-    ax_d.tick_params(labelsize=12, width=1.2, length=5)
-    for sp_dif in ax_d.spines.values():
-        sp_dif.set_linewidth(1.2)
-
-fig_dif.tight_layout()
-fig_dif
-```
+Differential analysis of the $65\ \mathrm{^\circ C}$ run with $\Delta t = 0.1\ \mathrm{h}$, produced
+by the MATLAB code below. The Newton method gives $n = 1.000$, $k = 0.953\ \mathrm{h^{-1}}$; the
+symmetric difference gives $n = 1.000$, $k = 1.003\ \mathrm{h^{-1}}$.
+:::
 
 In MATLAB, set `every` to the sampling interval you want and run:
 
@@ -779,91 +730,23 @@ In the two examples below the residuals are concentrations: each iteration solve
 mass balance, [](#eq-nonlinear-ode) with $n = 1$, and compares the simulated $c\un{A}(t)$ with the
 measured one.
 
-:::{admonition} Live example
+:::{admonition} Example
 :class: seealso
 A fit to a single run. With only one temperature, the data contain no information about the
 temperature dependence, so $A$ and $E\un{a}$ cannot both be determined: $E\un{a}$ is fixed and only
-$A$ is fitted, with `fminsearch`. Choose the run, then change the fixed activation energy. $A$ moves
-by orders of magnitude, but the fit and its sum of squared residuals do not change at all. Every
-pair $(A, E\un{a})$ that gives the same $k(T)$ describes this run equally well. The MATLAB code that
-produces the same result follows underneath.
+$A$ is fitted, with `fminsearch`. If you change the fixed activation energy (`Ea_init` in the code),
+$A$ moves by orders of magnitude, but the fit and its sum of squared residuals do not change at all.
+Every pair $(A, E\un{a})$ that gives the same $k(T)$ describes this run equally well.
 :::
 
-```{marimo} python
-from scipy.optimize import minimize_scalar
+:::{figure} ../figures/NonlinearFit_SingleRun.png
+:label: fig-nonlinear-single
+:alt: Two MATLAB plots for the fit to the run at 50 degrees Celsius. Left: concentration against time from 0 to 2 hours, falling from 100 to about 56 mol per cubic metre; the fitted curve passes through every measured point. Right: parity plot of fitted against measured concentration; all points lie on the diagonal between about 56 and 100.
+:width: 100%
 
-nls_run = mo.ui.dropdown(
-    options={"50 °C": 0, "65 °C": 1, "80 °C": 2},
-    value="50 °C",
-    label="Run used for the fit",
-)
-nls_Ea = mo.ui.slider(
-    steps=[60, 65, 70, 75, 80, 85, 90],
-    value=75,
-    label="Fixed activation energy Ea (kJ/mol)",
-    show_value=True,
-)
-mo.vstack([nls_run, nls_Ea])
-```
-
-```{marimo} python
-nls_i = nls_run.value
-nls_c = exp_conc[nls_i]
-nls_T = exp_temps[nls_i]
-nls_Ea_J = nls_Ea.value * 1e3  # J/mol
-
-
-def nls_sim(k0):
-    """Solution of dc/dt = -k0 exp(-Ea/RT) c at the sample times (what ode45 computes)."""
-    return nls_c[0] * np.exp(-k0 * np.exp(-nls_Ea_J / (exp_R * nls_T)) * exp_time)
-
-
-def nls_cost(log_k0):
-    return np.sum((nls_sim(10**log_k0) - nls_c) ** 2)
-
-
-# Minimize over log10(k0) so the search is well scaled for any Ea
-nls_opt = minimize_scalar(nls_cost, bounds=(0, 20), method="bounded",
-                          options={"xatol": 1e-10})
-nls_k0 = 10**nls_opt.x
-nls_fit = nls_sim(nls_k0)
-
-mo.md(
-    f"$E_\\mathrm{{a}} = {nls_Ea.value:.2f}\\ \\mathrm{{kJ\\,mol^{{-1}}}}$ (fixed), "
-    f"$A = {nls_k0:.2e}\\ \\mathrm{{h^{{-1}}}}$, "
-    f"sum of squared residuals $= {nls_opt.fun:.4f}\\ (\\mathrm{{mol\\,m^{{-3}}}})^2$."
-)
-```
-
-```{marimo} python
-fig_nls, (ax_nls1, ax_nls2) = plt.subplots(1, 2, figsize=(9, 3.6))
-nls_col = f"C{nls_i}"
-nls_label = f"{nls_T - 273:.0f} °C"
-
-ax_nls1.plot(exp_time, nls_fit, "-", lw=2.0, color=nls_col, label=f"{nls_label}, fit")
-ax_nls1.plot(exp_time, nls_c, "o", ms=6, mfc="none", color=nls_col, label=f"{nls_label}, exp")
-ax_nls1.set_xlim(0, 2.1)
-ax_nls1.set_ylim(0, 105)
-ax_nls1.set_xlabel("time (h)", fontsize=13)
-ax_nls1.set_ylabel(r"$c$ (mol m$^{-3}$)", fontsize=13)
-ax_nls1.legend(loc="upper right", fontsize=11, frameon=False)
-
-ax_nls2.plot([0, 100], [0, 100], ":", color="0.5", lw=1.0)
-ax_nls2.plot(nls_c, nls_fit, "o", ms=6, mfc="none", color=nls_col, label=nls_label)
-ax_nls2.set_xlim(0, 105)
-ax_nls2.set_ylim(0, 105)
-ax_nls2.set_xlabel(r"$c_\mathrm{exp}$ (mol m$^{-3}$)", fontsize=13)
-ax_nls2.set_ylabel(r"$c_\mathrm{fit}$ (mol m$^{-3}$)", fontsize=13)
-ax_nls2.legend(loc="lower right", fontsize=11, frameon=False)
-
-for ax_n in (ax_nls1, ax_nls2):
-    ax_n.tick_params(labelsize=12, width=1.2, length=5)
-    for sp_nls in ax_n.spines.values():
-        sp_nls.set_linewidth(1.2)
-
-fig_nls.tight_layout()
-fig_nls
-```
+Fit of $A$ to the $50\ \mathrm{^\circ C}$ run with $E\un{a} = 75\ \mathrm{kJ\,mol^{-1}}$ fixed,
+produced by the MATLAB code below. Left: simulated and measured concentrations. Right: parity plot.
+:::
 
 In MATLAB, save this as a script file, since it ends with local functions, and set
 `data_set_eval` and `Ea_init` to the values you want:
@@ -972,90 +855,22 @@ $k(323\ \mathrm{K}) = 0.290\ \mathrm{h^{-1}}$.
 To separate $A$ from $E\un{a}$, the fit must see several temperatures at once. The residuals of all
 runs are concatenated into one vector and minimized together with `lsqnonlin`.
 
-:::{admonition} Live example
+:::{admonition} Example
 :class: seealso
-A global fit of $A$ and $E\un{a}$ to all three runs simultaneously. Untick a temperature to leave
-its run out of the fit: its curve is then a *prediction* from the other two, drawn dashed. How well a
-fitted model predicts a run it has never seen is a much stronger test than how well it fits the
-runs it was fitted to. The MATLAB code that produces the same result follows underneath.
+A global fit of $A$ and $E\un{a}$ to all three runs simultaneously. If you leave a run out of the
+fit (remove it from `fit_sets` in the code), its curve becomes a *prediction* from the other two,
+drawn dashed. How well a fitted model predicts a run it has never seen is a much stronger test than
+how well it fits the runs it was fitted to.
 :::
 
-```{marimo} python
-from scipy.optimize import least_squares
+:::{figure} ../figures/NonlinearFit_Global.png
+:label: fig-nonlinear-global
+:alt: Two MATLAB plots for the global fit to all three runs. Left: concentration against time from 0 to 2 hours at 50, 65 and 80 degrees Celsius; the three fitted curves, decaying faster at higher temperature, pass through every measured point. Right: parity plot of fitted against measured concentration; the points of all three runs lie on the diagonal from 0 to 100.
+:width: 100%
 
-glb_use = mo.ui.array(
-    [mo.ui.checkbox(value=True, label=f"{t - 273:.0f} °C") for t in exp_temps]
-)
-mo.hstack([mo.md("Runs used in the fit:"), glb_use.hstack(gap=1.5)], justify="start")
-```
-
-```{marimo} python
-glb_sets = [i for i in range(3) if glb_use.value[i]]
-
-
-def glb_sim(k0, Ea, i):
-    """Solution of dc/dt = -k0 exp(-Ea/RT) c for run i (what ode45 computes)."""
-    return exp_conc[i, 0] * np.exp(-k0 * np.exp(-Ea / (exp_R * exp_temps[i])) * exp_time)
-
-
-def glb_resid(p):
-    # p = [log10(k0), Ea in kJ/mol]; both are of order 10-100, so the fit is well scaled
-    return np.concatenate([glb_sim(10 ** p[0], p[1] * 1e3, i) - exp_conc[i] for i in glb_sets])
-
-
-if len(glb_sets) >= 2:
-    glb_opt = least_squares(glb_resid, x0=[np.log10(3.1e11), 75.0],
-                            bounds=([0, 5], [13, 150]), xtol=1e-12, ftol=1e-12)
-    glb_k0, glb_Ea = 10 ** glb_opt.x[0], glb_opt.x[1] * 1e3
-    glb_msg = mo.md(
-        f"$E_\\mathrm{{a}} = {glb_Ea / 1000:.2f}\\ \\mathrm{{kJ\\,mol^{{-1}}}}$, "
-        f"$A = {glb_k0:.2e}\\ \\mathrm{{h^{{-1}}}}$, "
-        f"sum of squared residuals $= {np.sum(glb_opt.fun ** 2):.4f}\\ (\\mathrm{{mol\\,m^{{-3}}}})^2$."
-    )
-else:
-    glb_k0 = glb_Ea = None
-    glb_msg = mo.md(
-        "Select at least two runs: a single temperature cannot separate $A$ from $E_\\mathrm{a}$."
-    )
-glb_msg
-```
-
-```{marimo} python
-fig_glb, (ax_glb1, ax_glb2) = plt.subplots(1, 2, figsize=(9, 3.6))
-ax_glb2.plot([0, 100], [0, 100], ":", color="0.5", lw=1.0)
-
-for glb_i in range(3):
-    glb_col = f"C{glb_i}"
-    glb_label = f"{exp_temps[glb_i] - 273:.0f} °C"
-    ax_glb1.plot(exp_time, exp_conc[glb_i], "o", ms=5, mfc="none", color=glb_col)
-    if glb_k0 is not None:
-        glb_fit = glb_sim(glb_k0, glb_Ea, glb_i)
-        glb_used = glb_i in glb_sets
-        ax_glb1.plot(exp_time, glb_fit, "-" if glb_used else "--", lw=2.0, color=glb_col,
-                     label=f"{glb_label}, {'fit' if glb_used else 'predicted'}")
-        ax_glb2.plot(exp_conc[glb_i], glb_fit, "o", ms=5, mfc="none", color=glb_col,
-                     label=glb_label)
-
-ax_glb1.set_xlim(0, 2.1)
-ax_glb1.set_ylim(0, 105)
-ax_glb1.set_xlabel("time (h)", fontsize=13)
-ax_glb1.set_ylabel(r"$c$ (mol m$^{-3}$)", fontsize=13)
-ax_glb2.set_xlim(0, 105)
-ax_glb2.set_ylim(0, 105)
-ax_glb2.set_xlabel(r"$c_\mathrm{exp}$ (mol m$^{-3}$)", fontsize=13)
-ax_glb2.set_ylabel(r"$c_\mathrm{fit}$ (mol m$^{-3}$)", fontsize=13)
-if glb_k0 is not None:
-    ax_glb1.legend(loc="upper right", fontsize=10, frameon=False)
-    ax_glb2.legend(loc="lower right", fontsize=10, frameon=False)
-
-for ax_g in (ax_glb1, ax_glb2):
-    ax_g.tick_params(labelsize=12, width=1.2, length=5)
-    for sp_glb in ax_g.spines.values():
-        sp_glb.set_linewidth(1.2)
-
-fig_glb.tight_layout()
-fig_glb
-```
+Global fit of $A$ and $E\un{a}$ to all three runs, produced by the MATLAB code below. Left:
+simulated and measured concentrations. Right: parity plot.
+:::
 
 In MATLAB, save this as a script file and list the runs to fit in `fit_sets`. Note that the listing
 fits $\log_{10} A$ rather than $A$: $A \approx 10^{11}$ and $E\un{a} \approx 10^{5}$ differ by six
