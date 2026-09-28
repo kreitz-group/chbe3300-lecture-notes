@@ -692,12 +692,9 @@ activation energy with the two-point formula, [](#eq-arrhenius-two-point), using
 at $50$ and $80\ \mathrm{^\circ C}$.
 :::
 
-<!-- 
 ## Nonlinear regression
 
-<!-- source: Experiments.tex L229 -->
 
-<!-- 
 The procedures above are the classical, graphical approach. They predate modern computing and are
 still very useful as sanity checks, because the linearization makes the parameter dependence
 visually transparent. In a modern lab, however, parameters are typically extracted by nonlinear
@@ -996,13 +993,9 @@ $A = 3.80 \times 10^{11}\ \mathrm{h^{-1}}$, close to the two-step linearized res
 previous section ($74.5\ \mathrm{kJ\,mol^{-1}}$). Fitted to the $50$ and
 $65\ \mathrm{^\circ C}$ runs only, it predicts the $80\ \mathrm{^\circ C}$ run almost exactly.
 :::
- -->
 
-<!-- ## Excess of reactants methods -->
+## Excess of reactants methods
 
-<!-- source: Experiments.tex L254 -->
-
-<!-- 
 The earlier discussion focused on the simple case $\ce{A -> products}$, but for most reactions of
 practical interest the rate depends on more than one reactant,
 
@@ -1061,11 +1054,7 @@ because linearization can place disproportionate weight on certain regions of th
 the fit. Take care when the data span only a narrow range of concentration.
 
 ## Method of initial rates
- -->
 
-<!-- source: Experiments.tex L305 -->
-
-<!-- 
 The differential method is attractive because a single experiment is in principle enough to extract
 $k$ and $n$.
 
@@ -1098,7 +1087,6 @@ The methods in this chapter extract empirical rate-law parameters but cannot tel
 at the atomic level. They do not verify a proposed reaction mechanism on their own. Discriminating
 between candidate mechanisms generally requires complementary information, such as
 electronic-structure calculations of the underlying elementary steps.
-<!-- Restore the link ([](#ch-microscopic)) when chapter 8 is released. -->
 
 :::
 
