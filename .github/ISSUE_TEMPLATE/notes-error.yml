@@ -31,6 +31,7 @@ body:
         - "5 — Reaction Kinetics"
         - "6 — Kinetics of Multiple Reactions"
         - "7 — Extracting Rate Laws from Experiments"
+        - "8 — Reaction Mechanisms"
         - "Not sure / somewhere else"
     validations:
       required: true

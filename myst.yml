@@ -66,8 +66,8 @@ project:
     - file: content/03-thermodynamics.md
     - file: content/04-mass-balances.md
 
-    # Chapters 8-11 are withheld from the published site until they have had
-    # the same cleanup pass as 1-7. Uncomment a chapter to release it, and
+    # Chapters 9-11 are withheld from the published site until they have had
+    # the same cleanup pass as 1-8. Uncomment a chapter to release it, and
     # restore its cross-references in the ch. 1 roadmap at the same time
     # ("What this course covers"). References comes back with the first
     # chapter that actually cites something -- 1-4 cite nothing, so the
@@ -79,10 +79,10 @@ project:
         - file: content/06-multiple-reactions.md
     - file: content/07-experimental-kinetics.md
     #
-    # - title: Molecular basis of reaction rates
-    #   children:
-    #     - file: content/08-microscopic.md
-    #     - file: content/09-mechanisms.md
+    - title: Molecular basis of reaction rates
+      children:
+        - file: content/08-mechanisms.md
+        # - file: content/09-microscopic.md
     #
     # - title: Catalysis
     #   children:

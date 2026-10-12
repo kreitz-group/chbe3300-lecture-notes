@@ -7,6 +7,7 @@ label: ch-mechanisms
 <!-- LaTeX source: Mechanisms.tex -->
 <!-- Porting notes: mhchem is math-only here, so \ce{} in prose needs $...$; and \un{} expands to
      _{\textrm{...}}, so species subscripts must be written _{\ce{H2}}, never \un{\ce{H2}}.
+     Concentrations in this chapter are written [\ce{X}], not c_{\ce{X}}.
      Radicals use \ce{Cl\bullet} and energized molecules \ce{A\ast}, both on the math axis.
      The source colour-codes the H2/O2 steps as branching, propagating and terminating, then
      repeats the same reactions three more times regrouped by colour. Colour alone is not
@@ -18,6 +19,11 @@ After completing this chapter, you should be able to:
 
 - Distinguish an overall (stoichiometric) reaction from the mechanism of elementary steps that
   underlies it, and apply the law of mass action to each elementary step.
+- Apply the PSSA to a radical chain mechanism (HBr synthesis) to derive an apparent rate law and
+  identify the apparent rate constant and apparent activation energy.
+- Apply the QEA to a pre-equilibrium mechanism ($\ce{NO + Br2}$) to derive a closed-form rate
+  expression in terms of the equilibrium constant and a slow-step rate constant.
+- Apply the rate-determining step (RDS) assumption and recognize when it can be invoked safely.
 - Explain why a unimolecular reaction requires bimolecular activation, and derive the
   Lindemann–Hinshelwood rate law and its high- and low-pressure limits.
 - Define a radical and classify the steps of a radical chain mechanism as initiation, propagation,
@@ -37,23 +43,39 @@ We have discussed reaction mechanisms here and there, especially when we talked 
 the QEA. Let us revisit a few of the key concepts to make sure everyone is well versed in the
 terminology going forward.
 
-As a running example, take the production of phosgene, $\ce{COCl2}$. The overall reaction equation
-is
+As a running example, take the photochemical production of hydrogen bromide from the elements in
+the gas phase,
 
 $$
-\ce{Cl2 + CO <=> COCl2} .
-$$
+\ce{H2 + Br2 -> 2 HBr} .
+$$ (eq-hbr-overall)
 
-This overall stoichiometric reaction is not how the reaction actually happens. Instead we have a set
-of elementary reactions that make up the reaction mechanism:
+:::{admonition} Discussion
+:class: seealso
+Is [](#eq-hbr-overall) an elementary reaction? Why or why not?
+:::
+
+Before this chapter, most of the reactions we considered were stoichiometric or global reactions,
+each summarizing an underlying mechanism. This overall stoichiometric reaction is not how the
+reaction actually happens either. Instead it proceeds through a set of elementary reactions that
+make up the reaction mechanism, a radical chain that starts with the dissociation of bromine into
+bromine radicals:
 
 $$
-\begin{aligned}
-\ce{Cl2} &\eqa{k\un{+1}}{k\un{-1}} \ce{2 Cl\bullet} \\
-\ce{Cl\bullet + CO} &\eqa{k\un{+2}}{k\un{-2}} \ce{COCl\bullet} \\
-\ce{COCl\bullet + Cl2} &\ce{->[$k_3$] COCl2 + Cl\bullet}
-\end{aligned}
+\text{Initiation/termination:}\quad \ce{Br2} \eqa{k\un{+1}}{k\un{-1}} \ce{2 Br\bullet}
+$$ (eq-hbr-step1)
+
 $$
+\text{Propagation:}\quad \ce{Br\bullet + H2} \eqa{k\un{+2}}{k\un{-2}} \ce{HBr + H\bullet}
+$$ (eq-hbr-step2)
+
+$$
+\text{Propagation:}\quad \ce{H\bullet + Br2 ->[$k_3$] HBr + Br\bullet}
+$$ (eq-hbr-step3)
+
+Summing the steps gives back the overall stoichiometric expression [](#eq-hbr-overall). The
+$\bullet$ marks a radical; we look at radicals and at the initiation, propagation, and termination
+steps more closely in [](#sec-mech-radicals).
 
 We use the law of mass action to express the reaction rates.
 
@@ -77,7 +99,24 @@ r = r\un{fwd} - r\un{rev}
 $$
 
 This approach is called **mass action kinetics**. The net rate of reaction is the difference between
-forward and reverse reaction, which is also known as microscopic reversibility.
+the forward and reverse reaction. For the HBr mechanism,
+
+$$
+\begin{aligned}
+r_1 &= k\un{+1}[\ce{Br2}] - k\un{-1}[\ce{Br\bullet}]^2 \\
+r_2 &= k\un{+2}[\ce{Br\bullet}][\ce{H2}] - k\un{-2}[\ce{HBr}][\ce{H\bullet}] \\
+r_3 &= k_3 [\ce{H\bullet}][\ce{Br2}] .
+\end{aligned}
+$$
+
+Had [](#eq-hbr-overall) been elementary, the law of mass action would give
+
+$$
+r = k [\ce{H2}][\ce{Br2}] ,
+$$
+
+first order in each reactant. Kinetic experiments, however, show that $r \propto [\ce{Br2}]^{1/2}$
+at low conversion, a clear sign that the overall reaction does not happen as written.
 
 Mass action kinetics is always connected to equilibrium. At equilibrium the extent of reaction no
 longer changes, $\mathrm{d}\xi/\mathrm{d}t = r = 0$, so the overall reaction rate is zero and the
@@ -97,13 +136,254 @@ $$
 \frac{k\un{fwd}}{k\un{rev}} = \prod_i c_i^{\nu_i} = K\un{c} .
 $$ (eq-mech-kc)
 
-Writing a reaction as irreversible carries implications about the parameters of the mechanism, and
-is mostly done for instructional purposes.
+At equilibrium, every elementary step in the mechanism is balanced individually in this way, not
+just the overall reaction. This is the principle of **microscopic reversibility**, also called
+detailed balance.
 
-Those are the key assumptions worth recalling. What follows looks first at unimolecular reactions,
-then at radical chain reactions in the context of atmospheric chemistry, explosions and combustion,
-and polymerization. Towards the end we look at how mechanisms are constructed. We then move on to
-heterogeneous catalysis — my favorite topic of this course.
+Writing a reaction as irreversible, as we did for step [](#eq-hbr-step3), carries implications about
+the parameters of the mechanism, and is mostly done for instructional purposes.
+
+Those are the key assumptions worth recalling. What follows first uses the PSSA and QEA to derive
+rate laws from mechanisms, starting with HBr. We then look at unimolecular reactions, at radicals
+and radical chain reactions, and at radical chemistry in the atmosphere, in explosions and in
+combustion, and in polymerization. Towards the end we look at how mechanisms are constructed. We then
+move on to the microscopic picture of where rate constants come from.
+
+## Deriving rate laws from mechanisms
+
+### PSSA: HBr synthesis
+
+Suppose we are interested in the production rate of HBr because we have experimental data for it.
+$\ce{HBr}$ is produced in steps [](#eq-hbr-step2) and [](#eq-hbr-step3), so
+
+$$
+r_{\ce{HBr}} = \frac{\mathrm{d}[\ce{HBr}]}{\mathrm{d}t}
+= \underbrace{k\un{+2}[\ce{Br\bullet}][\ce{H2}]
+- k\un{-2}[\ce{HBr}][\ce{H\bullet}]}_{r_2}
++ \underbrace{k_3 [\ce{H\bullet}][\ce{Br2}]}_{r_3} .
+$$ (eq-rhbr-full)
+
+The radical species $\ce{Br\bullet}$ and $\ce{H\bullet}$ are short-lived intermediates, so we apply the
+PSSA,
+
+$$
+\frac{\mathrm{d}[\ce{Br\bullet}]}{\mathrm{d}t}
+= \frac{\mathrm{d}[\ce{H\bullet}]}{\mathrm{d}t} = 0 .
+$$
+
+Writing the mass balance for each radical species,
+
+$$
+\begin{aligned}
+\frac{\mathrm{d}[\ce{Br\bullet}]}{\mathrm{d}t} &= 0
+= \underbrace{2k\un{+1}[\ce{Br2}] - 2k\un{-1}[\ce{Br\bullet}]^2}_{2r_1}
+- \underbrace{\left(k\un{+2}[\ce{Br\bullet}][\ce{H2}]
+  - k\un{-2}[\ce{HBr}][\ce{H\bullet}]\right)}_{r_2}
++ \underbrace{k_3 [\ce{H\bullet}][\ce{Br2}]}_{r_3} \\
+\frac{\mathrm{d}[\ce{H\bullet}]}{\mathrm{d}t} &= 0
+= \underbrace{k\un{+2}[\ce{Br\bullet}][\ce{H2}]
+  - k\un{-2}[\ce{HBr}][\ce{H\bullet}]}_{r_2}
+- \underbrace{k_3 [\ce{H\bullet}][\ce{Br2}]}_{r_3} .
+\end{aligned}
+$$
+
+One way to solve for $[\ce{Br\bullet}]$ is simply to add the two equations and work through the
+algebra. A cleaner argument follows from the structure of the mechanism: under the PSSA the
+propagation steps [](#eq-hbr-step2) and [](#eq-hbr-step3) produce and consume $\ce{Br\bullet}$ in
+equal measure, so they cannot be the steps that set $[\ce{Br\bullet}]$. Only the
+initiation/termination step [](#eq-hbr-step1) alters the radical population, and at steady state
+the termination rate must equal the initiation rate. Applying this to $\ce{Br\bullet}$,
+
+$$
+\begin{aligned}
+2k\un{+1}[\ce{Br2}] &= 2k\un{-1}[\ce{Br\bullet}]^2 \\
+[\ce{Br\bullet}] &= \sqrt{\frac{k\un{+1}[\ce{Br2}]}{k\un{-1}}} .
+\end{aligned}
+$$ (eq-hbr-brrad)
+
+Plugging this into the steady-state equation for $\ce{H\bullet}$ gives
+
+$$
+[\ce{H\bullet}] = \frac{k\un{+2}\sqrt{k\un{+1}[\ce{Br2}]/k\un{-1}}\, [\ce{H2}]}
+{k\un{-2}[\ce{HBr}] + k_3 [\ce{Br2}]} .
+$$ (eq-hbr-hrad)
+
+Substituting [](#eq-hbr-brrad) and [](#eq-hbr-hrad) into [](#eq-rhbr-full) and simplifying, the
+algebra collapses into the closed-form rate law
+
+$$
+r_{\ce{HBr}} = \frac{2k\un{+2}\sqrt{k\un{+1}/k\un{-1}}\, [\ce{H2}]\sqrt{[\ce{Br2}]}}
+{1 + \dfrac{k\un{-2}[\ce{HBr}]}{k_3 [\ce{Br2}]}} .
+$$ (eq-hbr-rate-full)
+
+Experiments show that the rate is one-half order in $\ce{Br2}$ at low conversions. At low
+conversion $[\ce{HBr}] \to 0$, and [](#eq-hbr-rate-full) simplifies to
+
+$$
+r_{\ce{HBr}} = 2k\un{+2}\sqrt{\frac{k\un{+1}}{k\un{-1}}}\, [\ce{H2}]\sqrt{[\ce{Br2}]} .
+$$ (eq-hbr-rate-low)
+
+The individual rate constants cannot be measured independently, so we lump them into an apparent
+rate constant
+
+$$
+k\un{app} = k\un{+2}\sqrt{\frac{k\un{+1}}{k\un{-1}}} .
+$$ (eq-hbr-kapp)
+
+A temperature-dependence measurement of $k\un{app}$ would yield an apparent activation energy
+
+$$
+E\un{a,app} = E\un{a,+2} + \frac{E\un{a,+1} - E\un{a,-1}}{2} ,
+$$ (eq-hbr-eapp)
+
+so that
+
+$$
+r_{\ce{HBr}} = 2k\un{app} [\ce{H2}]\sqrt{[\ce{Br2}]} ,
+$$
+
+which is exactly the half-order dependence observed experimentally. This does not prove the assumed
+mechanism is correct, only that it is consistent with the experimental rate law.
+
+The full empirical rate expression determined by Bodenstein and Lind in 1907 is
+
+$$
+r_{\ce{HBr}} = \frac{k_a [\ce{H2}]\sqrt{[\ce{Br2}]}}
+{1 + k_b [\ce{HBr}]/[\ce{Br2}]} ,
+$$ (eq-hbr-bodenstein)
+
+where $k_a$ and $k_b$ are empirical constants. Comparing with [](#eq-hbr-rate-full) gives
+$k_a = 2k\un{+2}\sqrt{k\un{+1}/k\un{-1}}$ and $k_b = k\un{-2}/k_3$.
+
+### Why are no other reactions relevant in the mechanism?
+
+This is an excellent question, and one we return to in [](#sec-mech-constructing). Identifying the
+relevant reaction pathways within an enormous chemical reaction space is a research-level problem
+in its own right. To describe the flame of a candle, for instance, roughly $10^4$ reactions are
+typically needed, which means starting from a candidate space of perhaps $10^6$ possible reactions.
+
+For the HBr system specifically, a useful rule-of-thumb estimate explains why we restrict the
+mechanism to $\ce{Br2}$ dissociation rather than including $\ce{H2}$ or $\ce{HBr}$ dissociation,
+
+$$
+\ce{H2 -> 2 H\bullet} \qquad \ce{HBr -> H\bullet + Br\bullet} .
+$$
+
+The bond-dissociation enthalpies — the reaction enthalpies of these elementary steps — are
+
+- $\ce{H2 -> 2 H\bullet}$: $\Delta\un{r}H = 436\ \mathrm{kJ\,mol^{-1}}$
+- $\ce{HBr -> H\bullet + Br\bullet}$: $\Delta\un{r}H = 366\ \mathrm{kJ\,mol^{-1}}$
+- $\ce{Br2 -> 2 Br\bullet}$: $\Delta\un{r}H = 194\ \mathrm{kJ\,mol^{-1}}$
+
+:::{figure} ../figures/EaBDE.png
+:label: fig-bde
+:alt: Hand-drawn energy diagram against a reaction coordinate showing two endothermic pathways from a common reactant level up to two different product levels. Each pathway has a barrier drawn just above its own product level, annotated as the barrierless limit, with a vertical arrow marking the reaction enthalpy. The pathway ending at the higher product level necessarily has the higher barrier, annotated higher activation energy and therefore slower.
+:width: 75%
+
+Bond-dissociation enthalpy as a lower bound on the activation barrier of an endothermic
+dissociation step.
+:::
+
+For an endothermic reaction the reaction enthalpy is a lower bound on the activation barrier, so the
+$\ce{Br2}$ dissociation has by far the lowest barrier and is much faster than $\ce{H2}$ or
+$\ce{HBr}$ dissociation. When the thermodynamics are not available — some intermediates are not in
+any database — electronic-structure calculations are required to estimate the barriers and rate
+constants directly.
+
+### QEA: $\ce{NO + Br2}$ synthesis of nitrosyl bromide
+
+**Example.** Consider the reaction
+
+$$
+\ce{2 NO + Br2 <=> 2 NOBr} ,
+$$
+
+where $\ce{NOBr}$ is nitrosyl bromide. The reaction proceeds via the mechanism
+
+$$
+\ce{NO + Br2} \eqa{k\un{+1}}{k\un{-1}} \ce{NOBr2} \qquad \text{very fast}
+$$ (eq-nobr-step1)
+
+$$
+\ce{NOBr2 + NO ->[$k_2$] 2 NOBr} \qquad \text{slow}
+$$ (eq-nobr-step2)
+
+The production rate of $\ce{NOBr}$ is
+
+$$
+\frac{\mathrm{d}[\ce{NOBr}]}{\mathrm{d}t} = r_{\ce{NOBr}}
+= 2k_2 [\ce{NOBr2}][\ce{NO}] .
+$$ (eq-nobr-rate-raw)
+
+The intermediate concentration $[\ce{NOBr2}]$ is hard to measure, but the quasi-equilibrium
+approximation for the fast step [](#eq-nobr-step1) relates it directly to the reactant
+concentrations:
+
+$$
+\begin{aligned}
+r_1 &= r\un{+1} - r\un{-1} = 0 \\
+k\un{+1} [\ce{NO}][\ce{Br2}] &= k\un{-1} [\ce{NOBr2}] \\
+[\ce{NOBr2}] &= K\un{1} [\ce{NO}][\ce{Br2}] .
+\end{aligned}
+$$ (eq-nobr-intermediate)
+
+Substituting [](#eq-nobr-intermediate) into [](#eq-nobr-rate-raw) gives the closed-form rate
+
+$$
+r_{\ce{NOBr}} = 2k_2 K\un{1} [\ce{NO}]^2 [\ce{Br2}] .
+$$ (eq-nobr-rate)
+
+:::{admonition} Discussion
+:class: seealso
+What is the rate of reaction $r$ associated with this rate law?
+:::
+
+Using $r = r_{\ce{NOBr}}/\nu_{\ce{NOBr}}$ with $\nu_{\ce{NOBr}} = 2$,
+
+$$
+r = \frac{r_{\ce{NOBr}}}{2} = k_2 K\un{1} [\ce{NO}]^2 [\ce{Br2}] .
+$$
+
+### The rate-determining step assumption
+
+Consider a more complex reaction sequence in which one step is much slower than the others. That
+slowest step is the bottleneck, or **rate-determining step** (RDS), and the overall rate is set
+entirely by its rate. This is the limiting form of the QEA: all the other steps are assumed to be
+in quasi-equilibrium relative to the slow step.
+
+Consider the reaction
+
+$$
+\ce{NO2 + CO -> NO + CO2} .
+$$
+
+Experiments show that the rate is second order in $\ce{NO2}$ and independent of $\ce{CO}$. The
+mechanism is
+
+$$
+\ce{2 NO2 ->[$k_1$] NO + NO3\bullet} \qquad \text{very slow}
+$$ (eq-no2-step1)
+
+$$
+\ce{NO3\bullet + CO} \eqa{k\un{+2}}{k\un{-2}} \ce{NO2 + CO2} \qquad \text{fast}
+$$ (eq-no2-step2)
+
+where $\ce{NO3\bullet}$ is the nitrate radical. If the first step is rate-determining, the overall rate
+is approximated directly from [](#eq-no2-step1),
+
+$$
+r = r_1 = k_1 [\ce{NO2}]^2 ,
+$$ (eq-no2-rate)
+
+in agreement with the experimentally observed rate law. The remaining reactions are then assumed to
+be in quasi-equilibrium.
+
+The RDS assumption must be applied with care, particularly when the slow step is itself reversible.
+If the reverse rate of the slow step is comparable to its forward rate near equilibrium, the simple
+approximation $r \approx r\un{forward}$ breaks down. The net rate
+$r\un{forward} - r\un{reverse}$ can be very different from $r\un{forward}$ alone, even when the
+forward step is the slowest in the mechanism. In such cases the full quasi-equilibrium analysis is
+required.
 
 ## Unimolecular reactions
 
@@ -116,11 +396,13 @@ $$
 \ce{cyclo-C3H6 -> CH3CHCH2} , \qquad r = k\,[\ce{cyclo-C3H6}] .
 $$
 
+<!-- 
 :::{admonition} Discussion
 :class: seealso
 Does anyone see what the issue could be with first-order kinetics? Think about our grain of sand in
 the box.
 :::
+ -->
 
 The molecule has to somehow gather enough energy to overcome the activation barrier and cross the
 potential energy surface, and that energy can only be supplied through collision with other
@@ -132,7 +414,7 @@ Hinshelwood, and is called the **Lindemann–Hinshelwood mechanism**:
 
 $$
 \ce{A + A} \eqa{k\un{+a}}{k\un{-a}} \ce{A\ast + A} ,
-\qquad r\un{a} = k\un{+a}[\mathrm{A}]^2 - k\un{-a}[\ce{A\ast}][\ce{A}] .
+\qquad r\un{a} = k\un{+a}[\ce{A}]^2 - k\un{-a}[\ce{A\ast}][\ce{A}] .
 $$
 
 Here $\ce{A\ast}$ is an *energized* molecule, not a transition-state activated complex. The reverse
@@ -149,7 +431,7 @@ $$
 \begin{aligned}
 \frac{\mathrm{d}[\ce{A\ast}]}{\mathrm{d}t} &= r\un{a} - r\un{d} \\
 \frac{\mathrm{d}[\ce{A\ast}]}{\mathrm{d}t}
-&= k\un{+a}[\mathrm{A}]^2 - k\un{-a}[\ce{A\ast}][\ce{A}] - k\un{d}[\ce{A\ast}] .
+&= k\un{+a}[\ce{A}]^2 - k\un{-a}[\ce{A\ast}][\ce{A}] - k\un{d}[\ce{A\ast}] .
 \end{aligned}
 $$
 
@@ -158,27 +440,26 @@ What can we invoke about our energized molecule? It is probably short-lived, so 
 $$
 \begin{aligned}
 \frac{\mathrm{d}[\ce{A\ast}]}{\mathrm{d}t} &\approx 0
-= k\un{+a}[\mathrm{A}]^2 - k\un{-a}[\ce{A\ast}][\ce{A}] - k\un{d}[\ce{A\ast}] \\
-[\ce{A\ast}] &= \frac{k\un{+a}[\mathrm{A}]^2}{k\un{d} + k\un{-a}[\mathrm{A}]} .
+= k\un{+a}[\ce{A}]^2 - k\un{-a}[\ce{A\ast}][\ce{A}] - k\un{d}[\ce{A\ast}] \\
+[\ce{A\ast}] &= \frac{k\un{+a}[\ce{A}]^2}{k\un{d} + k\un{-a}[\ce{A}]} .
 \end{aligned}
 $$
 
 We are interested in the rate law for formation of the product P,
 
 $$
-r\un{P} = \frac{\mathrm{d}[\mathrm{P}]}{\mathrm{d}t} = k\un{d}[\ce{A\ast}]
-= \frac{k\un{d}k\un{+a}[\mathrm{A}]^2}{k\un{d} + k\un{-a}[\mathrm{A}]} .
+r\un{P} = \frac{\mathrm{d}[\ce{P}]}{\mathrm{d}t} = k\un{d}[\ce{A\ast}]
+= \frac{k\un{d}k\un{+a}[\ce{A}]^2}{k\un{d} + k\un{-a}[\ce{A}]} .
 $$ (eq-lindemann)
 
 This is clearly not first order. Did we do something wrong? No — the math is correct. Let us consider
 two limiting scenarios.
 
-At **high pressure** of A, collisions between A molecules are very frequent — remember the collision
-count for $\ce{N2}$ at ambient conditions — so we can assume $k\un{-a}[\ce{A}] \gg k\un{d}$, and the
+At **high pressure** of A, collisions between A molecules are very frequent so we can assume $k\un{-a}[\ce{A}] \gg k\un{d}$, and the
 $k\un{d}$ in the denominator is negligible:
 
 $$
-\frac{\mathrm{d}[\mathrm{P}]}{\mathrm{d}t}
+\frac{\mathrm{d}[\ce{P}]}{\mathrm{d}t}
 = \frac{k\un{d}k\un{+a}}{k\un{-a}}[\ce{A}] = k\un{app}[\ce{A}] .
 $$ (eq-lindemann-high-p)
 
@@ -186,9 +467,10 @@ At **very low pressure** of A, the unimolecular decay is faster than deactivatio
 $k\un{-a}[\ce{A}] \ll k\un{d}$, and the kinetics switch to second order:
 
 $$
-\frac{\mathrm{d}[\mathrm{P}]}{\mathrm{d}t} = k\un{+a}[\ce{A}]^2 .
+\frac{\mathrm{d}[\ce{P}]}{\mathrm{d}t} = k\un{+a}[\ce{A}]^2 .
 $$ (eq-lindemann-low-p)
 
+(sec-mech-radicals)=
 ## Radical reactions
 
 <!-- source: Mechanisms.tex L133 -->
@@ -221,8 +503,8 @@ most other radicals; and $\ce{OH\bullet}$ is highly reactive.
 Most reaction mechanisms involving radicals are so-called **radical chain reactions**. In these the
 radical acts rather like a catalyst: it is consumed but regenerated, so it can undergo another
 cycle. There are always three steps in a chain reaction — initiation, propagation, and termination.
-We have already looked at the chain mechanism for the formation of HBr in
-[](#ch-multiple-reactions). Let us look more closely at each step.
+We have already met all three in the HBr mechanism, [](#eq-hbr-step1)–[](#eq-hbr-step3). Let us look
+more closely at each step.
 
 ### Initiation
 
@@ -250,7 +532,7 @@ These are dissociation reactions. In some special cases other reaction types can
 $$
 \begin{aligned}
 \ce{CH4 + O2 &-> CH3\bullet + HO2\bullet} \\
-\ce{NH3 + O &-> NH2\bullet + OH\bullet} .
+\ce{NH3 + O\bullet &-> NH2\bullet + OH\bullet} .
 \end{aligned}
 $$
 
@@ -307,6 +589,8 @@ $$
 
 These steps are the ones we typically invoke the PSSA on in radical-chain mechanisms.
 
+## Radical chemistry in practice
+
 ### Atmospheric chemistry
 
 <!-- source: Mechanisms.tex L236 -->
@@ -335,9 +619,9 @@ The production of ozone is balanced by its destruction. Ozone absorbs ultraviole
 the range 280–315 nm — and decomposes, which is what shields us from most of the harmful UV
 radiation. This is a fine balance between production and destruction.
 
-Closer to the ground, in the troposphere, ozone has a low abundance, roughly 100 ppb. Tropospheric
+Closer to the ground, in the troposphere, ozone has a low abundance, typically a few tens of ppb and up to about 100 ppb in polluted air. Tropospheric
 ozone can be formed through pollutants such as $\ce{NO_x}$, $\ce{CO}$, and various hydrocarbons, as
-well as during thunderstorms, and it is also emitted by trees.
+well as during thunderstorms, and from the volatile organic compounds emitted by trees.
 
 We have interfered with the stratospheric balance through chemicals released into the environment,
 in particular the chlorofluorocarbons (CFCs).
@@ -522,14 +806,15 @@ This section has no written notes in the LaTeX source — the material is delive
 side note, polymer synthesis also proceeds through radical reactions.
 :::
 
+(sec-mech-constructing)=
 ## Constructing reaction mechanisms
 
 <!-- source: Mechanisms.tex L417 -->
 
 This is our last topic on homogeneous reaction mechanisms. We have looked at several different
-systems: atmospheric chemistry, including the chlorine cycle and the formation of HBr; explosions,
+systems: the formation of HBr; atmospheric chemistry, in the chlorine cycle; explosions,
 in the $\ce{H2}$/$\ce{O2}$ system; and the combustion of fuels. The Rice–Herzfeld mechanism for
-pyrolysis reactions came up in the homework.
+pyrolysis reactions comes up in the homework.
 
 In each of these cases we were handed a list of elementary reactions and told that this is how the
 chemistry happens. But how do we actually know that the reaction proceeds this way and not some
@@ -545,11 +830,20 @@ very powerful.
 - An overall stoichiometric equation is a bookkeeping statement, not a description of what happens.
   The mechanism is the underlying set of elementary steps, and only for those does the law of mass
   action apply, with $\alpha_i^{\text{fwd}} = \nu_i'$ and $\alpha_i^{\text{rev}} = \nu_i''$. At
-  equilibrium the same kinetics gives back $k\un{fwd}/k\un{rev} = K\un{c}$, [](#eq-mech-kc).
+  equilibrium every elementary step is balanced individually (microscopic reversibility), giving
+  $k\un{fwd}/k\un{rev} = K\un{c}$, [](#eq-mech-kc).
+- Applying the PSSA to the radical chain mechanism of HBr synthesis recovers the experimentally
+  observed half-order dependence on $\ce{Br2}$, [](#eq-hbr-rate-low), and predicts an apparent
+  activation energy $E\un{a,app} = E\un{a,+2} + (E\un{a,+1} - E\un{a,-1})/2$, [](#eq-hbr-eapp).
+- Applying the QEA to a fast pre-equilibrium step (the $\ce{NO + Br2}$ mechanism) gives the
+  closed-form rate $r_{\ce{NOBr}} = 2k_2 K\un{1} [\ce{NO}]^2 [\ce{Br2}]$, [](#eq-nobr-rate).
+- The rate-determining-step assumption is the limiting form of the QEA: the slowest step sets the
+  overall rate, with all other steps in quasi-equilibrium. Use with caution when the slow step is
+  reversible.
 - Unimolecular reactions are first order only in appearance: the molecule must be energized by
   collision first. The Lindemann–Hinshelwood mechanism plus the PSSA on the energized molecule
   $\ce{A\ast}$ gives
-  $\mathrm{d}[\mathrm{P}]/\mathrm{d}t = k\un{d}k\un{+a}[\mathrm{A}]^2/(k\un{d} + k\un{-a}[\mathrm{A}])$,
+  $\mathrm{d}[\ce{P}]/\mathrm{d}t = k\un{d}k\un{+a}[\ce{A}]^2/(k\un{d} + k\un{-a}[\ce{A}])$,
   [](#eq-lindemann), which is first order at high pressure, [](#eq-lindemann-high-p), and second
   order at low pressure, [](#eq-lindemann-low-p).
 - A radical carries an unpaired electron. Radical chain mechanisms always consist of initiation —

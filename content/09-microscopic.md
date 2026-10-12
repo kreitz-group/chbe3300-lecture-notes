@@ -32,8 +32,8 @@ After completing this chapter, you should be able to:
 :::
 
 In this chapter we shift gears and look at the fundamental level on which chemical reactions
-proceed. We have already talked a little about reaction mechanisms, but not very rigorously. Most
-of the reactions and examples we have dealt with were stoichiometric reaction equations, such as
+proceed. Before [](#ch-mechanisms), most of the reactions and examples we dealt with were
+stoichiometric reaction equations, such as
 the methanation reaction $\ce{CO + 3 H2 -> CH4 + H2O}$. These simply summarize the stoichiometry
 that we observe experimentally, and each has an underlying sequence of elementary reactions — the
 reaction mechanism. We have seen that we can simplify such a mechanism using the PSSA or the QEA to
