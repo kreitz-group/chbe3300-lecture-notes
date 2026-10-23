@@ -161,7 +161,7 @@ A and B individually?
 :::
 
 We have a very large ensemble of molecules. At a concentration of 1 mol m$^{-3}$ we have
-$6.023\times10^{23}$ molecules per cubic meter. Not all of them move at the same speed, however,
+$6.022\times10^{23}$ molecules per cubic meter. Not all of them move at the same speed, however,
 just as people do not all walk at the same pace. There is a distribution of molecular speeds,
 described by the **Maxwell–Boltzmann distribution**,
 
@@ -212,8 +212,8 @@ $$
 
 which reduces a two-body problem to a one-body problem.
 
-**Example: average speed of $\ce{N2}$ molecules.** Let us calculate the average speed of $\ce{N2}$
-molecules at 25 °C, or 298 K. A nitrogen molecule weighs 28.02 u, converted to kg by multiplying by
+**Example: mean relative speed of $\ce{N2}$ molecules.** Let us calculate the mean relative speed of
+two $\ce{N2}$ molecules at 25 °C, or 298 K. A nitrogen molecule weighs 28.02 u, converted to kg by multiplying by
 $1.661\times10^{-27}\ \mathrm{kg\,u^{-1}}$. For two identical molecules the reduced mass is
 $m\un{AA} = \tfrac{1}{2}m\un{A}$, so
 
@@ -295,19 +295,23 @@ $$ (eq-collision-theory-k)
 We see that $k \sim \sqrt{T}\exp\left(-E\un{c}/k\un{B}T\right)$, which is similar in form to the
 Arrhenius expression.
 
-:::{table} Comparison of rate constants predicted by collision theory with experimental values. Collision theory captures the right order of magnitude for radical reactions but is far off for the $\ce{ClO}$ self-reaction, where steric requirements matter.
+:::{table} Pre-exponential factors $A$ predicted by collision theory compared with experimental values. The ratio of the two is the steric factor $P$. Collision theory captures the right order of magnitude for the attack of an H atom on ethane but is far off for the $\ce{ClO}$ self-reaction, where the two radicals must meet in a specific orientation.
 :label: tab-examples-collision-theory
 
-| Reaction | Theory (L mol$^{-1}$ s$^{-1}$) | Experiment (L mol$^{-1}$ s$^{-1}$) |
-|:---------|-------------------------------:|-----------------------------------:|
-| $\ce{H + C2H6 -> C2H5 + H2}$ | $37.3\times10^{10}$ | $9.6\times10^{10}$ |
-| $\ce{2 ClO -> Cl2 + O2}$     | $2.5\times10^{10}$  | $6.3\times10^{7}$  |
+| Reaction | $A$, theory (L mol$^{-1}$ s$^{-1}$) | $A$, experiment (L mol$^{-1}$ s$^{-1}$) | $P$ |
+|:---------|------------------------------------:|----------------------------------------:|----:|
+| $\ce{H + C2H6 -> C2H5 + H2}$ | $3.73\times10^{11}$ | $9.6\times10^{10}$ | $0.26$ |
+| $\ce{2 ClO -> Cl2 + O2}$     | $2.5\times10^{10}$  | $6.3\times10^{7}$  | $2.5\times10^{-3}$ |
 :::
 
-The steric factor $P$ accounts for the fact that only certain collision orientations lead to
-reaction. Head-on and glancing collisions of atoms or polyatomic molecules differ in their
-reactivity, for instance. The theory works reasonably well for radical reactions — low energy
-threshold, modest steric requirements — and is theoretically exact at very low pressures. In other
+The table compares pre-exponential factors rather than rate constants: the energetic term depends
+on $E\un{c}$, which collision theory cannot predict, so the meaningful test is the collision
+frequency factor. The steric factor $P$ accounts for the fact that only certain collision
+orientations lead to reaction. Head-on and glancing collisions of atoms or polyatomic molecules
+differ in their reactivity, for instance. Being a radical does not guarantee success: both
+reactions in [](#tab-examples-collision-theory) involve radicals. The theory works reasonably well
+when a small atom such as H attacks a molecule — almost any orientation can react — and is
+theoretically exact at very low pressures. In other
 cases the rate constant can be off by many orders of magnitude, because the theory has substantial
 limitations. First, we must know the energy threshold and the steric factor, both of which require
 experimental input or more sophisticated theories. A more fundamental omission is the neglect of
@@ -318,9 +322,10 @@ attractive and repulsive interactions between the molecules.
 :alt: Two hand-drawn plots of energy against the A-to-B separation. On the left, labelled potential energy diagram, the curve falls steeply from high energy at short separation, passes through a well below zero at intermediate separation, and rises back to zero at large separation. On the right, labelled hard sphere, the energy is a vertical wall at the separation d_AB and exactly zero everywhere beyond it, with no well.
 :width: 55%
 
-Lennard–Jones (or Morse) interaction potential between two molecules. The well at intermediate
-distance reflects attractive interactions; the steep rise at short distance reflects repulsive
-interactions. Hard-sphere collision theory ignores both features.
+Interaction energy between two molecules as a function of their separation. Left: a realistic
+potential, such as Lennard–Jones or Morse, where the well at intermediate distance reflects
+attractive interactions and the steep rise at short distance reflects repulsive interactions.
+Right: the hard-sphere potential assumed by collision theory, which ignores both features.
 :::
 
 [](#fig-lennard-jones) shows the molecule–molecule interaction potential, often approximated as a
@@ -452,7 +457,18 @@ are stable structures, and the local maximum, which is the transition state.
 :::
 
 The minima are the bottoms of wells. Any small perturbation away from a minimum is restored back to
-the equilibrium structure. At a minimum,
+the equilibrium structure.
+
+:::{figure} ../figures/pes_minima.png
+:label: fig-1d-minima
+:alt: Slide headed "we associate minima with molecules", showing a single blue parabola-like well with a red starburst at its base, annotated a stable molecule. Beside it the conditions are written out: the first derivative of U with respect to every coordinate is zero, and the second derivative is positive for every coordinate, so any small perturbation returns to the equilibrium structure.
+:width: 70%
+
+A minimum on a one-dimensional surface: the first derivative vanishes and every second derivative is
+positive, so the structure is stable.
+:::
+
+At a minimum,
 
 $$
 \begin{aligned}
@@ -484,18 +500,7 @@ points of equal energy; closely spaced contours indicate a steep wall.
 :::
 
 The other stationary points we care about are first-order saddle points: maxima along one coordinate
-but minima along all others.
-
-:::{figure} ../figures/pes_minima.png
-:label: fig-1d-minima
-:alt: Slide headed "we associate minima with molecules", showing a single blue parabola-like well with a red starburst at its base, annotated a stable molecule. Beside it the conditions are written out: the first derivative of U with respect to every coordinate is zero, and the second derivative is positive for every coordinate, so any small perturbation returns to the equilibrium structure.
-:width: 70%
-
-A minimum on a one-dimensional surface: the first derivative vanishes and every second derivative is
-positive, so the structure is stable.
-:::
-
-At a first-order saddle point,
+but minima along all others. At a first-order saddle point,
 
 $$
 \begin{aligned}
@@ -568,11 +573,11 @@ mass-and-spring systems joined together. The molecule is constantly vibrating an
 That last bullet is, in essence, a chemical reaction. Most molecular vibrations have wavenumbers in
 the range 100–3000 cm$^{-1}$. Converted via the speed of light, these correspond to frequencies
 between $3\times10^{12}$ and $9\times10^{13}\ \mathrm{s^{-1}}$, which is extremely fast. Reactions,
-by contrast, are much slower. For a reaction occurring on a timescale of 1 s$^{-1}$ — already fast —
+by contrast, are much slower. For a reaction with a rate constant of 1 s$^{-1}$ — already fast —
 there are roughly 10 to 100 trillion vibrations per reactive event. For comparison, the odds of
-winning the Powerball are roughly one in 300 million; reactive events are one in 100 trillion, six
-orders of magnitude rarer. So yes, reactions truly are rare events at the molecular level. The
-reason we still observe them in bulk is simply that we have $6.023\times10^{23}$ molecules per mole.
+winning the Powerball are roughly one in 300 million; reactive events are one in 100 trillion, about
+five orders of magnitude rarer. So yes, reactions truly are rare events at the molecular level. The
+reason we still observe them in bulk is simply that we have $6.022\times10^{23}$ molecules per mole.
 
 ## Transition state theory
 
@@ -583,7 +588,7 @@ structure of the reactants. We will leverage this to derive a more comprehensive
 constant. Consider the elementary reaction
 
 $$
-\ce{A + B ->[$k$] P} .
+\ce{A + BC ->[$k$] AB + C} .
 $$
 
 Picture a 2D potential energy surface with a dividing surface separating reactants and products.
@@ -646,7 +651,7 @@ of freedom, this mode has a characteristic vibrational frequency $\nu^\ddagger$ 
 transition state decomposes. We can therefore identify $k^\ddagger = \nu^\ddagger$, giving
 
 $$
-r = \underbrace{\nu^\ddagger K^\ddagger}_{k}[\mathrm{A}][\mathrm{BC}]\frac{1}{c\un{0}} .
+r = \underbrace{\nu^\ddagger K^\ddagger \frac{1}{c\un{0}}}_{k}[\mathrm{A}][\mathrm{BC}] .
 $$
 
 Invoking equilibrium for a system that is by definition far from equilibrium may seem inconsistent.
@@ -673,7 +678,9 @@ K^\ddagger = \frac{N\un{A}\, q_{\mathrm{ABC}^\ddagger}}{q\un{A} q\un{BC}} ,
 $$
 
 where the $q$ are molecular partition functions per unit volume and $N\un{A}$ is the Avogadro
-constant. We will not work through the formal derivation here.
+constant. We will not work through the formal derivation here. Note the units: because each $q$
+carries units of inverse volume, this form is the concentration-based constant $K^\ddagger/c\un{0}$,
+in L mol$^{-1}$. The factor $1/c\un{0}$ in the rate expression is already contained in it.
 
 :::{admonition} Discussion
 :class: seealso
@@ -748,9 +755,9 @@ The partition function of the transition state is factored to separate this proj
 freedom,
 
 $$
-q_{\mathrm{AB}^\ddagger} = \left(q\un{vib}\right)\un{TST}\, q_{\mathrm{AB}^\ddagger}'
+q_{\mathrm{ABC}^\ddagger} = \left(q\un{vib}\right)\un{TST}\, q_{\mathrm{ABC}^\ddagger}'
 \quad \text{with} \quad
-q_{\mathrm{AB}^\ddagger}' = q\un{rot}\, q\un{trans}\, q\un{vib}' ,
+q_{\mathrm{ABC}^\ddagger}' = q\un{rot}\, q\un{trans}\, q\un{vib}' ,
 $$
 
 where $q\un{vib}'$ contains only the remaining $3N-7$ vibrational modes, or $3N-6$ for a linear
@@ -762,22 +769,26 @@ k = \nu^\ddagger \frac{k\un{B}T}{h\nu^\ddagger}\left(K^\ddagger\right)'\frac{RT}
   = \frac{k\un{B}T}{h}\left(K^\ddagger\right)'\frac{RT}{p\un{0}} .
 $$ (eq-eyring)
 
-This is the **Eyring equation**, the central result of transition state theory.
+This is the **Eyring equation**, the central result of transition state theory. Written with the
+partition functions per unit volume, which already carry the $1/c\un{0} = RT/p\un{0}$ factor, it
+reads
+
+$$
+k = \frac{k\un{B}T}{h}\, \frac{N\un{A}\, q_{\mathrm{ABC}^\ddagger}'}{q\un{A}\, q\un{BC}}
+\exp\left(-\frac{\Delta E\un{0}^\ddagger}{RT}\right) .
+$$ (eq-eyring-q)
 
 #### Example: TST rate constant for $\ce{F\bullet + H2 -> HF + H\bullet}$
 
 We apply transition state theory to the gas-phase reaction
-$\ce{F\bullet + H2 -> HF + H\bullet}$ at 300 K, starting from
-
-$$
-k = \frac{k\un{B}T}{h}\left(K^\ddagger\right)'\frac{RT}{p\un{0}} .
-$$
+$\ce{F\bullet + H2 -> HF + H\bullet}$ at 300 K, starting from [](#eq-eyring-q) and evaluating the
+ratio of partition functions one contribution at a time.
 
 **Translational partition functions.**
 
 $$
 \begin{aligned}
-\frac{(q\un{trans})_{\mathrm{AB}^\ddagger}}{(q\un{trans})\un{A}\,(q\un{trans})\un{B}}
+\frac{(q\un{trans})_{\mathrm{ABC}^\ddagger}}{(q\un{trans})\un{A}\,(q\un{trans})\un{BC}}
 &= \frac{\left(\dfrac{2\pi m\un{TS} k\un{B}T}{h^2}\right)^{\frac{3}{2}}}
 {\left(\dfrac{2\pi m\un{F} k\un{B}T}{h^2}\right)^{\frac{3}{2}}
  \left(\dfrac{2\pi m_{\ce{H2}} k\un{B}T}{h^2}\right)^{\frac{3}{2}}} \\
@@ -800,7 +811,7 @@ The moment of inertia is computed from the reduced mass and bond distance,
 
 $$
 I_{\ce{H2}} = \frac{M\un{H}M\un{H}}{M\un{H} + M\un{H}}\, d\un{H-H}^2
-= 4.60\times10^{-48}\ \mathrm{kg\,m^2} ,
+= 4.58\times10^{-48}\ \mathrm{kg\,m^2} ,
 $$
 
 using $d\un{H-H} = 0.74\ \text{Å}$ and the mass of the hydrogen atom. The symmetry number of
@@ -810,7 +821,7 @@ calculation, $I\un{TS} = 1.234\times10^{-46}\ \mathrm{kg\,m^2}$, with $\sigma\un
 symmetry). The ratio of rotational partition functions is then
 
 $$
-\frac{(q\un{rot})_{\mathrm{AB}^\ddagger}}{(q\un{rot})\un{A}\,(q\un{rot})\un{B}}
+\frac{(q\un{rot})_{\mathrm{ABC}^\ddagger}}{(q\un{rot})\un{A}\,(q\un{rot})\un{BC}}
 = \frac{\dfrac{8\pi^2 I\un{TS}\, k\un{B}T}{\sigma\un{sym,TS}\, h^2}}
 {1 \cdot \dfrac{8\pi^2 I_{\ce{H2}}\, k\un{B}T}{\sigma_{\mathrm{sym},\ce{H2}}\, h^2}}
 = \frac{91.917}{1 \cdot 1.707} = 53.851 .
@@ -821,10 +832,10 @@ stretching frequency of 4395 cm$^{-1}$, which gives a partition function that is
 linear three-atom transition state would normally have $3N - 5 = 4$ vibrational modes, but we
 projected out one as the reaction coordinate, leaving three modes from quantum-chemical
 calculations — 4007 cm$^{-1}$, 398 cm$^{-1}$, and 398 cm$^{-1}$ — giving
-$(q\un{vib})_{\mathrm{AB}^\ddagger} = 1.378$. Hence
+$(q\un{vib})_{\mathrm{ABC}^\ddagger} = 1.378$. Hence
 
 $$
-\frac{(q\un{vib})_{\mathrm{AB}^\ddagger}}{(q\un{vib})\un{A}\,(q\un{vib})\un{B}}
+\frac{(q\un{vib})_{\mathrm{ABC}^\ddagger}}{(q\un{vib})\un{A}\,(q\un{vib})\un{BC}}
 = \frac{1.378}{1 \cdot 1} = 1.378 .
 $$
 
@@ -870,20 +881,24 @@ What is the difference between a potential energy surface and a free energy surf
 :::
 
 The rate constant depends directly on the change in free energy on going from reactants to the
-transition state,
+transition state. The dimensionless equilibrium constant $\left(K^\ddagger\right)'$ in
+[](#eq-eyring) is written in terms of the standard Gibbs free energy of activation,
+$\left(K^\ddagger\right)' = \exp\left(-\Delta\un{act}G^\ddagger/RT\right)$, so for our bimolecular
+gas-phase step
 
 $$
-k\un{TST} = \frac{k\un{B}T}{h}K^\ddagger
-= \frac{k\un{B}T}{h}\exp\left(\frac{-\Delta\un{act}G^\ddagger}{RT}\right) .
+k\un{TST} = \frac{k\un{B}T}{h}\left(K^\ddagger\right)'\frac{RT}{p\un{0}}
+= \frac{k\un{B}T}{h}\frac{RT}{p\un{0}}\exp\left(\frac{-\Delta\un{act}G^\ddagger}{RT}\right) .
 $$
 
+The factor $RT/p\un{0}$ carries the units of a second-order rate constant, m³ mol$^{-1}$ s$^{-1}$.
 Splitting the free energy into entropic and enthalpic contributions via $G = H - TS$,
 
 $$
 \begin{aligned}
-k\un{TST} &= \frac{k\un{B}T}{h}
+k\un{TST} &= \frac{k\un{B}T}{h}\frac{RT}{p\un{0}}
 \exp\left(\frac{-\left[\Delta\un{act}H^\ddagger - T\Delta\un{act}S^\ddagger\right]}{RT}\right) \\
-k\un{TST} &= \frac{k\un{B}T}{h}
+k\un{TST} &= \frac{k\un{B}T}{h}\frac{RT}{p\un{0}}
 \exp\left(\frac{\Delta\un{act}S^\ddagger}{R}\right)
 \exp\left(\frac{-\Delta\un{act}H^\ddagger}{RT}\right) .
 \end{aligned}
@@ -896,23 +911,30 @@ Equating the two,
 $$
 \begin{aligned}
 k\un{TST} &= k\un{Arrhenius} \\
-\frac{k\un{B}T}{h}\exp\left(\frac{-\Delta\un{act}G^\ddagger}{RT}\right)
-&= A\exp\left(\frac{-E\un{a}}{RT}\right) \\
-\frac{k\un{B}T}{h}\exp\left(\frac{\Delta\un{act}S^\ddagger}{R}\right)
+\frac{k\un{B}T}{h}\frac{RT}{p\un{0}}
+\exp\left(\frac{\Delta\un{act}S^\ddagger}{R}\right)
 \exp\left(\frac{-\Delta\un{act}H^\ddagger}{RT}\right)
-&= A\exp\left(\frac{-E\un{a}}{RT}\right) ,
+&= A\exp\left(\frac{-E\un{a}}{RT}\right) .
 \end{aligned}
 $$
 
-which implies, up to small temperature-dependent corrections,
+The activation energy is defined through the temperature dependence of $k$,
+$E\un{a} = RT^2\, \mathrm{d}\ln k/\mathrm{d}T$. Applying this to [](#eq-tst-thermo), each of the two
+factors of $T$ in front of the exponentials contributes $RT$, so
 
 $$
-E\un{a} \approx \Delta\un{act}H^\ddagger ,
+E\un{a} = \Delta\un{act}H^\ddagger + 2RT ,
 $$ (eq-tst-arrhenius-ea)
 
 $$
-A \approx \frac{k\un{B}T}{h}\exp\left(\frac{\Delta\un{act}S^\ddagger}{R}\right) .
+A = e^2\, \frac{k\un{B}T}{h}\frac{RT}{p\un{0}}\exp\left(\frac{\Delta\un{act}S^\ddagger}{R}\right) .
 $$ (eq-tst-arrhenius-a)
+
+For a unimolecular step there is no $RT/p\un{0}$ factor, $k\un{TST}$ has units of s$^{-1}$, and the
+same steps give $E\un{a} = \Delta\un{act}H^\ddagger + RT$ and
+$A = e\,(k\un{B}T/h)\exp\left(\Delta\un{act}S^\ddagger/R\right)$. Because $RT$ is only about
+2.5 kJ mol$^{-1}$ at room temperature, small compared with typical activation energies,
+$E\un{a} \approx \Delta\un{act}H^\ddagger$ is often a good first estimate.
 
 In other words, the activation energy reflects the change in enthalpy between reactants and
 transition state, while the pre-exponential factor reflects the change in entropy. The entropy in
@@ -929,8 +951,8 @@ turn is derived from the partition functions, closing the loop with the Eyring d
   Maxwell–Boltzmann distribution, [](#eq-maxwell-boltzmann), and the reduced mass $m\un{AB}$.
 - Collisions alone give $k \sim \sqrt{T}$, not an Arrhenius form. Adding the Boltzmann fraction of
   collisions above a threshold energy $E\un{c}$ and a steric factor $P$ recovers the familiar shape,
-  [](#eq-collision-theory-k). The theory works for radical reactions but can be orders of magnitude
-  off when orientation matters, because it ignores the intermolecular potential entirely.
+  [](#eq-collision-theory-k). The theory works for atoms attacking molecules but can be orders of
+  magnitude off when orientation matters, because it ignores the intermolecular potential entirely.
 - An $N$-atom molecule has $3N$ degrees of freedom; subtracting translation and rotation leaves
   $3N-6$ internal coordinates, or $3N-5$ if linear, and the potential energy surface has one
   dimension per internal coordinate.
@@ -949,9 +971,10 @@ turn is derived from the partition functions, closing the loop with the Eyring d
   $q = q\un{trans}q\un{rot}q\un{vib}q\un{el}$, together with the 0 K energy difference
   $\Delta E\un{0}^\ddagger$. The transition-state vibrational partition function excludes the
   reaction coordinate, leaving $3N-7$ modes, or $3N-6$ if linear.
-- In thermodynamic form,
-  $k\un{TST} = (k\un{B}T/h)\exp(\Delta\un{act}S^\ddagger/R)\exp(-\Delta\un{act}H^\ddagger/RT)$,
-  [](#eq-tst-thermo), which identifies $E\un{a} \approx \Delta\un{act}H^\ddagger$,
+- In thermodynamic form, for a bimolecular gas-phase step,
+  $k\un{TST} = (k\un{B}T/h)(RT/p\un{0})\exp(\Delta\un{act}S^\ddagger/R)\exp(-\Delta\un{act}H^\ddagger/RT)$,
+  [](#eq-tst-thermo), which identifies $E\un{a} = \Delta\un{act}H^\ddagger + 2RT$,
   [](#eq-tst-arrhenius-ea), and
-  $A \approx (k\un{B}T/h)\exp(\Delta\un{act}S^\ddagger/R)$, [](#eq-tst-arrhenius-a). This gives the
-  empirical Arrhenius parameters a microscopic meaning.
+  $A = e^2(k\un{B}T/h)(RT/p\un{0})\exp(\Delta\un{act}S^\ddagger/R)$, [](#eq-tst-arrhenius-a). This
+  gives the empirical Arrhenius parameters a microscopic meaning: $E\un{a}$ reflects the enthalpy
+  and $A$ the entropy of activation.
