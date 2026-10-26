@@ -1,6 +1,6 @@
 ---
-title: Microscopic Details of Chemical Reactions
-short_title: Microscopic details
+title: Reaction Rate Theories
+short_title: Reaction rate theories
 label: ch-microscopic
 ---
 
@@ -40,19 +40,6 @@ reaction mechanism. We have seen that we can simplify such a mechanism using the
 derive global rate expressions that we can fit to experimental data. It is not possible, however,
 to measure the rate constants of individual elementary reactions directly in the general case; a
 few reactions are accessible with very specialized experimental setups.
-
-:::{admonition} Discussion
-:class: seealso
-Do we actually need to know all the individual rate constants?
-:::
-
-It depends what you want to do. For designing a reactor based on a reaction that works in the
-laboratory, typically not — you can often fit a simple power-law equation. A reasonable
-understanding of the mechanism helps to develop suitable rate expressions that can be fitted to
-experiments, and these work very well for catalysis.
-
-Do not think of these elementary steps as happening in sequence. Rather, they all happen at the
-same time.
 
 So what is the appeal of knowing all the individual rate constants? You have achieved a full
 mechanistic understanding of the reaction system. Without any fits, you can describe how the
@@ -181,14 +168,89 @@ How does the Boltzmann constant relate to the ideal gas constant?
 
 The connection is $R = k\un{B} N\un{A}$.
 
-:::{figure} ../figures/Boltzmann.png
-:label: fig-boltzmann
-:alt: Hand-drawn plot of the speed distribution f of v against speed v, showing three skewed curves. The leftmost and tallest, with the narrowest spread, is labelled low temperature and high mass. A middle curve is labelled intermediate. The rightmost, lowest and broadest curve is labelled high temperature and low mass. All three start at the origin and decay to zero at large v.
-:width: 55%
+Increasing $T$ broadens the distribution and shifts it to higher $v$; increasing $m$ does the
+opposite. Only the ratio $T/m$ enters [](#eq-maxwell-boltzmann), so heating a gas and making its
+molecules lighter have exactly the same effect on the shape of the distribution.
 
-Maxwell–Boltzmann speed distribution $f(v)$ for different temperatures and molecular masses.
-Increasing $T$ broadens and shifts the distribution to higher $v$; increasing $m$ does the opposite.
+:::{admonition} Live example
+:class: seealso
+Drag the sliders to change the temperature and the molar mass $M = m N\un{A}$. The dashed grey curve
+is $\ce{N2}$ at 298 K, kept fixed for comparison.
 :::
+
+```{marimo} python
+import marimo as mo
+import numpy as np
+import matplotlib.pyplot as plt
+
+mb_kB = 1.381e-23   # J/K, Boltzmann constant
+mb_NA = 6.022e23    # 1/mol, Avogadro constant
+
+
+def mb_f(v, temp, molar_mass):
+    """Maxwell-Boltzmann speed distribution in s/m; temp in K, molar_mass in g/mol."""
+    m = molar_mass * 1e-3 / mb_NA
+    a = m / (2 * mb_kB * temp)
+    return 4 * np.pi * (a / np.pi) ** 1.5 * v**2 * np.exp(-a * v**2)
+```
+
+```{marimo} python
+mb_T = mo.ui.slider(
+    start=100,
+    stop=1500,
+    step=10,
+    value=298,
+    label="Temperature / K",
+    show_value=True,
+)
+mb_M = mo.ui.slider(
+    start=2,
+    stop=250,
+    step=1,
+    value=28,
+    label="Molar mass / (g/mol)",
+    show_value=True,
+)
+mo.vstack([mb_T, mb_M])
+```
+
+```{marimo} python
+mb_m = mb_M.value * 1e-3 / mb_NA
+mb_vmean = np.sqrt(8 * mb_kB * mb_T.value / (np.pi * mb_m))
+mb_vp = np.sqrt(2 * mb_kB * mb_T.value / mb_m)
+
+mo.md(
+    f"At $T = {mb_T.value}\\ \\mathrm{{K}}$ and $M = {mb_M.value}\\ \\mathrm{{g\\,mol^{{-1}}}}$: "
+    f"most probable speed $v_\\mathrm{{p}} = {mb_vp:.0f}\\ \\mathrm{{m\\,s^{{-1}}}}$, "
+    f"mean speed $\\langle v\\rangle = {mb_vmean:.0f}\\ \\mathrm{{m\\,s^{{-1}}}}$."
+)
+```
+
+```{marimo} python
+mb_v = np.linspace(0, 6000, 1200)
+
+fig, ax = plt.subplots(figsize=(5.5, 3.9))
+
+ax.plot(mb_v, 1e3 * mb_f(mb_v, 298, 28), lw=1.5, ls="--", color="0.6",
+        label=r"N$_2$, 298 K")
+ax.plot(mb_v, 1e3 * mb_f(mb_v, mb_T.value, mb_M.value), lw=2.0,
+        label=f"{mb_T.value} K, {mb_M.value} g/mol")
+ax.axvline(mb_vmean, lw=1.0, ls=":", color="C0")
+
+ax.set_xlim(0, 6000)
+ax.set_ylim(bottom=0)
+ax.set_xlabel(r"speed $v$ (m s$^{-1}$)", fontsize=13)
+ax.set_ylabel(r"$f(v)$ (10$^{-3}$ s m$^{-1}$)", fontsize=13)
+ax.tick_params(labelsize=12, width=1.2, length=5)
+for spine in ax.spines.values():
+    spine.set_linewidth(1.2)
+ax.legend(loc="upper right", fontsize=12, frameon=False)
+
+fig.tight_layout()
+fig
+```
+
+The dotted line marks the mean speed $\langle v\rangle$ derived below.
 
 To determine the average speed of species A, we compute the first moment of the distribution,
 

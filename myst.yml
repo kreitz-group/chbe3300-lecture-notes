@@ -79,10 +79,8 @@ project:
         - file: content/06-multiple-reactions.md
     - file: content/07-experimental-kinetics.md
     #
-    - title: Molecular basis of reaction rates
-      children:
-        - file: content/08-mechanisms.md
-        - file: content/09-microscopic.md
+    - file: content/08-mechanisms.md
+    - file: content/09-microscopic.md
     #
     # - title: Catalysis
     #   children:

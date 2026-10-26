@@ -96,8 +96,10 @@ what equilibrium permits, and how it shifts with temperature and pressure
 ([](#ch-multiple-reactions)), and how rate laws are extracted from experimental data in the first
 place ([](#ch-experiments)).
 
-**Molecular basis of reaction rates.** How elementary steps assemble into the mechanisms behind
-observed global rate laws ([](#ch-mechanisms)), and where a rate constant comes from — collisions, energy barriers, and
+**Reaction mechanisms.** How elementary steps assemble into the mechanisms behind
+observed global rate laws ([](#ch-mechanisms)).
+
+**Reaction rate theories.** Where a rate constant comes from — collisions, energy barriers, and
 transition states ([](#ch-microscopic)).
 
 **Catalysis.** How a solid catalyst changes a reaction and how to write rate laws for catalytic
