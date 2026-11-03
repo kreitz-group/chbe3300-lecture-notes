@@ -1,0 +1,17 @@
+% Eley-Rideal: r_A = k2 K_ads,A pA pB Gamma / (1 + K_ads,A pA), pB fixed. Monotonic, no maximum.
+\documentclass[border=4pt]{standalone}
+\input{hetcat-style}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[schematic, xmax=1.08, ymax=1.25,
+    xlabel={$p_\mathrm{A}$}, ylabel={$r_\mathrm{A}$}]
+  \addplot[guide, domain=0:1] {1};
+  \node[anchor=south east, font=\small] at (axis cs:1,1.01)
+    {$r_\mathrm{A} \approx k_2 p_\mathrm{B}\Gamma$};
+  \addplot[guide, dotted, domain=0:0.058] {20*x};
+  \addplot[curve, domain=0:1] {20*x/(1+20*x)};
+  \draw[-{Stealth[length=2mm]}, line width=0.6pt] (axis cs:0.2,0.45) node[anchor=west, font=\small]
+    {$r_\mathrm{A} \approx k_2 K_{\mathrm{ads,A}}\, p_\mathrm{A}\, p_\mathrm{B}\Gamma$} -- (axis cs:0.03,0.42);
+\end{axis}
+\end{tikzpicture}
+\end{document}

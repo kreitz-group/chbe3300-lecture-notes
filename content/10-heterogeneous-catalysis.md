@@ -303,7 +303,7 @@ which is the **Langmuir adsorption isotherm**.
 
 :::{figure} ../figures/monolayer.png
 :label: fig-langmuir-iso
-:alt: Hand-drawn plot of the coverage of A against the partial pressure of A. The curve rises steeply and linearly from the origin, then bends over and flattens, approaching a horizontal dashed line labelled monolayer coverage without crossing it.
+:alt: Plot of the coverage of A against the partial pressure of A. The curve rises steeply and linearly from the origin, following a dotted line labelled theta approximately K_ads p_A, then bends over and flattens just below a horizontal dashed line at theta equal to 1, labelled monolayer coverage.
 :width: 55%
 
 Langmuir adsorption isotherm: equilibrium coverage $\theta_{\ce{A\ast}}$ as a function of the partial
@@ -1135,7 +1135,7 @@ $$
 
 :::{figure} ../figures/MonomolecularReaction.png
 :label: fig-simple-mech
-:alt: Hand-drawn plot of the rate of A against the partial pressure of A. The curve rises linearly from the origin, annotated as proportional to k_s times K_ads times p_A, then bends over and saturates at a horizontal dashed line annotated as proportional to k_s. A dashed straight line continues the initial slope to show the departure from linearity.
+:alt: Plot of the rate r against the partial pressure of A. The curve rises linearly from the origin along a dotted line, annotated weak adsorption: r approximately k_2 K_1 p_A Gamma, then bends over and saturates just below a horizontal dashed line annotated strong adsorption: r approximately k_2 Gamma.
 :width: 50%
 
 Reaction rate for the simple A → P mechanism as a function of $p\un{A}$. At low pressure the rate is
@@ -1296,7 +1296,7 @@ equal.
 
 :::{figure} ../figures/LHReaction.png
 :label: fig-lh-co2
-:alt: Hand-drawn plot of the rate of A against the partial pressure of A. The curve rises linearly from the origin, annotated rate proportional to p_A, passes through a sharp maximum annotated with the condition that K_ads,A times p_A equals K_ads,B times p_B, then falls away, annotated rate proportional to one over p_A.
+:alt: Plot of the CO2 formation rate against the CO partial pressure. The curve rises steeply from the origin, annotated r proportional to p_CO, passes through a maximum marked by a dotted vertical line and labelled K_1 p_CO equals 1 plus the square root of K_2 p_O2, then falls slowly, annotated r proportional to 1 over p_CO, CO poisoning.
 :width: 50%
 
 CO-oxidation rate as a function of $p_{\ce{CO}}$ at fixed $p_{\ce{O2}}$ in a Langmuir–Hinshelwood
@@ -1452,7 +1452,7 @@ $$ (eq-er-rate)
 
 :::{figure} ../figures/ERReaction.png
 :label: fig-er-rate-pa
-:alt: Hand-drawn plot of the rate of A against the partial pressure of A. The curve rises from the origin, annotated as proportional to k_s times K_ads,A times p_A times p_B, then bends over and saturates at a plateau annotated as proportional to k_s times p_B. Unlike the Langmuir-Hinshelwood case there is no maximum; the curve is monotonic.
+:alt: Plot of the rate of A against the partial pressure of A. The curve rises linearly from the origin along a dotted line, annotated r_A approximately k_2 K_ads,A p_A p_B Gamma, then bends over and saturates below a horizontal dashed line annotated r_A approximately k_2 p_B Gamma. Unlike the Langmuir-Hinshelwood case there is no maximum; the curve is monotonic.
 :width: 50%
 
 Reaction rate of an Eley–Rideal reaction as a function of $p\un{A}$ at fixed $p\un{B}$. Unlike the LH
@@ -1819,10 +1819,10 @@ which is approximately $1/\Phi$ for $\Phi \gtrsim 2$.
 
 :::{figure} ../figures/ApparenEaMassTransfer.png
 :label: fig-ea-masstransfer
-:alt: Hand-drawn Arrhenius plot of the logarithm of the effective rate constant against one over temperature. The line has three segments of increasing steepness from left to right. The shallowest, at the left, is labelled film diffusion limited with an apparent barrier of 5 to 20 kilojoules per mole. The middle segment is labelled pore diffusion limited with slope corresponding to E_a over 2. The steepest, at the right, is the kinetic regime with the full E_a.
+:alt: Arrhenius plot of the logarithm of the effective rate constant against one over temperature, divided by two dashed vertical lines into three regions. From left to right: film diffusion limited, a nearly flat segment labelled 5 to 20 kilojoules per mole; pore diffusion limited, a steeper segment labelled E_a over 2; and the kinetic regime, the steepest segment, labelled E_a.
 :width: 55%
 
-Arrhenius plot, $\ln r$ vs. $1/T$, showing the transition from kinetic to mass-transfer-limited
+Arrhenius plot, $\ln k\un{eff}$ vs. $1/T$, showing the transition from kinetic to mass-transfer-limited
 operation. At low temperature the apparent activation energy equals the intrinsic value; at high
 temperature the rate becomes diffusion-controlled and the apparent activation energy drops to half
 the intrinsic value, and eventually to that of the diffusion process.

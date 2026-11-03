@@ -1,0 +1,26 @@
+% Shared style for the ch. 10 schematic plots (figures/src/*.tex).
+% Build one figure:  lualatex <name>.tex   then see README.md for the PNG step.
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta}
+
+\definecolor{matblue}{HTML}{0072BD}
+\definecolor{matorange}{HTML}{D95319}
+
+\pgfplotsset{
+  schematic/.style={
+    width=8cm, height=6.2cm,
+    axis lines=left,
+    axis line style={-{Stealth[length=2.5mm]}, line width=0.8pt},
+    xtick=\empty, ytick=\empty,
+    xmin=0, ymin=0,
+    clip=false,
+    every axis x label/.style={at={(current axis.right of origin)}, anchor=north east, yshift=-4pt},
+    every axis y label/.style={at={(current axis.above origin)}, anchor=north east, xshift=-4pt},
+    label style={font=\normalsize},
+    samples=200,
+  },
+  curve/.style={line width=1.4pt, color=matblue},
+  guide/.style={line width=0.8pt, dashed, color=black!60},
+}

@@ -1,0 +1,17 @@
+% Simple mechanism A + * <=> A*, A* -> P + *:  r = k2 K1 pA Gamma / (1 + K1 pA).
+\documentclass[border=4pt]{standalone}
+\input{hetcat-style}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[schematic, xmax=1.08, ymax=1.25,
+    xlabel={$p_\mathrm{A}$}, ylabel={$r$}]
+  \addplot[guide, domain=0:1] {1};
+  \node[anchor=south east, font=\small] at (axis cs:1,1.01)
+    {strong adsorption: $r \approx k_2\Gamma$};
+  \addplot[guide, dotted, domain=0:0.058] {20*x};
+  \addplot[curve, domain=0:1] {20*x/(1+20*x)};
+  \draw[-{Stealth[length=2mm]}, line width=0.6pt] (axis cs:0.2,0.45) node[anchor=west, font=\small]
+    {weak adsorption: $r \approx k_2 K_1 p_\mathrm{A}\Gamma$} -- (axis cs:0.03,0.42);
+\end{axis}
+\end{tikzpicture}
+\end{document}
