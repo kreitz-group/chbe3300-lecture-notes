@@ -370,6 +370,139 @@ therefore **decreases** with temperature, which also makes intuitive sense: high
 more thermal energy and more desorption. Conversely, making $\Delta\un{ads}H^\circ$ more exothermic — by
 switching to a more strongly binding species, say — increases the coverage at fixed conditions.
 
+:::{admonition} Live example
+:class: seealso
+Drag the sliders to change the temperature and the adsorption enthalpy. The dashed line is a fixed
+reference at 300 K and $\Delta\un{ads}H^\circ = -50\ \mathrm{kJ\,mol^{-1}}$; the adsorption entropy is
+held at $\Delta\un{ads}S^\circ = -120\ \mathrm{J\,mol^{-1}\,K^{-1}}$ and pressures are in bar
+($p^\circ = 1$ bar). Raising $T$ flattens the isotherm; making $\Delta\un{ads}H^\circ$ more negative
+steepens it. The figure runs in your browser and takes a few seconds to wake up the first time. The
+MATLAB code that produces the same result follows underneath.
+:::
+
+```{marimo} python
+import marimo as mo
+import numpy as np
+import matplotlib.pyplot as plt
+
+ads_R = 8.314    # J/(mol K)
+ads_dS = -120.0  # J/(mol K), adsorption entropy
+ads_blue = "#0072BD"
+ads_orange = "#D95319"
+
+
+def ads_Kads(temp, dH):
+    """Dimensionless adsorption equilibrium constant exp(-dG/RT), pressures in bar."""
+    return np.exp(-(dH - temp * ads_dS) / (ads_R * temp))
+
+
+def ads_style(ax):
+    ax.tick_params(labelsize=12, width=1.2, length=5)
+    for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
+```
+
+```{marimo} python
+mol_T = mo.ui.slider(
+    start=300, stop=450, step=5, value=360,
+    label="Temperature / K", show_value=True,
+)
+mol_dH = mo.ui.slider(
+    start=-80, stop=-30, step=1, value=-50,
+    label="Adsorption enthalpy / kJ/mol", show_value=True,
+)
+mo.vstack([mol_T, mol_dH])
+```
+
+```{marimo} python
+mol_pA = np.linspace(1e-4, 1, 500)
+mol_K = ads_Kads(mol_T.value, mol_dH.value * 1e3)
+mol_Kref = ads_Kads(300, -50e3)
+mol_theta = mol_K * mol_pA / (1 + mol_K * mol_pA)
+mol_theta_ref = mol_Kref * mol_pA / (1 + mol_Kref * mol_pA)
+
+mol_half = mol_K * 0.5 / (1 + mol_K * 0.5)
+mo.md(
+    f"At $T = {mol_T.value}\\ \\mathrm{{K}}$ and "
+    f"$\\Delta_\\mathrm{{ads}}H^\\circ = {mol_dH.value}\\ \\mathrm{{kJ\\,mol^{{-1}}}}$: "
+    f"$K_\\mathrm{{ads}} = {mol_K:.3g}$, and at $p_\\mathrm{{A}} = 0.5$ bar "
+    f"$\\theta_\\mathrm{{A}} = {mol_half:.3f}$."
+)
+```
+
+```{marimo} python
+fig_mol, ax_mol = plt.subplots(figsize=(5.5, 3.9))
+
+ax_mol.plot(mol_pA, mol_theta_ref, lw=2.0, ls="--", color=ads_blue,
+            label="300 K, −50 kJ/mol")
+ax_mol.plot(mol_pA, mol_theta, lw=2.0, color=ads_blue,
+            label=f"{mol_T.value} K, {mol_dH.value} kJ/mol")
+
+ax_mol.set_xlim(0, 1)
+ax_mol.set_ylim(0, 1)
+ax_mol.set_xlabel(r"$p_\mathrm{A}$ (bar)", fontsize=13)
+ax_mol.set_ylabel(r"$\theta_\mathrm{A}$", fontsize=13)
+ads_style(ax_mol)
+ax_mol.legend(loc="lower right", fontsize=11, frameon=False)
+
+fig_mol.tight_layout()
+fig_mol
+```
+
+In MATLAB, set `T` and `dH` and run:
+
+```matlab
+R  = 8.314;   % J/mol/K
+dS = -120;    % J/mol/K, adsorption entropy
+
+T  = 360;     % K
+dH = -50e3;   % J/mol, adsorption enthalpy
+
+pA = linspace(0.0001, 1, 500);   % bar
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+% reference isotherm: 300 K, -50 kJ/mol
+plot(pA, molecular_adsorption(Kads(300, -50e3, dS), pA), 'LineWidth', 2.0, ...
+    'Color', '#0072BD', 'LineStyle', '--', 'DisplayName', 'reference');
+plot(pA, molecular_adsorption(Kads(T, dH, dS), pA), 'LineWidth', 2.0, ...
+    'Color', '#0072BD', 'DisplayName', 'T, \DeltaH');
+
+xlim([0 1])
+ylim([0 1])
+
+ylabel('\Theta_A');
+xlabel('p_A (bar)');
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Location','southeast','FontSize',14)
+
+grid off
+hold off
+
+% local functions must come at the end of a script
+function K = Kads(T, dH, dS)
+    dG = dH - T .* dS;
+    K = exp(-dG ./ (8.314 .* T));
+end
+
+function Theta = molecular_adsorption(K, p)
+    Theta = K .* p ./ (1 + K .* p);
+end
+```
+
+:::{tip} Check yourself
+At 360 K and $-50\ \mathrm{kJ\,mol^{-1}}$ you should get $K\un{ads} = 9.70$ and a coverage of 0.829 at
+0.5 bar; at the 300 K reference, $K\un{ads} = 274$ and the surface is already 99 % covered at 0.5 bar.
+:::
+
 ## Competitive adsorption
 
 <!-- source: HeterogeneousCatalysis.tex L266 -->
@@ -418,6 +551,135 @@ This generalizes naturally to $N$ adsorbates,
 $$
 \theta_{X_i} = \frac{K_i\, p_{X_i}}{1 + \sum_{j=1}^{N} K_j\, p_{X_j}} .
 $$ (eq-competitive-isotherm)
+
+:::{admonition} Live example
+:class: seealso
+A and B compete for the same sites at 350 K, with a total pressure of 1 bar, so that
+$p\un{B} = 1\ \mathrm{bar} - p\un{A}$. Both share $\Delta\un{ads}S^\circ = -120\ \mathrm{J\,mol^{-1}\,K^{-1}}$.
+The dashed lines are the symmetric case, both enthalpies at $-50\ \mathrm{kJ\,mol^{-1}}$, where the
+coverages cross at $p\un{A} = 0.5$ bar. Make B bind more strongly and watch it take over the surface
+even when it is the minority species in the gas: a difference of a few tens of
+$\mathrm{kJ\,mol^{-1}}$ changes $K$ by orders of magnitude. The MATLAB code that produces the same
+result follows underneath.
+:::
+
+```{marimo} python
+comp_dHA = mo.ui.slider(
+    start=-90, stop=-30, step=1, value=-50,
+    label="ΔH_ads of A / kJ/mol", show_value=True,
+)
+comp_dHB = mo.ui.slider(
+    start=-90, stop=-30, step=1, value=-80,
+    label="ΔH_ads of B / kJ/mol", show_value=True,
+)
+mo.vstack([comp_dHA, comp_dHB])
+```
+
+```{marimo} python
+comp_T = 350.0  # K
+comp_pA = np.linspace(1e-4, 1, 500)
+comp_pB = 1 - comp_pA
+
+
+def comp_coverages(KA, KB):
+    denom = 1 + KA * comp_pA + KB * comp_pB
+    return KA * comp_pA / denom, KB * comp_pB / denom
+
+
+comp_KA = ads_Kads(comp_T, comp_dHA.value * 1e3)
+comp_KB = ads_Kads(comp_T, comp_dHB.value * 1e3)
+comp_thA, comp_thB = comp_coverages(comp_KA, comp_KB)
+comp_K0 = ads_Kads(comp_T, -50e3)
+comp_thA0, comp_thB0 = comp_coverages(comp_K0, comp_K0)
+
+comp_cross = comp_KB / (comp_KA + comp_KB)
+mo.md(
+    f"$K_\\mathrm{{A}} = {comp_KA:.3g}$, $K_\\mathrm{{B}} = {comp_KB:.3g}$. "
+    f"The two coverages are equal at $p_\\mathrm{{A}} = {comp_cross:.3f}$ bar."
+)
+```
+
+```{marimo} python
+fig_comp, ax_comp = plt.subplots(figsize=(5.5, 3.9))
+
+ax_comp.plot(comp_pA, comp_thA0, lw=2.0, ls="--", color=ads_blue)
+ax_comp.plot(comp_pA, comp_thB0, lw=2.0, ls="--", color=ads_orange)
+ax_comp.plot(comp_pA, comp_thA, lw=2.0, color=ads_blue, label="A")
+ax_comp.plot(comp_pA, comp_thB, lw=2.0, color=ads_orange, label="B")
+
+ax_comp.set_xlim(0, 1)
+ax_comp.set_ylim(0, 1)
+ax_comp.set_xlabel(r"$p_\mathrm{A}$ (bar),  $p_\mathrm{B} = 1 - p_\mathrm{A}$", fontsize=13)
+ax_comp.set_ylabel(r"$\theta$", fontsize=13)
+ads_style(ax_comp)
+ax_comp.legend(loc="center right", fontsize=13, frameon=False)
+
+fig_comp.tight_layout()
+fig_comp
+```
+
+In MATLAB:
+
+```matlab
+R = 8.314;     % J/mol/K
+
+T   = 350;     % K
+dH1 = -50000;  % J/mol, species A
+dH2 = -80000;  % J/mol, species B
+dS  = -120;    % J/mol/K
+
+A = '#0072BD';   % blue
+B = '#D95319';   % orange
+
+pA = linspace(0.0001, 1, 500);   % bar, with pB = 1 - pA
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+% symmetric reference: both species at -50 kJ/mol
+[Theta_A0, Theta_B0] = competitive_adsorption(Kads(T, -50e3, dS), Kads(T, -50e3, dS), pA);
+plot(pA, Theta_A0, 'LineWidth', 2.0, 'Color', A, 'LineStyle', '--', 'HandleVisibility', 'off');
+plot(pA, Theta_B0, 'LineWidth', 2.0, 'Color', B, 'LineStyle', '--', 'HandleVisibility', 'off');
+
+[Theta_A, Theta_B] = competitive_adsorption(Kads(T, dH1, dS), Kads(T, dH2, dS), pA);
+plot(pA, Theta_A, 'LineWidth', 2.0, 'Color', A, 'DisplayName', 'A');
+plot(pA, Theta_B, 'LineWidth', 2.0, 'Color', B, 'DisplayName', 'B');
+
+xlim([0 1])
+ylim([0 1])
+
+ylabel('\Theta');
+xlabel('p_A (bar)');
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Location','east','FontSize',16)
+
+grid off
+hold off
+
+function K = Kads(T, dH, dS)
+    dG = dH - T .* dS;
+    K = exp(-dG ./ (8.314 .* T));
+end
+
+function [Theta1, Theta2] = competitive_adsorption(K1, K2, p)
+    denom  = 1 + K1*p + K2*(1 - p);
+    Theta1 = K1*p ./ denom;
+    Theta2 = K2*(1 - p) ./ denom;
+end
+```
+
+:::{tip} Check yourself
+With $\Delta\un{ads}H^\circ\un{B} = -60\ \mathrm{kJ\,mol^{-1}}$ you should get $K\un{B} = 486$, and the
+two coverages cross only at $p\un{A} = 0.969$ bar. B covers most of the surface until it makes up
+just 3 % of the gas.
+:::
 
 We made several idealizing assumptions initially. On real catalysts the active sites are
 heterogeneous, with different binding strengths; adsorbates can interact with each other, often
@@ -517,6 +779,114 @@ $$ (eq-dissociative-isotherm)
 At low pressures the dissociative-adsorption coverage rises more steeply with $p$ than the
 molecular-adsorption coverage — square root versus linear — but it approaches saturation more
 slowly: the vacant fraction falls off as $p^{-1/2}$ instead of $p^{-1}$.
+
+:::{admonition} Live example
+:class: seealso
+The solid line is the dissociative isotherm, [](#eq-dissociative-isotherm), and the dashed line the
+molecular isotherm with the same equilibrium constant, computed from the same
+$\Delta\un{ads}H^\circ = -50\ \mathrm{kJ\,mol^{-1}}$ and
+$\Delta\un{ads}S^\circ = -120\ \mathrm{J\,mol^{-1}\,K^{-1}}$ as above. Raise the temperature until
+$K\un{ads}p \ll 1$ over most of the range and the square-root dependence becomes obvious: the
+dissociative coverage lies well above the molecular one at low pressure. The MATLAB code that
+produces the same result follows underneath.
+:::
+
+```{marimo} python
+dis_T = mo.ui.slider(
+    start=300, stop=450, step=5, value=360,
+    label="Temperature / K", show_value=True,
+)
+dis_T
+```
+
+```{marimo} python
+dis_p = np.linspace(1e-4, 1, 500)
+dis_K = ads_Kads(dis_T.value, -50e3)
+dis_theta = np.sqrt(dis_K * dis_p) / (1 + np.sqrt(dis_K * dis_p))
+dis_theta_mol = dis_K * dis_p / (1 + dis_K * dis_p)
+
+dis_lo_d = np.sqrt(dis_K * 0.05) / (1 + np.sqrt(dis_K * 0.05))
+dis_lo_m = dis_K * 0.05 / (1 + dis_K * 0.05)
+mo.md(
+    f"At $T = {dis_T.value}\\ \\mathrm{{K}}$: $K_\\mathrm{{ads}} = {dis_K:.3g}$. "
+    f"At $p = 0.05$ bar the dissociative coverage is {dis_lo_d:.3f}, "
+    f"the molecular coverage {dis_lo_m:.3f}."
+)
+```
+
+```{marimo} python
+fig_dis, ax_dis = plt.subplots(figsize=(5.5, 3.9))
+
+ax_dis.plot(dis_p, dis_theta_mol, lw=2.0, ls="--", color=ads_blue, label="molecular")
+ax_dis.plot(dis_p, dis_theta, lw=2.0, color=ads_blue, label="dissociative")
+
+ax_dis.set_xlim(0, 1)
+ax_dis.set_ylim(0, 1)
+ax_dis.set_xlabel(r"$p$ (bar)", fontsize=13)
+ax_dis.set_ylabel(r"$\theta_\mathrm{A}$", fontsize=13)
+ads_style(ax_dis)
+ax_dis.legend(loc="lower right", fontsize=12, frameon=False)
+
+fig_dis.tight_layout()
+fig_dis
+```
+
+In MATLAB:
+
+```matlab
+R  = 8.314;   % J/mol/K
+dS = -120;    % J/mol/K
+dH = -50e3;   % J/mol
+
+T  = 360;     % K
+
+p = linspace(0.0001, 1, 500);   % bar
+K = Kads(T, dH, dS);
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(p, molecular_adsorption(K, p), 'LineWidth', 2.0, 'Color', '#0072BD', ...
+    'LineStyle', '--', 'DisplayName', 'molecular');
+plot(p, dissociative_adsorption(K, p), 'LineWidth', 2.0, 'Color', '#0072BD', ...
+    'DisplayName', 'dissociative');
+
+xlim([0 1])
+ylim([0 1])
+
+ylabel('\Theta_A');
+xlabel('p (bar)');
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+legend('Location','southeast','FontSize',14)
+
+grid off
+hold off
+
+function K = Kads(T, dH, dS)
+    dG = dH - T .* dS;
+    K = exp(-dG ./ (8.314 .* T));
+end
+
+function Theta = molecular_adsorption(K, p)
+    Theta = K .* p ./ (1 + K .* p);
+end
+
+function Theta = dissociative_adsorption(K, p)
+    Theta = sqrt(K .* p) ./ (1 + sqrt(K .* p));
+end
+```
+
+:::{tip} Check yourself
+At 360 K and 0.05 bar the script should give a dissociative coverage of 0.411 against a molecular
+coverage of 0.327.
+:::
 
 Typically the factor $z/2$ is simply absorbed into the rate constant:
 
@@ -932,6 +1302,121 @@ CO-oxidation rate as a function of $p_{\ce{CO}}$ at fixed $p_{\ce{O2}}$ in a Lan
 mechanism. The rate has a maximum because the two reactants compete for the same sites: at low
 $p_{\ce{CO}}$ the rate is limited by $\ce{CO\ast}$ coverage, while at high $p_{\ce{CO}}$ the surface
 is poisoned by $\ce{CO}$ and starves $\ce{O\ast}$.
+:::
+
+:::{admonition} Live example
+:class: seealso
+The left panel is the rate from [](#eq-co-oxidation-rate), normalized by $k\un{3}\Gamma^2$, as a
+function of $p_{\ce{CO}}$; the dotted line marks the maximum from [](#eq-co-oxidation-max). The right
+panel shows the coverages behind it. $K\un{2}$ is fixed at $50\ \mathrm{bar^{-1}}$. Increase
+$K\un{1}$ and the maximum moves to lower $p_{\ce{CO}}$ and shrinks to a sliver: beyond it the surface
+fills with $\ce{CO\ast}$ and the rate falls as $1/p_{\ce{CO}}$. Raising $p_{\ce{O2}}$ pushes the
+maximum back out. The MATLAB code that produces the same result follows underneath.
+:::
+
+```{marimo} python
+co_logK1 = mo.ui.slider(
+    start=1.0, stop=3.0, step=0.05, value=1.5,
+    label="log10 K1 (K1 in 1/bar)", show_value=True,
+)
+co_pO2 = mo.ui.slider(
+    start=0.05, stop=1.0, step=0.05, value=0.2,
+    label="O2 partial pressure / bar", show_value=True,
+)
+mo.vstack([co_logK1, co_pO2])
+```
+
+```{marimo} python
+co_K1 = 10 ** co_logK1.value
+co_K2 = 50.0  # 1/bar
+co_pCO = np.linspace(0, 1, 1000)
+
+co_b = np.sqrt(co_K2 * co_pO2.value)
+co_den = 1 + co_K1 * co_pCO + co_b
+co_thCO = co_K1 * co_pCO / co_den
+co_thO = co_b / co_den
+co_thV = 1 / co_den
+co_rate = co_thCO * co_thO  # r / (k3 Gamma^2)
+
+co_pmax = (1 + co_b) / co_K1
+co_xmax = co_K1 * co_pmax
+co_rmax = co_xmax * co_b / (1 + co_xmax + co_b) ** 2
+mo.md(
+    f"$K_1 = {co_K1:.3g}\\ \\mathrm{{bar^{{-1}}}}$: the rate peaks at "
+    f"$p_\\mathrm{{CO}} = {co_pmax:.3f}$ bar, where "
+    f"$r/(k_3\\Gamma^2) = {co_rmax:.3f}$."
+)
+```
+
+```{marimo} python
+fig_co, (ax_co_r, ax_co_th) = plt.subplots(1, 2, figsize=(8.5, 3.6))
+
+ax_co_r.plot(co_pCO, co_rate, lw=2.0, color=ads_blue)
+if co_pmax <= 1:
+    ax_co_r.axvline(co_pmax, color="0.4", lw=1.2, ls=":")
+ax_co_r.set_xlim(0, 1)
+ax_co_r.set_ylim(0, 0.3)
+ax_co_r.set_xlabel(r"$p_\mathrm{CO}$ (bar)", fontsize=13)
+ax_co_r.set_ylabel(r"$r_\mathrm{CO_2}/(k_3\Gamma^2)$", fontsize=13)
+ads_style(ax_co_r)
+
+ax_co_th.plot(co_pCO, co_thCO, lw=2.0, color=ads_blue, label=r"CO$\ast$")
+ax_co_th.plot(co_pCO, co_thO, lw=2.0, color=ads_orange, label=r"O$\ast$")
+ax_co_th.plot(co_pCO, co_thV, lw=2.0, color="#77AC30", ls="--", label="vacant")
+ax_co_th.set_xlim(0, 1)
+ax_co_th.set_ylim(0, 1)
+ax_co_th.set_xlabel(r"$p_\mathrm{CO}$ (bar)", fontsize=13)
+ax_co_th.set_ylabel(r"$\theta$", fontsize=13)
+ads_style(ax_co_th)
+ax_co_th.legend(loc="center right", fontsize=12, frameon=False)
+
+fig_co.tight_layout()
+fig_co
+```
+
+In MATLAB:
+
+```matlab
+K1  = 10^1.5;   % 1/bar, CO adsorption
+K2  = 50;       % 1/bar, dissociative O2 adsorption
+pO2 = 0.2;      % bar
+
+pCO = linspace(0, 1, 1000);   % bar
+
+b     = sqrt(K2*pO2);
+denom = 1 + K1*pCO + b;
+thCO  = K1*pCO ./ denom;
+thO   = b ./ denom;
+rate  = thCO .* thO;          % r_CO2 / (k3*Gamma^2)
+
+pCO_max = (1 + b)/K1;         % location of the maximum
+
+figure('Units','centimeters','Position',[5 5 14 10])
+hold on
+
+plot(pCO, rate, 'LineWidth', 2.0, 'Color', '#0072BD');
+xline(pCO_max, ':', 'LineWidth', 1.2);
+
+xlim([0 1])
+
+ylabel('r_{CO_2} / (k_3 \Gamma^2)');
+xlabel('p_{CO} (bar)');
+
+set(gca, ...
+    'FontName','lmodern', ...
+    'FontSize',16, ...
+    'LineWidth',1.5, ...
+    'TickLength',[0.015 0.015], ...
+    'Box','on')
+
+grid off
+hold off
+```
+
+:::{tip} Check yourself
+With $K\un{1} = 10^{1.5} = 31.6\ \mathrm{bar^{-1}}$ and $p_{\ce{O2}} = 0.2$ bar the maximum sits at
+$p_{\ce{CO}} = 0.132$ bar with $r_{\ce{CO2}}/(k\un{3}\Gamma^2) = 0.190$. At that point
+$\theta_{\ce{CO\ast}} = 0.50$ and $\theta_{\ce{O\ast}} = 0.38$.
 :::
 
 ## Eley–Rideal reaction mechanism
