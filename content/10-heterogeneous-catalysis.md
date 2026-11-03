@@ -556,8 +556,9 @@ $$ (eq-competitive-isotherm)
 :class: seealso
 A and B compete for the same sites at 350 K, with a total pressure of 1 bar, so that
 $p\un{B} = 1\ \mathrm{bar} - p\un{A}$. Both share $\Delta\un{ads}S^\circ = -120\ \mathrm{J\,mol^{-1}\,K^{-1}}$.
-The dashed lines are the symmetric case, both enthalpies at $-50\ \mathrm{kJ\,mol^{-1}}$, where the
-coverages cross at $p\un{A} = 0.5$ bar. Make B bind more strongly and watch it take over the surface
+The dashed lines are the symmetric case, in which B binds exactly like A (both at the enthalpy set for
+A), so the coverages cross at $p\un{A} = 0.5$ bar; set the two sliders equal and the solid lines fall
+on top of them. Make B bind more strongly and watch it take over the surface
 even when it is the minority species in the gas: a difference of a few tens of
 $\mathrm{kJ\,mol^{-1}}$ changes $K$ by orders of magnitude. The MATLAB code that produces the same
 result follows underneath.
@@ -589,8 +590,8 @@ def comp_coverages(KA, KB):
 comp_KA = ads_Kads(comp_T, comp_dHA.value * 1e3)
 comp_KB = ads_Kads(comp_T, comp_dHB.value * 1e3)
 comp_thA, comp_thB = comp_coverages(comp_KA, comp_KB)
-comp_K0 = ads_Kads(comp_T, -50e3)
-comp_thA0, comp_thB0 = comp_coverages(comp_K0, comp_K0)
+# symmetric reference: B binds exactly like A
+comp_thA0, comp_thB0 = comp_coverages(comp_KA, comp_KA)
 
 comp_cross = comp_KB / (comp_KA + comp_KB)
 mo.md(
@@ -636,8 +637,8 @@ pA = linspace(0.0001, 1, 500);   % bar, with pB = 1 - pA
 figure('Units','centimeters','Position',[5 5 14 10])
 hold on
 
-% symmetric reference: both species at -50 kJ/mol
-[Theta_A0, Theta_B0] = competitive_adsorption(Kads(T, -50e3, dS), Kads(T, -50e3, dS), pA);
+% symmetric reference: B binds exactly like A
+[Theta_A0, Theta_B0] = competitive_adsorption(Kads(T, dH1, dS), Kads(T, dH1, dS), pA);
 plot(pA, Theta_A0, 'LineWidth', 2.0, 'Color', A, 'LineStyle', '--', 'HandleVisibility', 'off');
 plot(pA, Theta_B0, 'LineWidth', 2.0, 'Color', B, 'LineStyle', '--', 'HandleVisibility', 'off');
 
