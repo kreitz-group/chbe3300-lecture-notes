@@ -93,8 +93,12 @@ Reaction rates for heterogeneously catalyzed reactions are usually expressed wit
 surface area or the mass of the catalyst,
 
 $$
-r = \frac{1}{A}\frac{\mathrm{d}\xi}{\mathrm{d}t} .
+r' = \frac{1}{A\un{cat}}\frac{\mathrm{d}\xi}{\mathrm{d}t} , \qquad
+r\un{m} = \frac{1}{m\un{cat}}\frac{\mathrm{d}\xi}{\mathrm{d}t} ,
 $$
+
+with units of mol m$^{-2}$ s$^{-1}$ and mol g$^{-1}$ s$^{-1}$, respectively. We come back to the
+area-based rate when we turn to [reactions on the surface](#sec-surface-reactions).
 
 ## Adsorption
 
@@ -215,7 +219,7 @@ active sites. These were first introduced by Irving Langmuir:
 Consider the reaction
 
 $$
-\ce{A + \ast ->[$k\un{ads}$][$k\un{des}$] A\ast} ,
+\ce{A + \ast ->[$k\un{ads}$] A\ast} ,
 $$
 
 which could be the adsorption of $\ce{CO}$ on a Pt surface. We can write the rate of adsorption as
@@ -225,7 +229,7 @@ r\un{ads} = \frac{\mathrm{d}N_{\ce{A\ast}}}{\mathrm{d}t} = k\un{ads}\, p\un{A}\,
 $$
 
 using the total number of moles, so the units of $k\un{ads}$ differ from those for non-catalyzed
-reactions. The catalyst has a finite number of available surface sites $N\un{\ast,0}$, which we
+reactions. The catalyst has a finite number of available surface sites $N_{\ast,0}$, which we
 typically do not know and which is hard to calculate.
 
 Dividing both sides by the total number of available sites gives
@@ -236,8 +240,8 @@ r\un{ads} = \frac{\mathrm{d}\theta_{\ce{A\ast}}}{\mathrm{d}t}
 $$
 
 where $\theta_{\ce{A\ast}}$ is the coverage of species A and $\theta_{\ce{\ast}}$ the fraction of
-vacant sites. With $p\un{A}$ in pressure units, $k\un{ads}$ now has units of bar$^{-1}$ or
-Pa$^{-1}$. In catalysis it is very common to write the mass balance in terms of coverages.
+vacant sites. The coverages are dimensionless, so with $p\un{A}$ in pressure units $k\un{ads}$ now
+has units of bar$^{-1}$ s$^{-1}$ or Pa$^{-1}$ s$^{-1}$. In catalysis it is very common to write the mass balance in terms of coverages.
 
 For the desorption reaction
 
@@ -344,23 +348,26 @@ What happens if I increase the temperature at fixed pressure — does the covera
 decrease?
 :::
 
-We can answer this by replacing the equilibrium constant with its thermodynamic definition:
+We can answer this by replacing the equilibrium constant with its thermodynamic definition. The
+dimensionless equilibrium constant $\exp(-\Delta\un{ads}G^\circ/RT)$ multiplies the pressure
+relative to the reference pressure, $p\un{A}/p^\circ$, so that $K\un{ads}p\un{A}$ becomes
 
 $$
 \begin{aligned}
 \theta_{\ce{A\ast}}
-&= \frac{\exp\left(\frac{-\Delta\un{ads}G}{RT}\right) p\un{A}}
-{1 + \exp\left(\frac{-\Delta\un{ads}G}{RT}\right) p\un{A}} \\
+&= \frac{\exp\left(\frac{-\Delta\un{ads}G^\circ}{RT}\right) \dfrac{p\un{A}}{p^\circ}}
+{1 + \exp\left(\frac{-\Delta\un{ads}G^\circ}{RT}\right) \dfrac{p\un{A}}{p^\circ}} \\
 \theta_{\ce{A\ast}}
-&= \frac{\exp\left(\frac{-\Delta\un{ads}H + T\Delta\un{ads}S}{RT}\right) p\un{A}}
-{1 + \exp\left(\frac{-\Delta\un{ads}H + T\Delta\un{ads}S}{RT}\right) p\un{A}} .
+&= \frac{\exp\left(\frac{-\Delta\un{ads}H^\circ + T\Delta\un{ads}S^\circ}{RT}\right) \dfrac{p\un{A}}{p^\circ}}
+{1 + \exp\left(\frac{-\Delta\un{ads}H^\circ + T\Delta\un{ads}S^\circ}{RT}\right) \dfrac{p\un{A}}{p^\circ}} .
 \end{aligned}
 $$
 
-The adsorption enthalpy is usually exothermic, $\Delta\un{ads}H < 0$, so $-\Delta\un{ads}H$ in the
-exponent is positive and the equilibrium constant decreases with increasing $T$. The coverage
+The adsorption enthalpy is usually exothermic, $\Delta\un{ads}H^\circ < 0$, so the factor
+$\exp(-\Delta\un{ads}H^\circ/RT)$ has a positive exponent that shrinks as $T$ rises: the
+equilibrium constant decreases with increasing $T$. The coverage
 therefore **decreases** with temperature, which also makes intuitive sense: higher temperature means
-more thermal energy and more desorption. Conversely, making $\Delta\un{ads}H$ more exothermic — by
+more thermal energy and more desorption. Conversely, making $\Delta\un{ads}H^\circ$ more exothermic — by
 switching to a more strongly binding species, say — increases the coverage at fixed conditions.
 
 ## Competitive adsorption
@@ -426,10 +433,11 @@ enough.
 
 <!-- source: HeterogeneousCatalysis.tex L318 -->
 
-Most molecules dissociate upon adsorption — $\ce{H2}$, for instance, because it leads to much more
-strongly bound adsorbates. It is worth pausing on how remarkable that is: $\ce{H2}$ is very stable,
-with a gas-phase dissociation energy of $436\ \mathrm{kJ\,mol^{-1}}$, yet it decomposes readily at
-50 °C over most transition metals.
+Many molecules dissociate upon adsorption — $\ce{H2}$, for instance, because the two H atoms bind
+far more strongly to the surface than the intact molecule does. It is worth pausing on how
+remarkable that is: $\ce{H2}$ is very stable, with a gas-phase dissociation energy of
+$436\ \mathrm{kJ\,mol^{-1}}$, yet it dissociates readily near room temperature over most
+transition metals.
 
 Dissociative adsorption combines adsorption and reaction into a single elementary step,
 
@@ -487,9 +495,9 @@ K\un{ads} &= \frac{[\ce{A}\ast]^2}{p_{\ce{A2}}[\ast]^2} .
 \end{aligned}
 $$
 
-The statistical factors cancel in the equilibrium constant, so it would not have mattered whether we
-considered the distribution of sites. It would, however, have led to adsorption and desorption
-*rates* that are overestimated.
+The statistical factors cancel in the equilibrium constant, so the isotherm does not depend on how
+the sites are distributed. They do matter for the individual adsorption and desorption *rates*,
+which is why they are usually absorbed into the rate constants, as shown below.
 
 To derive the coverage of A as a function of pressure, we solve for the unknown concentration of
 vacant sites:
@@ -506,9 +514,9 @@ k\un{ads}\, p_{\ce{A2}}\left([\ast]_0 - [\mathrm{A}\ast]\right)^2
 \end{aligned}
 $$ (eq-dissociative-isotherm)
 
-At low pressures the dissociative-adsorption coverage rises more rapidly with $p$ than the
-molecular-adsorption coverage — square root versus linear — while at higher pressures molecular
-adsorption has the stronger pressure dependence.
+At low pressures the dissociative-adsorption coverage rises more steeply with $p$ than the
+molecular-adsorption coverage — square root versus linear — but it approaches saturation more
+slowly: the vacant fraction falls off as $p^{-1/2}$ instead of $p^{-1}$.
 
 Typically the factor $z/2$ is simply absorbed into the rate constant:
 
@@ -539,36 +547,49 @@ $$
 n\un{available} = 2q_{\ce{H2}} , \qquad q_{\ce{H2}}\ [=]\ \mathrm{mol\,g^{-1}} ,
 $$ (eq-site-count)
 
-where the factor of 2 comes from the dissociative adsorption of $\ce{H2}$. We work on a per-gram
-basis to make the quantities intensive. Another common probe molecule is $\ce{CO}$, but its
+where the factor of 2 comes from the dissociative adsorption of $\ce{H2}$ and $q_{\ce{H2}}$ is the
+amount adsorbed per gram of catalyst. We work on a per-gram basis to make the quantities intensive. Another common probe molecule is $\ce{CO}$, but its
 adsorption stoichiometry is less well defined and depends on the metal.
 
 We can also use this site count to calculate the **metallic surface area**. The area occupied per
-metal atom is known — for Ni, $\sigma\un{Ni} = 6.51\ \text{Å}^2$ — so
+metal atom is known — for Ni, $\sigma\un{Ni} = 6.51\ \text{Å}^2$ — so the metallic surface area per
+gram of catalyst is
 
 $$
 a\un{metal} = 2q_{\ce{H2}}\, N\un{A}\, \sigma\un{metal} .
 $$ (eq-metal-area)
 
 With assumptions about particle shape, typically spherical, we can also estimate an average particle
-diameter. For transition metals,
+diameter. The particle size depends on how the metal surface is spread over the metal itself, so we
+first convert to the area per gram of *metal*, $a\un{metal}/w\un{metal}$, where $w\un{metal}$ is the
+metal mass fraction (the loading) of the catalyst. For transition metals,
 
 $$
 d\un{metal}\ [\mathrm{nm}]
-= \frac{6000}{a\un{metal}\ [\mathrm{m^2\,g^{-1}}]\ \times\ \rho\un{metal}\ [\mathrm{g\,cm^{-3}}]} .
+= \frac{6000}{\left(a\un{metal}/w\un{metal}\right)\ [\mathrm{m^2\,g_{metal}^{-1}}]\ \times\
+\rho\un{metal}\ [\mathrm{g\,cm^{-3}}]} .
 $$ (eq-particle-size)
 
 The numerical constant 6000 packages the geometric factor 6 — the surface-to-volume ratio of a
 sphere — together with the unit conversion to nanometers. Watch the units: the constant is only 6000
-when $a\un{metal}$ is in m² g$^{-1}$ and the density in g cm$^{-3}$. For Ni, with
-$\rho = 8.9\ \mathrm{g\,cm^{-3}}$ and $a\un{metal} = 10\ \mathrm{m^2\,g^{-1}}$, this gives
+when the area is in m² per gram of metal and the density in g cm$^{-3}$. For Ni, with
+$\rho = 8.9\ \mathrm{g\,cm^{-3}}$ and $10\ \mathrm{m^2}$ of metal surface per gram of Ni, this gives
 $d\un{metal} = 67\ \mathrm{nm}$.
 
-The **dispersion** characterizes the fraction of metal atoms that are surface atoms. A dispersion of
-100 % means every metal atom is accessible to the adsorbate, and therefore active. In practice this
-is rarely the case: for supported transition-metal catalysts the dispersion is typically 10–30 %,
-meaning a large fraction of the metal is not used.
+The **dispersion** characterizes the fraction of metal atoms that are surface atoms,
 
+$$
+D = \frac{\text{surface metal atoms}}{\text{total metal atoms}}
+= \frac{2q_{\ce{H2}}\, M\un{metal}}{w\un{metal}} ,
+$$ (eq-dispersion)
+
+where $M\un{metal}$ is the molar mass of the metal, so that $w\un{metal}/M\un{metal}$ is the total
+amount of metal per gram of catalyst. A dispersion of 100 % means every metal atom is accessible to
+the adsorbate, and therefore active. In practice this is rarely the case: for supported
+transition-metal catalysts the dispersion is typically 10–30 %, meaning a large fraction of the
+metal is not used.
+
+(sec-surface-reactions)=
 ## Reactions on the surface
 
 <!-- source: HeterogeneousCatalysis.tex L423 -->
@@ -655,20 +676,20 @@ our branching reactions. Their role in catalysis is an active research direction
 
 <!-- source: HeterogeneousCatalysis.tex L486 -->
 
-In an Eley–Rideal reaction, a gas-phase molecule reacts with an adsorbed species to form one or two
-adsorbed species,
+In an Eley–Rideal reaction, a gas-phase molecule reacts with an adsorbed species to form an
+adsorbed product, possibly releasing a gas-phase fragment,
 
 $$
 \begin{aligned}
 \ce{A\ast + B &<=> AB\ast} \\
-\ce{A\ast + BC &<=> AB\ast + C\ast}
+\ce{A\ast + BC &<=> AB\ast + C}
 \end{aligned}
 $$
 
-Invoking mass-action kinetics,
+Both steps use one site on each side. Invoking mass-action kinetics for the second,
 
 $$
-r' = k\un{+}[\ce{A\ast}]\, p\un{BC} - k\un{-}[\ce{AB\ast}][\ce{C\ast}] .
+r' = k\un{+}[\ce{A\ast}]\, p\un{BC} - k\un{-}[\ce{AB\ast}]\, p\un{C} .
 $$
 
 As with LH reactions this can equivalently be written in coverages; always pay attention to the
@@ -710,7 +731,7 @@ $$
 $$
 
 We assume the second step is irreversible and forms a gas-phase product directly. Our goal is a rate
-expression for product P; the mass balance is
+expression for product P; its rate of formation is
 
 $$
 r = k\un{2}[\ce{A\ast}] .
@@ -735,9 +756,9 @@ Consider two limiting cases:
 $$
 \begin{aligned}
 \text{Weak adsorption, low } p\un{A}: \quad
-&K\un{1}p\un{A} \ll 1 \;\Rightarrow\; r\un{A} = k\un{2}K\un{1}p\un{A}\Gamma \\
+&K\un{1}p\un{A} \ll 1 \;\Rightarrow\; r = k\un{2}K\un{1}p\un{A}\Gamma \\
 \text{Strong adsorption, high } p\un{A}: \quad
-&K\un{1}p\un{A} \gg 1 \;\Rightarrow\; r\un{A} = k\un{2}\Gamma
+&K\un{1}p\un{A} \gg 1 \;\Rightarrow\; r = k\un{2}\Gamma
 \end{aligned}
 $$
 
@@ -804,8 +825,8 @@ rate-determining surface step.
 
 <!-- source: HeterogeneousCatalysis.tex L585 -->
 
-Now a more complex system: $\ce{CO}$ oxidation on Pd. This is probably the best-studied catalytic
-reaction; Gerhard Ertl received his Nobel Prize in part for studying it. The mechanism is
+Now a more complex system: $\ce{CO}$ oxidation on Pt. This is probably the best-studied catalytic
+reaction; Gerhard Ertl received his Nobel Prize in part for studying it on platinum surfaces. The mechanism is
 
 $$
 \begin{aligned}
@@ -892,6 +913,16 @@ $\ce{CO}$ only displaces $\ce{O\ast}$ and slows the rate. The analogous case for
 of $\ce{O2}$ works the same way. The point is that these orders are exactly what you would measure
 experimentally under different conditions.
 
+Between the two limits the rate passes through a maximum. Setting
+$\partial r_{\ce{CO2}}/\partial p_{\ce{CO}} = 0$ in [](#eq-co-oxidation-rate) puts it at
+
+$$
+K\un{1}p_{\ce{CO}} = 1 + \sqrt{K\un{2}p_{\ce{O2}}} ,
+$$ (eq-co-oxidation-max)
+
+which, on a nearly full surface, is where the $\ce{CO\ast}$ and $\ce{O\ast}$ coverages are about
+equal.
+
 :::{figure} ../figures/LHReaction.png
 :label: fig-lh-co2
 :alt: Hand-drawn plot of the rate of A against the partial pressure of A. The curve rises linearly from the origin, annotated rate proportional to p_A, passes through a sharp maximum annotated with the condition that K_ads,A times p_A equals K_ads,B times p_B, then falls away, annotated rate proportional to one over p_A.
@@ -925,7 +956,8 @@ r\un{A} = k\un{2}[\ce{A\ast}]\, p\un{B} .
 $$
 
 From the equilibrium assumption,
-$K\un{ads,A} = [\ce{A\ast}]/(p\un{A}[\ce{\ast}])$, and the site balance for this system is
+$K\un{ads,A} = [\ce{A\ast}]/(p\un{A}[\ce{\ast}])$. If the product $\ce{C\ast}$ desorbs quickly, its
+coverage is negligible and the site balance for this system is
 $\Gamma = [\ce{A\ast}] + [\ce{\ast}]$. Therefore the overall rate is
 
 $$
@@ -1133,10 +1165,11 @@ $$ (eq-two-site-rate)
 <!-- source: HeterogeneousCatalysis.tex L828 -->
 
 We have now derived a few LH-type rate expressions. Do they respect thermodynamic equilibrium? They
-do not, because we have so far written the surface reaction as irreversible. Real rates also
-decrease monotonically as the system approaches the equilibrium composition.
+do not: because we wrote the surface reaction as irreversible, these rates never vanish, whereas a
+real net rate decreases monotonically and reaches zero as the system approaches the equilibrium
+composition.
 
-To handle both issues at once, Hougen and Watson generalized many of these LH derivations and
+To build that in, Hougen and Watson generalized many of these LH derivations and
 arrived at a generic rate equation of the form
 
 $$
@@ -1232,9 +1265,11 @@ drops further as the intrinsic rate becomes faster.
 :alt: Hand-drawn concentration profile across a catalyst particle, with the particle centre in the middle and its outer surface at plus and minus d_p over 2, surrounded by a film layer of thickness delta. A black dashed curve dips only slightly from the bulk value toward the centre. A blue curve, for a faster intrinsic rate, drops noticeably across the film and again inside the particle, reaching its minimum at the centre; the blue point where it meets the outer surface is annotated as the maximum rate.
 :width: 55%
 
-Concentration profile of a reactant inside a porous catalyst particle when diffusion is fast
-compared with reaction. The concentration is nearly uniform from the outer surface to the center,
-and the entire particle is utilized.
+Concentration profile of a reactant across the film and a porous catalyst particle. When diffusion
+is fast compared with reaction (dashed), the concentration is nearly uniform from the outer surface
+to the center and the entire particle is utilized. For a faster intrinsic rate (blue), the
+concentration drops across the film and again toward the center, so the local rate is highest at
+the outer surface.
 :::
 
 :::{figure} ../figures/CProfilesLimited.png
@@ -1247,15 +1282,16 @@ before it can reach the center, so the inner core of the particle sees almost no
 contributes little to the overall rate.
 :::
 
-To derive the governing equation, we balance diffusion against reaction inside the particle. For a
-first-order reaction $r = k\,c$,
+To derive the governing equation, we balance diffusion against reaction inside the particle. The
+simplest geometry is a slab — a flat plate of half-thickness $L$ — with a first-order reaction
+$r = k\,c$,
 
 $$
 \underbrace{D\un{eff}\frac{\mathrm{d}^2 c}{\mathrm{d}x^2}}_{\text{diffusion}}
 = \underbrace{k\, c}_{\text{reaction}} .
 $$ (eq-diffusion-reaction)
 
-Measuring $x$ from the centre of the particle, the boundary conditions are
+Measuring $x$ from the center of the slab, the boundary conditions are
 
 $$
 c(L) = c\un{s} \quad \text{(concentration at outer surface)} , \qquad
@@ -1268,7 +1304,7 @@ $$
 \frac{c(x)}{c\un{s}} = \frac{\cosh\left(\Phi\, x/L\right)}{\cosh \Phi} ,
 $$
 
-which is flat at the centre and rises to $c\un{s}$ at the outer surface, as it must. Here $\Phi$ is
+which is flat at the center and rises to $c\un{s}$ at the outer surface, as it must. Here $\Phi$ is
 the **Thiele modulus**,
 
 $$
@@ -1277,8 +1313,9 @@ $$
 $$ (eq-thiele)
 
 since the diffusion time constant is $L^2/D\un{eff}$ and the reaction time constant is $1/k$, so
-that $\Phi^2 = kL^2/D\un{eff}$. The characteristic length $L$ is $V\un{cat}/A\un{cat}$ for a generic
-particle, $d\un{p}/6$ for a sphere, and $d/2$ for a plate.
+that $\Phi^2 = kL^2/D\un{eff}$. For other shapes the same results hold to a good approximation if
+the characteristic length is taken as $L = V\un{cat}/A\un{cat}$: $d\un{p}/6$ for a sphere and $d/2$
+for a plate of thickness $d$.
 
 We define the catalyst **effectiveness factor** as
 
@@ -1307,7 +1344,22 @@ the intrinsic value, and eventually to that of the diffusion process.
 
 At high temperatures the intrinsic rate constant grows exponentially with $T$ while the diffusion
 coefficient grows only weakly, so the reaction becomes mass-transfer limited and the apparent
-activation energy drops below the intrinsic value.
+activation energy drops below the intrinsic value. In the strong pore-diffusion regime
+$\eta \approx 1/\Phi$, so the observed rate constant is
+
+$$
+k\un{eff} = \eta\, k \approx \frac{1}{L}\sqrt{k\, D\un{eff}} .
+$$
+
+With $D\un{eff}$ nearly independent of temperature, [](#eq-apparent-ea) gives
+
+$$
+E\un{a,app} = RT^2\frac{\partial \ln k\un{eff}}{\partial T}
+\approx \frac{1}{2}RT^2\frac{\partial \ln k}{\partial T} = \frac{E\un{a}}{2} .
+$$ (eq-pore-ea)
+
+At still higher temperatures film diffusion takes over, and the apparent activation energy falls to
+that of gas-phase diffusion, roughly 5–20 kJ mol$^{-1}$.
 
 To approach $\eta \to 1$ we need to keep $\Phi$ small, which means small particles, small intrinsic
 rate constants, or large effective diffusion coefficients. Practically this is achieved with small
@@ -1345,7 +1397,7 @@ channel wall.
 - Because adsorption is exothermic, coverage *decreases* with increasing temperature.
 - Chemisorption of a probe molecule such as $\ce{H2}$ counts active sites, [](#eq-site-count), from
   which the metallic surface area, [](#eq-metal-area), the mean particle size,
-  [](#eq-particle-size), and the dispersion follow. Supported transition-metal catalysts typically
+  [](#eq-particle-size), and the dispersion, [](#eq-dispersion), follow. Supported transition-metal catalysts typically
   achieve only 10–30 % dispersion.
 - Langmuir–Hinshelwood steps have both reactants adsorbed; Eley–Rideal steps have one reactant in
   the gas phase. LH is the default assumption — genuine ER steps are rare.
@@ -1353,15 +1405,16 @@ channel wall.
   use quasi-equilibrium to replace unmeasurable coverages with partial pressures, and close the
   system with a site balance.
 - Competition for sites is what makes catalytic rate laws non-monotonic. In $\ce{CO}$ oxidation the
-  rate passes through a maximum, [](#eq-co-oxidation-rate): strong $\ce{CO}$ binding gives an
+  rate passes through a maximum, [](#eq-co-oxidation-max): strong $\ce{CO}$ binding gives an
   apparent order of $-1$ in $\ce{CO}$ and $+1/2$ in $\ce{O2}$.
 - Apparent orders and apparent activation energies are limit-dependent. In the weak-adsorption limit
   $E\un{a,app} = E\un{a,2} + \Delta H\un{ads,1}$, [](#eq-weak-ads-ea), which is *lower* than the
   intrinsic barrier because the adsorption enthalpy is negative.
 - A fitted LHHW expression that reproduces the data is enough to design a reactor, but it does not
-  establish the mechanism; that requires microkinetic modelling from first principles.
+  establish the mechanism; that requires microkinetic modeling from first principles.
 - Pore diffusion limits utilization of the particle. The Thiele modulus
   $\Phi = L\sqrt{k/D\un{eff}}$, [](#eq-thiele), sets the effectiveness factor
   $\eta = \tanh\Phi/\Phi$, [](#eq-effectiveness), which is $\approx 1/\Phi$ for $\Phi \gtrsim 2$. Aim
   for $\Phi < 0.3$ via small particles, core-shell designs, or monoliths. Under strong
-  pore-diffusion limitation the apparent activation energy falls to about half its intrinsic value.
+  pore-diffusion limitation the apparent activation energy falls to about half its intrinsic value,
+  [](#eq-pore-ea).

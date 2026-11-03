@@ -88,8 +88,8 @@ what equilibrium permits, and how it shifts with temperature and pressure
 ([](#ch-thermodynamics)). Then the mass balances for the ideal reactor types
 ([](#ch-mass-balances)), the equations into which every rate law that follows is substituted.
 
-<!-- The links into chapters 10-11 are removed while those chapters are withheld from the site;
-     restore them as each chapter is released. See the toc in myst.yml. -->
+<!-- The link into chapter 11 is removed while that chapter is withheld from the site;
+     restore it when the chapter is released. See the toc in myst.yml. -->
 
 **Rate laws and kinetics.** Where a rate law comes from and how to integrate it in a batch reactor
 ([](#ch-reaction-kinetics)), what changes when several reactions run at once
@@ -103,4 +103,4 @@ observed global rate laws ([](#ch-mechanisms)).
 transition states ([](#ch-microscopic)).
 
 **Catalysis.** How a solid catalyst changes a reaction and how to write rate laws for catalytic
-cycles, and how nature solves the same problem with enzymes.
+cycles ([](#ch-hetcat)), and how nature solves the same problem with enzymes.

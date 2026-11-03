@@ -115,7 +115,7 @@ $$
 
 We still need to know what $r$ *is*, and to express it in a form that shows how it depends on
 composition. We could also normalize by the surface area or the mass of a catalyst, but we will
-return to that when we discuss heterogeneous catalysis.
+return to that when we discuss heterogeneous catalysis ([](#ch-hetcat)).
 
 ## Boudart's rules for reaction kinetics
 

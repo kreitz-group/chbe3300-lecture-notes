@@ -66,8 +66,8 @@ project:
     - file: content/03-thermodynamics.md
     - file: content/04-mass-balances.md
 
-    # Chapters 10-11 are withheld from the published site until they have had
-    # the same cleanup pass as 1-9. Uncomment a chapter to release it, and
+    # Chapter 11 is withheld from the published site until it has had
+    # the same cleanup pass as 1-10. Uncomment a chapter to release it, and
     # restore its cross-references in the ch. 1 roadmap at the same time
     # ("What this course covers"). References comes back with the first
     # chapter that actually cites something -- 1-4 cite nothing, so the
@@ -80,10 +80,8 @@ project:
     - file: content/08-mechanisms.md
     - file: content/09-microscopic.md
     #
-    # - title: Catalysis
-    #   children:
-    #     - file: content/10-heterogeneous-catalysis.md
-    #     - file: content/11-biocatalysis.md
+    - file: content/10-heterogeneous-catalysis.md
+    # - file: content/11-biocatalysis.md
     #
     # - title: Back matter
     #   children:

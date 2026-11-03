@@ -33,6 +33,7 @@ body:
         - "7 — Extracting Rate Laws from Experiments"
         - "8 — Reaction Mechanisms"
         - "9 — Reaction Rate Theories"
+        - "10 — Heterogeneous Catalysis"
         - "Not sure / somewhere else"
     validations:
       required: true
