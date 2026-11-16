@@ -1087,7 +1087,7 @@ surface reactions proceed according to a Langmuir–Hinshelwood mechanism. These
 pioneered by Hougen and Watson, so the rate laws we obtain are called
 **Langmuir–Hinshelwood–Hougen–Watson (LHHW)** rate expressions.
 
-### Simple mechanism
+### Monomolecular mechanism
 
 <!-- source: HeterogeneousCatalysis.tex L515 -->
 
@@ -1138,7 +1138,7 @@ $$
 :alt: Plot of the rate r against the partial pressure of A. The curve rises linearly from the origin along a dotted line, annotated weak adsorption: r approximately k_2 K_1 p_A Gamma, then bends over and saturates just below a horizontal dashed line annotated strong adsorption: r approximately k_2 Gamma.
 :width: 50%
 
-Reaction rate for the simple A → P mechanism as a function of $p\un{A}$. At low pressure the rate is
+Reaction rate for the monomolecular A → P mechanism as a function of $p\un{A}$. At low pressure the rate is
 first order in $p\un{A}$, the weak-adsorption limit; at high pressure it saturates at
 $k\un{2}\Gamma$, the strong-adsorption limit.
 :::
